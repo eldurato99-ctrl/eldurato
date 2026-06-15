@@ -4,6 +4,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-define('SITE_URL', getenv('SITE_URL') ?: 'http://localhost/belt'); 
+
 define('SITE_NAME', getenv('SITE_NAME') ?: 'ELDURATO');
-define('ASSETS_URL', getenv('ASSETS_URL') ?: 'http://localhost/belt/assets');
+define(
+    'SITE_URL',
+    rtrim(getenv('SITE_URL') ?: 'https://eldurato.com/belt', '/')
+);
+
+define(
+    'ASSETS_URL',
+    rtrim(getenv('ASSETS_URL') ?: SITE_URL . '/assets', '/')
+);
