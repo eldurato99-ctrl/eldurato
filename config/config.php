@@ -15,3 +15,4 @@ define(
     'ASSETS_URL',
     rtrim(getenv('ASSETS_URL') ?: SITE_URL . '/assets', '/')
 );
+
