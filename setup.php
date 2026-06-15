@@ -2,10 +2,10 @@
 // setup.php
 header('Content-Type: text/plain');
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "belt";
+$host = getenv('DB_HOST') ?: 'db';
+$dbname = getenv('DB_NAME') ?: 'ecommerce';
+$user = getenv('DB_USER') ?: 'ecommerce';
+$pass = getenv('DB_PASSWORD') ?: 'strongpassword';
 
 try {
     $pdo = new PDO("mysql:host=$host;charset=utf8", $user, $pass);
