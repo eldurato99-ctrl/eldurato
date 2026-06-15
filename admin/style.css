@@ -1,0 +1,87 @@
+/* ELDURATO Dashboard Core Styles */
+body { 
+    background: #f0f4f9; 
+    font-family: 'Inter', system-ui, sans-serif; 
+}
+
+/* Sidebar Responsive Wrappers */
+.sidebar-desktop { 
+    min-height: 100vh; 
+    background: linear-gradient(180deg, #4f46e5 0%, #3730a3 100%); 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 16.666667%; 
+    z-index: 1000; 
+}
+
+.sidebar-mobile { 
+    background: linear-gradient(180deg, #4f46e5 0%, #3730a3 100%); 
+    width: 280px; 
+}
+
+/* Dynamic Nav Links */
+.nav-link-custom { 
+    color: rgba(255, 255, 255, 0.75); 
+    padding: 12px 18px; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    font-size: 14.5px; 
+    text-decoration: none; 
+    transition: all 0.2s; 
+}
+
+.nav-link-custom:hover, .nav-link-custom.active { 
+    background: rgba(255, 255, 255, 0.15); 
+    color: #ffffff; 
+}
+
+/* Premium Dashboard Cards & Gradients */
+.card-custom { 
+    border: none; 
+    border-radius: 12px; 
+    position: relative; 
+    overflow: hidden; 
+    min-height: 115px; 
+}
+
+.card-custom .watermark-icon { 
+    position: absolute; 
+    right: -10px; 
+    bottom: -15px; 
+    font-size: 5rem; 
+    opacity: 0.15; 
+    transform: rotate(-10deg); 
+}
+
+/* Original Premium Color Gradients */
+.grad-purple { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
+.grad-blue   { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+.grad-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+.grad-pink   { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+
+/* Live Status Indicator Animation */
+.pulse-dot { 
+    width: 8px; 
+    height: 8px; 
+    background-color: #fbbf24; 
+    border-radius: 50%; 
+}
+
+@keyframes pulse { 
+    0%, 100% { transform: scale(0.9); opacity: 0.7; } 
+    50% { transform: scale(1.3); opacity: 1; } 
+}
+.pulse-animated { animation: pulse 1.5s infinite; }
+
+
+   .header-console { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-radius: 12px; }
+        .profile-card { border: none; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .card-header-custom { background: #4f46e5; color: white; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 12px 18px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .card-header-danger { background: #ef4444; }
+        
+        .avatar-preview { width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 4px solid #6366f1; }
+        .read-only-text { font-size: 15px; font-weight: 600; color: #0f172a; padding: 8px 0; display: block; }
+        .form-label-custom { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .d-none-ux { display: none !important; }
+

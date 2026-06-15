@@ -1,0 +1,42 @@
+        /* लॉगिन पेज के लिए मॉडर्न ग्रेडिएंट बैकग्राउंड */
+.auth-body {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0d9488 50%, #111827 100%) !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* लॉगिन कार्ड को ग्लास-मॉर्फिज्म और स्मूथ लुक देने के लिए */
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    transition: transform 0.3s ease;
+}
+
+/* इनपुट फील्ड्स को मॉडर्न टच देने के लिए */
+.auth-input {
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    border: 1px solid #e2e8f0 !important;
+    font-size: 0.95rem;
+    transition: all 0.3s ease !important;
+}
+
+.auth-input:focus {
+    border-color: #0ea5e9 !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+}
+
+/* बटन पर होवर इफ़ेक्ट */
+.btn-gradient {
+    background: linear-gradient(45deg, #0ea5e9, #0d9488);
+    transition: opacity 0.3s ease;
+}
+
+.btn-gradient:hover {
+    opacity: 0.9;
+    color: white !important;
+}

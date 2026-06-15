@@ -1,0 +1,17 @@
+[33mcommit 566598cf885f2e072d384a0f2a1f9d16000932e3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: hridesh-bharati <hridesh027@gmail.com>
+Date:   Mon Jun 15 09:29:22 2026 +0100
+
+    Cleaned up OAuth configuration and moved secrets
+
+[33mcommit 51caeab91f1d33af64b46bc6cc9f9390607ce0b7[m
+Author: hridesh-bharati <hridesh027@gmail.com>
+Date:   Sun Jun 14 12:34:36 2026 +0100
+
+    DS
+
+[33mcommit 36f196abf1b1bd57fb7852d6434be56ea2ca0fba[m
+Author: hridesh-bharati <hridesh027@gmail.com>
+Date:   Thu Jun 11 22:15:27 2026 +0100
+
+    Initial commit

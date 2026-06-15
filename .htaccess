@@ -1,0 +1,8 @@
+Require all granted
+Order Allow,Deny
+Allow from all
+
+# Specific allow for your network
+Allow from 192.168.1.0/24
+Allow from localhost
+
