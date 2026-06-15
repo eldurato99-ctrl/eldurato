@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $expire = date("Y-m-d H:i:s", strtotime("+1 hour"));
         $stmt = $pdo->prepare("UPDATE users SET reset_token = ?, token_expire = ? WHERE email = ?");
         $stmt->execute([$token, $expire, $email]);
-        $resetLink = "http://localhost/belt/pages/auth/reset_password.php?token=" . $token;
+        $resetLink = SITE_URL . "/pages/auth/reset_password.php?token=" . $token;
         $mail = new PHPMailer(true);
 
         try {
