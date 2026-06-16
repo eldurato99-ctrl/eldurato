@@ -169,7 +169,7 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
             <button class="btn p-0 border-0 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuDrawer">
                 <i class="ri-menu-2-line fs-3 align-middle"></i>
             </button>
-            <a href="<?php echo SITE_URL; ?>/index.php" class="text-decoration-none lh-1">
+            <a href="<?php echo SITE_URL; ?>" class="text-decoration-none lh-1">
                 <span class="text-white fw-bold fs-4 d-block" style="letter-spacing: -0.5px;"> <a class="navbar-brand fw-bold font-serif fs-4" href="../index.php">
                     <img src="/assets/images/logo.jpg" class="rounded-pill" width="100" alt="Logo">
                 </a></span>
