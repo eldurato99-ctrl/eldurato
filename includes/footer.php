@@ -1,5 +1,5 @@
-<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 
+<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 <style>
     .site-footer {
         background-color: #0d0f12; /* Premium Slate Black */
@@ -77,14 +77,13 @@
             </div>
 
            <!-- COLLECTIONS -->
-<div class="col-lg-2 col-md-6 col-sm-6">
+                <div class="col-lg-2 col-md-6 col-sm-6">
     <h6 class="footer-heading">Collections</h6>
     <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-        <!-- PHP dynamic base URL ke sath -->
-        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
-        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
-        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
-        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
+        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
+        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
+        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
+        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
     </ul>
 </div>
 
