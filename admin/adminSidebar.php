@@ -15,24 +15,24 @@ function isActive($keyword, $current_uri) {
         <i class="ri-shield-flash-fill text-warning me-1"></i> ELDURATO
     </div>
     <div class="d-flex flex-column gap-1">
-        <a href="/belt/admin/index.php" class="nav-link-custom <?= ($current_page == 'index.php' && strpos($current_uri, 'admin/index.php') !== false) ? 'active' : '' ?>">
+        <a href="/admin/index.php" class="nav-link-custom <?= ($current_page == 'index.php' && strpos($current_uri, 'admin/index.php') !== false) ? 'active' : '' ?>">
             <i class="me-2 ri-dashboard-3-line"></i>Dashboard
         </a>
-        <a href="/belt/admin/products/index.php" class="nav-link-custom <?= isActive('products/', $current_uri) ?>">
+        <a href="/admin/products/index.php" class="nav-link-custom <?= isActive('products/', $current_uri) ?>">
             <i class="me-2 ri-handbag-line"></i>Products
         </a>
-        <a href="/belt/admin/orders/index.php" class="nav-link-custom <?= isActive('orders/', $current_uri) ?>">
+        <a href="/admin/orders/index.php" class="nav-link-custom <?= isActive('orders/', $current_uri) ?>">
             <i class="me-2 ri-shopping-bag-line"></i>Orders
         </a>
-        <a href="/belt/admin/users/index.php" class="nav-link-custom <?= isActive('users/', $current_uri) ?>">
+        <a href="/admin/users/index.php" class="nav-link-custom <?= isActive('users/', $current_uri) ?>">
             <i class="me-2 ri-user-settings-line"></i>Users
         </a>
-        <a href="/belt/admin/profile.php" class="nav-link-custom <?= ($current_page == 'profile.php') ? 'active' : '' ?>">
+        <a href="/admin/profile.php" class="nav-link-custom <?= ($current_page == 'profile.php') ? 'active' : '' ?>">
             <i class="me-2 ri-user-line"></i>My Profile
         </a>
         
         <hr class="border-white border-opacity-20 my-3">
-        <a href="/belt/pages/auth/logout.php" class="nav-link-custom text-white bg-danger"><i class="ri-logout-circle-line me-2"></i>Logout</a>
+        <a href="/pages/auth/logout.php" class="nav-link-custom text-white bg-danger"><i class="ri-logout-circle-line me-2"></i>Logout</a>
     </div>
 </div>
 
@@ -45,24 +45,24 @@ function isActive($keyword, $current_uri) {
     </div>
     <div class="offcanvas-body p-3">
         <div class="d-flex flex-column gap-1">
-            <a href="/belt/admin/index.php" class="nav-link-custom <?= ($current_page == 'index.php' && strpos($current_uri, 'admin/index.php') !== false) ? 'active' : '' ?>">
+            <a href="/admin/index.php" class="nav-link-custom <?= ($current_page == 'index.php' && strpos($current_uri, 'admin/index.php') !== false) ? 'active' : '' ?>">
                 <i class="me-2 ri-dashboard-3-line"></i>Dashboard
             </a>
-            <a href="/belt/admin/products/index.php" class="nav-link-custom <?= isActive('products/', $current_uri) ?>">
+            <a href="/admin/products/index.php" class="nav-link-custom <?= isActive('products/', $current_uri) ?>">
                 <i class="me-2 ri-handbag-line"></i>Products
             </a>
-            <a href="/belt/admin/orders/index.php" class="nav-link-custom <?= isActive('orders/', $current_uri) ?>">
+            <a href="/admin/orders/index.php" class="nav-link-custom <?= isActive('orders/', $current_uri) ?>">
                 <i class="me-2 ri-shopping-bag-line"></i>Orders
             </a>
-            <a href="/belt/admin/users/index.php" class="nav-link-custom <?= isActive('users/', $current_uri) ?>">
+            <a href="/admin/users/index.php" class="nav-link-custom <?= isActive('users/', $current_uri) ?>">
                 <i class="me-2 ri-user-settings-line"></i>Users
             </a>
-            <a href="/belt/admin/profile.php" class="nav-link-custom <?= ($current_page == 'profile.php') ? 'active' : '' ?>">
+            <a href="/admin/profile.php" class="nav-link-custom <?= ($current_page == 'profile.php') ? 'active' : '' ?>">
                 <i class="me-2 ri-user-line"></i>My Profile
             </a>
             
             <hr class="border-white border-opacity-20 my-3">
-            <a href="/belt/pages/auth/logout.php" class="nav-link-custom text-white bg-danger"><i class="ri-logout-circle-line me-2"></i>Logout</a>
+            <a href="/pages/auth/logout.php" class="nav-link-custom text-white bg-danger"><i class="ri-logout-circle-line me-2"></i>Logout</a>
         </div>
     </div>
 </div>
