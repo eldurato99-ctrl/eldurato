@@ -16,6 +16,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
+          timeout: 40m           # SSH connection timeout ko 40 mins kiya
+          command_timeout: 30m   # Commands chalne ka timeout 30 mins kiya
           script: |
             # 1. FIXED PATH: Sahi project directory mein jayein
             cd /var/www/eldurato || { echo "ERROR: Directory /var/www/eldurato nahi mili!"; exit 1; }
