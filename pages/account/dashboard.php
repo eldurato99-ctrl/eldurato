@@ -173,7 +173,7 @@ $current_page = 'dashboard';
                             <i class="ri-arrow-left-line me-3 fs-5"></i>Go to Shop
                         </a>
                         
-                        <a href="/belt/pages/account/dashboard.php" class="nav-link mb-2 p-3 d-flex align-items-center text-decoration-none fw-semibold sidebar-link <?= $current_page == 'dashboard' ? 'active-link' : '' ?>">
+                        <a href="/pages/account/dashboard.php" class="nav-link mb-2 p-3 d-flex align-items-center text-decoration-none fw-semibold sidebar-link <?= $current_page == 'dashboard' ? 'active-link' : '' ?>">
                             <i class="ri-dashboard-line me-3 fs-5"></i>Dashboard
                         </a>
                         
@@ -185,7 +185,7 @@ $current_page = 'dashboard';
                             <i class="ri-heart-line me-3 fs-5"></i>Wishlist
                         </a>
                         
-                        <a href="/belt/pages/auth/profile.php" class="nav-link mb-2 p-3 d-flex align-items-center text-decoration-none fw-semibold sidebar-link <?= $current_page == 'profile' ? 'active-link' : '' ?>">
+                        <a href="/pages/auth/profile.php" class="nav-link mb-2 p-3 d-flex align-items-center text-decoration-none fw-semibold sidebar-link <?= $current_page == 'profile' ? 'active-link' : '' ?>">
                             <i class="ri-user-line me-3 fs-5"></i>My Profile
                         </a>
                     </div>
