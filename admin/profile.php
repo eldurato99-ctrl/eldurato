@@ -4,7 +4,7 @@ require_once '../config/database.php';
 require_once '../config/cloudinary.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /belt/pages/auth/login.php");
+    header("Location: /pages/auth/login.php");
     exit;
 }
 
@@ -17,7 +17,7 @@ try {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$admin) { header("Location: /belt/pages/auth/logout.php"); exit; }
+    if (!$admin) { header("Location: /pages/auth/logout.php"); exit; }
 } catch (PDOException $e) {
     $error_msg = "DB Error: " . $e->getMessage();
 }
