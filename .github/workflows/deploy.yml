@@ -17,8 +17,8 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # 1. Project directory mein jayein, agar directory nahi mili toh wahi ruk jayein
-            cd /root/eldurato || { echo "Directory /root/eldurato not found"; exit 1; }
+            # 1. FIXED PATH: Sahi project directory mein jayein
+            cd /var/www/eldurato || { echo "ERROR: Directory /var/www/eldurato nahi mili!"; exit 1; }
 
             # 2. Check karein ki VPS par .env file maujood hai ya nahi
             echo "=== VPS Pe .env File Check ==="
@@ -26,18 +26,18 @@ jobs:
               echo ".env file exists on host."
               ls -la .env
               echo "Variables present in host .env:"
-              grep -E 'SITE_URL|SITE_NAME|ASSETS_URL' .env || true
+              grep -E 'SITE_URL|SITE_NAME|ASSETS_URL|DB_NAME' .env || true
             else
               echo "ERROR: .env file is MISSING on VPS host!"
               exit 1
             fi
 
             # 3. Git pull se pehle local conflicts se bachne ke liye stash karein
+            echo "=== Fetching Latest Code ==="
             git stash
             git pull origin main
 
-            # 4. Docker compose down karne ki zaroorat nahi hai (downtime se bachne ke liye)
-            # --build flag naye code ko compile karega aur automatic recreate karega
+            # 4. Rebuild containers (bina down kiye taki website band na ho)
             echo "=== Docker Compose Rebuild and Up ==="
             docker compose up -d --build
 
@@ -45,8 +45,8 @@ jobs:
             sleep 5
 
             echo "=== Container Ke Andar Ka Env Check ==="
-            # Agar container ka naam alag hai toh docker-compose.yml ke hisab se badlein
-            docker exec ecommerce_app env | grep -E 'SITE|URL|NAME' || echo "No matching env variables found inside container."
+            # PHP container ke environment ko check karne ke liye
+            docker exec ecommerce_app env | grep -E 'SITE|URL|NAME|DB_' || echo "No matching env variables found inside container."
 
             # 6. Purani aur bekar images ko remove karein space bachane ke liye
             docker image prune -f
