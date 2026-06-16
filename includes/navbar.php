@@ -169,12 +169,17 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
             <button class="btn p-0 border-0 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuDrawer">
                 <i class="ri-menu-2-line fs-3 align-middle"></i>
             </button>
-            <a href="<?php echo SITE_URL; ?>" class="text-decoration-none lh-1">
-                <span class="text-white fw-bold fs-4 d-block" style="letter-spacing: -0.5px;"> <a class="navbar-brand fw-bold font-serif fs-4" href="../index.php">
-                    <img src="/assets/images/logo.jpg" class="rounded-pill" width="100" alt="Logo">
-                </a></span>
-                <span class="text-info font-monospace" style="font-size: 9px; font-weight: 700; letter-spacing: 0.5px;">The Legacy of Genuine Leather.</span>
-            </a>
+    <a href="<?php echo SITE_URL; ?>" class="d-flex flex-column align-items-center text-decoration-none text-center">
+        <!-- Logo Section -->
+        <div class="mb-1">
+            <img src="/assets/images/logo.jpg" class="rounded-pill border border-2 border-secondary" width="90" alt="Logo">
+        </div>
+        
+        <!-- Text Section (Logo ke niche) -->
+        <span class="text-white-50 font-monospace text-uppercase" style="font-size: 10px; font-weight: 700; letter-spacing: 1px;">
+            The Legacy of Genuine Leather
+        </span>
+    </a>
         </div>
 
         <!-- Center Search Box: Desktop Integration with End Button -->
