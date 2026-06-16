@@ -1,6 +1,8 @@
 <!-- pages\auth\verify_otp.php -->
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../../config/database.php';
 
 if (!isset($_SESSION['reset_mobile'])) {
