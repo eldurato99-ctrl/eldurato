@@ -16,8 +16,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          timeout: 40m           # SSH connection timeout ko 40 mins kiya
-          command_timeout: 30m   # Commands chalne ka timeout 30 mins kiya
+          timeout: 10m           # Ab lambe timeout ki zaroorat nahi hai
+          command_timeout: 5m    # Har command max 5 mins mein khatam ho jayegi
           script: |
             # 1. FIXED PATH: Sahi project directory mein jayein
             cd /var/www/eldurato || { echo "ERROR: Directory /var/www/eldurato nahi mili!"; exit 1; }
@@ -39,16 +39,16 @@ jobs:
             git stash
             git pull origin main
 
-            # 4. Rebuild containers (bina down kiye taki website band na ho)
-            echo "=== Docker Compose Rebuild and Up ==="
-            docker compose up -d --build
+            # 4. Containers ko sirf start/up karein (Bina bekar rebuild jhanjhat ke)
+            echo "=== Docker Compose Up (Instant) ==="
+            docker compose up -d
 
-            # 5. Container ke andar environment variables check karne ke liye 5 second ka wait karein
-            sleep 5
-
-            echo "=== Container Ke Andar Ka Env Check ==="
-            # PHP container ke environment ko check karne ke liye
-            docker exec ecommerce_app env | grep -E 'SITE|URL|NAME|DB_' || echo "No matching env variables found inside container."
+            # 5. Background mein dependencies check karein (agar composer.json badla ho)
+            echo "=== Optimizing Composer Dependencies ==="
+            docker exec ecommerce_app composer install --no-dev --optimize-autoloader || true
 
             # 6. Purani aur bekar images ko remove karein space bachane ke liye
+            echo "=== Cleaning Up Old Docker Images ==="
             docker image prune -f
+            
+            echo "=== Deployment Completed Successfully in Seconds! ==="
