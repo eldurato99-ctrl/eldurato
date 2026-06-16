@@ -12,7 +12,7 @@ if (empty($_SESSION['cart']) || empty($target_key) || !isset($_SESSION['cart'][$
 
 if (!function_exists('url')) {
     function url($path) {
-        return '/belt/' . ltrim($path, '/');
+        return '/' . ltrim($path, '/');
     }
 }
 
