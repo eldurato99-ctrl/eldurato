@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build: .
@@ -7,35 +9,34 @@ services:
     restart: always
     depends_on:
       - db
-
     env_file:
       - .env
-
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
     volumes:
+      # 1. Yeh aapke baki saare code (php files, assets) ko instantly share karega
       - .:/var/www/html
-      - /var/www/html/vendor 
+      # 2. Named Volume use karne se vendor folder container ke andar safe rahega aur override nahi hoga
+      - app_vendor:/var/www/html/vendor 
 
   db:
     image: mysql:8.0
     container_name: ecommerce_db
     restart: always
-
     env_file:
       - .env
-
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-
     volumes:
       - mysql_data:/var/lib/mysql
 
+# Saare named volumes ko yahan declare karna zaroori hai
 volumes:
   mysql_data:
+  app_vendor: # <--- Yeh naya volume vendor ke liye add kiya hai
