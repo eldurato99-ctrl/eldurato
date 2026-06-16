@@ -11,7 +11,7 @@ if (!$isIncluded) {
 }
 if (!function_exists('url')) {
     function url($path) {
-        return '/belt/' . ltrim($path, '/');
+        return '/' . ltrim($path, '/');
     }
 }
 
@@ -530,7 +530,7 @@ foreach ($dbProducts as $product) {
         formData.append('product_id', productId);
 
         try {
-            const response = await fetch('/belt/pages/products/wishlist.php', { 
+            const response = await fetch('/pages/products/wishlist.php', { 
                 method: 'POST', 
                 body: formData 
             });
@@ -555,7 +555,7 @@ foreach ($dbProducts as $product) {
                 
             } else if(data.message.toLowerCase().includes('login') || data.message === 'Please login first') {
                 if(confirm('Please login to add items to wishlist')) {
-                    window.location.href = '/belt/pages/auth/login.php';
+                    window.location.href = '/pages/auth/login.php';
                 }
             } else {
                 alert(data.message);
