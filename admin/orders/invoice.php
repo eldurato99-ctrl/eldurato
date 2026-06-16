@@ -101,7 +101,7 @@ if (!$order) {
         <div class="row align-items-center mb-4">
             <div class="col-sm-6">
                 <!-- <h1 class="fw-bold theme-text-dark-blue m-0" style="font-size: 2.4rem; letter-spacing: -1px;">ELDURATO</h1> -->
-                <img src="/belt/assets/images/logo.jpg" class="rounded-3"  width="130" alt="ELDURATO">
+                <img src="/assets/images/logo.jpg" class="rounded-3"  width="130" alt="ELDURATO">
                 <p class="text-muted small mb-1">Premium Leather Craftsmanship</p>
                 <span class="badge bg-secondary-subtle text-secondary border small">GSTIN: 09AAACE1234F1Z5</span>
             </div>
