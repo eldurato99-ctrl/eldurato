@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 
 // Check if trigger is single item checkout button context
 if (!isset($_POST['place_order_btn']) || empty($_SESSION['cart'])) {
-    header("Location: /belt/pages/products/cart.php");
+    header("Location: /pages/products/cart.php");
     exit;
 }
 
@@ -12,7 +12,7 @@ if (!isset($_POST['place_order_btn']) || empty($_SESSION['cart'])) {
 $checkout_target_key = isset($_POST['checkout_target_key']) ? trim($_POST['checkout_target_key']) : '';
 
 if (empty($checkout_target_key) || !isset($_SESSION['cart'][$checkout_target_key])) {
-    header("Location: /belt/pages/products/cart.php");
+    header("Location: /pages/products/cart.php");
     exit;
 }
 
@@ -41,7 +41,7 @@ $stmt_check->execute([$p_id, $item_size]);
 
 if ($stmt_check->fetch()) {
     // Agar targeted system item already pipeline mein active chal raha hai, toh return loop mapping to cart
-    header("Location: /belt/pages/products/cart.php");
+    header("Location: /pages/products/cart.php");
     exit;
 }
 
@@ -51,7 +51,7 @@ $stmt_prod->execute([$p_id]);
 $product_data = $stmt_prod->fetch(PDO::FETCH_ASSOC);
 
 if (!$product_data) {
-    header("Location: /belt/pages/products/cart.php");
+    header("Location: /pages/products/cart.php");
     exit;
 }
 
@@ -149,7 +149,7 @@ include '../../includes/navbar.php';
                             <div class="d-flex justify-content-between text-muted small mb-1">
                                 <span class="text-truncate me-2">• <?php echo htmlspecialchars($prod['name']); ?></span>
                                 <span class="fw-medium text-nowrap">
-                                    <a href="/belt/pages/products/product-details.php?id=<?= $prod['id'] ?>" class="text-decoration-none text-primary me-2 fw-semibold" style="font-size: 11px;">View Product</a>
+                                    <a href="/pages/products/product-details.php?id=<?= $prod['id'] ?>" class="text-decoration-none text-primary me-2 fw-semibold" style="font-size: 11px;">View Product</a>
                                     ₹<?php echo number_format($prod['price']); ?>
                                 </span>
                             </div>
@@ -164,7 +164,7 @@ include '../../includes/navbar.php';
                 </div>
 
                 <div class="d-grid">
-                    <a href="/belt/pages/products/cart.php" class="btn btn-dark py-2 fw-semibold text-white" style="background-color: #1a202c; border: none; font-size: 13px; border-radius: 8px;">
+                    <a href="/pages/products/cart.php" class="btn btn-dark py-2 fw-semibold text-white" style="background-color: #1a202c; border: none; font-size: 13px; border-radius: 8px;">
                         GO TO CART <i class="ri-shopping-cart-2-line ms-1"></i>
                     </a>
                 </div>
