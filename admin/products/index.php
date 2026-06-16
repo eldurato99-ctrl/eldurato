@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 require_once '../../config/cloudinary.php'; 
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /belt/pages/auth/login.php");
+    header("Location: /pages/auth/login.php");
     exit;
 }
 
