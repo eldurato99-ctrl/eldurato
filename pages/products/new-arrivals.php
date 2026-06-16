@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 if (!function_exists('url')) {
     function url($path) {
-        return '/belt/' . ltrim($path, '/');
+        return '/' . ltrim($path, '/');
     }
 }
 
@@ -34,7 +34,7 @@ try {
 
 $cartActionUrl = url('pages/products/cart.php');
 // Products page wale smooth standard fetch framework se link karne ke liye common endpoint
-$wishlistActionUrl = '/belt/pages/products/wishlist.php'; 
+$wishlistActionUrl = '/pages/products/wishlist.php'; 
 
 include '../../includes/header.php';
 include '../../includes/navbar.php';
@@ -261,7 +261,7 @@ document.querySelectorAll('.wishlist-btn').forEach(button => {
                 
             } else if (data.message.toLowerCase().includes('login') || data.message === 'Please login first') {
                 if (confirm('Please login to add items to wishlist')) {
-                    window.location.href = '/belt/pages/auth/login.php';
+                    window.location.href = '/pages/auth/login.php';
                 }
             } else {
                 alert(data.message);
