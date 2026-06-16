@@ -31,7 +31,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-1 border-bottom border-secondary border-opacity-25">
             <div class="container">
                 <a class="navbar-brand fw-bold font-serif fs-4" href="../index.php">
-                    <img src="/belt/assets/images/logo.jpg" class="rounded-pill" width="100" alt="Logo">
+                    <img src="/assets/images/logo.jpg" class="rounded-pill" width="100" alt="Logo">
                 </a>
                 <button class="navbar-toggler text-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" 
                         aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 
     <!-- HERO SECTION WITH GRADIENT & IMAGE -->
     <section class="text-white py-5 position-relative overflow-hidden" 
-             style="min-height: 450px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 55%, rgba(255, 193, 7, 0.2) 100%), url('/belt/assets/images/about1.webp ') center/cover no-repeat;">
+             style="min-height: 450px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 55%, rgba(255, 193, 7, 0.2) 100%), url('/assets/images/about1.webp ') center/cover no-repeat;">
         <div class="container py-5">
             <div class="row align-items-center">
                 <div class="col-lg-7" data-aos="fade-up" data-aos-duration="800">
@@ -81,7 +81,7 @@
             <div class="row align-items-center g-5">
                 <div class="col-lg-6 order-lg-2" data-aos="fade-left" data-aos-duration="800">
                     <div class="position-relative p-2">
-                        <img src="/belt/assets/images/about1.webp" alt="Eldurato Luxury Craftsmanship" class="img-fluid rounded-3 shadow-lg w-100" style="height: 420px; object-fit: cover;">
+                        <img src="/assets/images/about1.webp" alt="Eldurato Luxury Craftsmanship" class="img-fluid rounded-3 shadow-lg w-100" style="height: 420px; object-fit: cover;">
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1" data-aos="fade-right" data-aos-duration="800">
@@ -270,7 +270,7 @@
         <div class="container py-4">
             <div class="row align-items-center g-5">
                 <div class="col-lg-5" data-aos="fade-up" data-aos-duration="800">
-                    <img src="/belt/assets/images/founder.jpg" alt="Founder & Master Craftsman" class="img-fluid rounded-4 shadow-sm w-100" style="object-fit: cover; max-height: 400px;">
+                    <img src="/assets/images/founder.jpg" alt="Founder & Master Craftsman" class="img-fluid rounded-4 shadow-sm w-100" style="object-fit: cover; max-height: 400px;">
                 </div>
                 <div class="col-lg-7" data-aos="fade-up" data-aos-delay="200" data-aos-duration="800">
                     <p class="small text-uppercase text-warning fw-bold mb-2" style="letter-spacing: 3px;">Meet the founder</p>
