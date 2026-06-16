@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 require_once '../../config/cloudinary.php';
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /belt/pages/auth/login.php");
+    header("Location: /pages/auth/login.php");
     exit;
 }
 
@@ -16,7 +16,7 @@ try {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$user) { header("Location: /belt/pages/auth/logout.php"); exit; }
+    if (!$user) { header("Location: /pages/auth/logout.php"); exit; }
 } catch (PDOException $e) { $error_msg = "Database fault."; }
 
 $user_role = strtolower($user['role'] ?? 'user');
