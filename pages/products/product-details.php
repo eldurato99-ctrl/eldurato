@@ -5,7 +5,7 @@ include '../../includes/navbar.php';
 
 if (!function_exists('url')) {
     function url($path) {
-        return '/belt/' . ltrim($path, '/');
+        return '/' . ltrim($path, '/');
     }
 }
 
