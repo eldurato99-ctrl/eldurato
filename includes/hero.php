@@ -137,7 +137,7 @@
 
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=trending" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="trending" style="--theme-color: #ca8a04; --bg-shade: #fef9c3;">
             <div class="circle-wrapper">
-                <img src="/assets/images/black-clothing.avif" alt="Trending">
+                <img src="/assets/images/black-clothing.jpg" alt="Trending">
             </div>
             <p class="cat-title">Trending<br>Now</p>
         </a>
