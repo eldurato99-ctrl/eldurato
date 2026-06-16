@@ -7,25 +7,30 @@ services:
     restart: always
     depends_on:
       - db
-    environment:
-      SITE_URL: https://eldurato.com/belt
-      SITE_NAME: ELDURATO
-      ASSETS_URL: https://eldurato.com/belt/assets
 
+    env_file:
+      - .env
+
+    environment:
       DB_HOST: db
-      DB_NAME: ecommerce
-      DB_USER: ecommerce
-      DB_PASSWORD: strongpassword
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   db:
     image: mysql:8.0
     container_name: ecommerce_db
     restart: always
+
+    env_file:
+      - .env
+
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: ecommerce
-      MYSQL_USER: ecommerce
-      MYSQL_PASSWORD: strongpassword
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
     volumes:
       - mysql_data:/var/lib/mysql
 
