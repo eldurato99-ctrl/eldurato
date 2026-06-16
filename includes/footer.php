@@ -105,7 +105,7 @@
                 <div class="small d-flex flex-column gap-2 mb-4" style="color: #94a3b8;">
                     <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-map-pin-line text-warning"></i> 123, Leather Market, India</p>
                     <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-phone-line text-warning"></i> +91 7070759003</p>
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-mail-line text-warning"></i> support@<?php echo strtolower(defined('SITE_NAME') ? SITE_NAME : 'eldurato'); ?>.com</p>
+                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-mail-line text-warning"></i> eldurato99@gmail.com</p>
                 </div>
                 
                 <h6 class="footer-heading mb-2" style="font-size: 10px; color: #64748b;">100% Safe Checkout</h6>
