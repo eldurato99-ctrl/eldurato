@@ -88,7 +88,7 @@
                 </ul>
             </div>
 
-            <!-- <!-- SUPPORT -->
+            <!-- SUPPORT
             <div class="col-lg-2 col-md-6 col-sm-6">
                 <h6 class="footer-heading">Support</h6>
                 <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
