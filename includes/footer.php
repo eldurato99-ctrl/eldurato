@@ -88,7 +88,7 @@
                 </ul>
             </div>
 
-            <!-- SUPPORT -->
+            <!-- <!-- SUPPORT -->
             <div class="col-lg-2 col-md-6 col-sm-6">
                 <h6 class="footer-heading">Support</h6>
                 <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
@@ -97,7 +97,7 @@
                     <li><a href="../size-guide.php" class="footer-link">Size Guide</a></li>
                     <li><a href="#faq" class="footer-link">FAQs</a></li>
                 </ul>
-            </div>
+            </div> -->
 
             <!-- CONTACT & PAYMENTS -->
             <div class="col-lg-4 col-md-6">
