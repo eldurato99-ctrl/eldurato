@@ -193,7 +193,7 @@ try {
                             
                             <div class="w-100">
                                 <?php if ($stockCount > 0): ?>
-                                    <a href="/belt/pages/products/product-details.php?id=<?= $item['product_core_id'] ?>" class="btn btn-sm btn-dark w-100 py-2 rounded-3 fw-bold fs-7">
+                                    <a href="/pages/products/product-details.php?id=<?= $item['product_core_id'] ?>" class="btn btn-sm btn-dark w-100 py-2 rounded-3 fw-bold fs-7">
                                         <i class="ri-shopping-bag-line me-1"></i> View Details
                                     </a>
                                 <?php else: ?>
@@ -214,7 +214,7 @@ try {
                     </div>
                     <h5 class="fw-bold text-dark">Your Wishlist is Empty</h5>
                     <p class="text-muted small px-3 mb-4">Explore items you love and save them here for easy checking anytime.</p>
-                    <a href="/belt/pages/products/products.php" class="btn btn-dark w-100 py-2.5 rounded-3 fw-bold">Explore Products</a>
+                    <a href="/pages/products/products.php" class="btn btn-dark w-100 py-2.5 rounded-3 fw-bold">Explore Products</a>
                 </div>
             </div>
         <?php endif; ?>
@@ -223,16 +223,16 @@ try {
 
 <!-- Native App Mobile Bottom Navigation Bar (Bootstrap Controlled) -->
 <div class="fixed-bottom bg-white border-top py-2 d-flex justify-content-around d-md-none shadow-lg" style="z-index: 1040;">
-    <a href="/belt/index.php" class="text-center text-decoration-none text-secondary small app-nav-link" style="font-size: 11px;">
+    <a href="/index.php" class="text-center text-decoration-none text-secondary small app-nav-link" style="font-size: 11px;">
         <i class="ri-home-5-line fs-4 d-block mx-auto text-muted"></i>Home
     </a>
-    <a href="/belt/pages/products/products.php" class="text-center text-decoration-none text-secondary small app-nav-link" style="font-size: 11px;">
+    <a href="/pages/products/products.php" class="text-center text-decoration-none text-secondary small app-nav-link" style="font-size: 11px;">
         <i class="ri-search-2-line fs-4 d-block mx-auto text-muted"></i>Shop
     </a>
     <a href="#" class="text-center text-decoration-none small app-nav-link active" style="font-size: 11px;">
         <i class="ri-heart-fill fs-4 d-block mx-auto"></i>Wishlist
     </a>
-    <a href="/belt/pages/customer/dashboard.php" class="text-center text-decoration-none text-secondary small app-nav-link" style="font-size: 11px;">
+    <a href="/pages/customer/dashboard.php" class="text-center text-decoration-none text-secondary small app-nav-link" style="font-size: 11px;">
         <i class="ri-user-3-line fs-4 d-block mx-auto text-muted"></i>Profile
     </a>
 </div>
@@ -289,7 +289,7 @@ function renderEmptyAppState() {
                 </div>
                 <h5 class="fw-bold text-dark">Your Wishlist is Empty</h5>
                 <p class="text-muted small px-3 mb-4">Explore items you love and save them here for easy checking anytime.</p>
-                <a href="/belt/pages/products/products.php" class="btn btn-dark w-100 py-2.5 rounded-3 fw-bold">Explore Products</a>
+                <a href="/pages/products/products.php" class="btn btn-dark w-100 py-2.5 rounded-3 fw-bold">Explore Products</a>
             </div>
         </div>
     `;
