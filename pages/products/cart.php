@@ -125,9 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || is
     }
 
     if (isset($_POST['buy_now'])) {
-        header("Location: /belt/pages/products/checkout.php?target_key=" . $cart_key);
+        header("Location: /pages/products/checkout.php?target_key=" . $cart_key);
     } else {
-        header("Location: /belt/pages/products/cart.php");
+        header("Location: /pages/products/cart.php");
     }
     exit;
 }
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
             unset($_SESSION['cart'][$cart_key]);
         }
     }
-    header("Location: /belt/pages/products/cart.php");
+    header("Location: /pages/products/cart.php");
     exit;
 }
 
@@ -170,7 +170,7 @@ if (empty($cart_items)) {
         <div style="border: none !important; border-radius: 16px !important; background: #fff !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important; padding: 48px; max-width: 400px; margin: 0 auto;">
             <div class="mb-3 text-muted"><i class="ri-shopping-cart-2-line" style="font-size: 3rem;"></i></div>
             <h5 class="fw-bold text-dark mb-3">आपका CART खाली है!</h5>
-            <a href="/belt/pages/products/products.php" class="btn text-white py-2" style="background: #4f46e5 !important; border-radius: 8px; width: 100%;">Shop Now</a>
+            <a href="/pages/products/products.php" class="btn text-white py-2" style="background: #4f46e5 !important; border-radius: 8px; width: 100%;">Shop Now</a>
         </div>
     </div>
     <?php
@@ -335,7 +335,7 @@ foreach ($cart_items as $item) {
                 ?>
                     <div class="d-flex p-3 border-bottom align-items-center gap-3 position-relative cart-item-row" data-key="<?php echo $key; ?>">
                         
-                        <a href="/belt/pages/products/product-details.php?id=<?php echo $p_id; ?>">
+                        <a href="/pages/products/product-details.php?id=<?php echo $p_id; ?>">
                             <img src="<?php echo $itemImage; ?>" class="border rounded-3 p-1 bg-light product-hover-effect" style="width: 85px; height: 85px; object-fit: contain;" alt="Product">
                         </a>
                         
@@ -346,7 +346,7 @@ foreach ($cart_items as $item) {
                 <?php echo htmlspecialchars($product['brand']); ?>
             </span>
             <h6 class="mb-1 text-truncate fw-semibold" style="font-size: 16px; margin: 0;">
-                <a href="/belt/pages/products/product-details.php?id=<?php echo $p_id; ?>" class="text-decoration-none hover-link-blue">
+                <a href="/pages/products/product-details.php?id=<?php echo $p_id; ?>" class="text-decoration-none hover-link-blue">
                     <?php echo htmlspecialchars($product['name']); ?>
                 </a>
             </h6>
@@ -401,12 +401,12 @@ foreach ($cart_items as $item) {
         </div>
 
         <div class="btn-action-group">
-            <a href="/belt/pages/products/product-details.php?id=<?php echo $p_id; ?>" class="btn btn-action btn-check-details">
+            <a href="/pages/products/product-details.php?id=<?php echo $p_id; ?>" class="btn btn-action btn-check-details">
                 Check Details <i class="ri-arrow-right-s-line"></i>
             </a>
 
             <?php if (!$isPipelineActive): ?>
-                <a href="/belt/pages/products/checkout.php?target_key=<?php echo $key; ?>" class="btn btn-action btn-buy-now">
+                <a href="/pages/products/checkout.php?target_key=<?php echo $key; ?>" class="btn btn-action btn-buy-now">
                     Buy This Item <i class="ri-arrow-right-s-line"></i>
                 </a>
             <?php endif; ?>
