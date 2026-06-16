@@ -5,7 +5,7 @@ require_once '../../config/database.php';
 require_once '../../config/cloudinary.php'; 
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /belt/pages/auth/login.php");
+    header("Location: /pages/auth/login.php");
     exit;
 }
 
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <a href="../users/index.php" class="nav-link-custom"><i class="ri-user-settings-line"></i>Users</a>
                 <a href="../profile.php" class="nav-link-custom"><i class="ri-user-line"></i>My Profile</a>
                 <hr class="border-white border-opacity-20 my-3">
-                <a href="/belt/pages/auth/logout.php" class="nav-link-custom text-white bg-danger"><i class="ri-logout-circle-line me-2"></i>Logout</a>
+                <a href="/pages/auth/logout.php" class="nav-link-custom text-white bg-danger"><i class="ri-logout-circle-line me-2"></i>Logout</a>
             </div>
         </div>
 
