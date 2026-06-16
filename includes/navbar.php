@@ -175,10 +175,11 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
             <img src="/assets/images/logo.jpg" class="rounded-pill border border-2 border-secondary" width="90" alt="Logo">
         </div>
         
-        <!-- Text Section (Logo ke niche) -->
+        <!-- Text Section (Logo ke niche)
         <span class="text-white-50 font-monospace text-uppercase" style="font-size: 10px; font-weight: 700; letter-spacing: 1px;">
             The Legacy of Genuine Leather
         </span>
+         -->
     </a>
         </div>
 
