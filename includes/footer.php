@@ -92,9 +92,9 @@
             <div class="col-lg-2 col-md-6 col-sm-6">
                 <h6 class="footer-heading">Support</h6>
                 <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                    <li><a href="../track-order.php" class="footer-link">Track Order</a></li>
-                    <li><a href="../return-policy.php" class="footer-link">7 Days Returns</a></li>
-                    <li><a href="../size-guide.php" class="footer-link">Size Guide</a></li>
+                    <li><a href="/track-order.php" class="footer-link">Track Order</a></li>
+                    <li><a href="/return-policy.php" class="footer-link">7 Days Returns</a></li>
+                    <li><a href="/size-guide.php" class="footer-link">Size Guide</a></li>
                     <li><a href="#faq" class="footer-link">FAQs</a></li>
                 </ul>
             </div> -->
