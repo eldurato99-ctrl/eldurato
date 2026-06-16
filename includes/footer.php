@@ -76,17 +76,17 @@
                 </div>
             </div>
 
-            <!-- COLLECTIONS -->
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <h6 class="footer-heading">Collections</h6>
-                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                    <!-- PATH FIXED: सब-फ़ोल्डर से लिंक सही काम करने के लिए ../ लगाया गया है -->
-                    <li><a href="../pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
-                    <li><a href="../pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
-                    <li><a href="../pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
-                    <li><a href="../pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
-                </ul>
-            </div>
+           <!-- COLLECTIONS -->
+<div class="col-lg-2 col-md-6 col-sm-6">
+    <h6 class="footer-heading">Collections</h6>
+    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+        <!-- PHP dynamic base URL ke sath -->
+        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
+        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
+        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
+        <li><a href="<?php echo $SITE_URL; ?>/pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
+    </ul>
+</div>
 
             <!-- SUPPORT
             <div class="col-lg-2 col-md-6 col-sm-6">
