@@ -125,7 +125,7 @@
         <div class="row align-items-center">
             <div class="col-md-12 text-center">
                 <p class="mb-0 small" style="color: #64748b; font-size: 0.8rem;">
-                    &copy; <?php echo date('Y'); ?> <span class="text-white fw-medium"><?php echo defined('SITE_NAME') ? SITE_NAME : 'ELDURATO'; ?></span>. All Rights Reserved.
+                    &copy; <?php echo date('Y'); ?> <span class="text-white fw-medium"><?php echo defined('SITE_NAME') ? SITE_NAME : 'ELDURATO'; ?></span>. All Rights Reserved. Developed and Maintain by Lucyent.in
                 </p>
             </div>
         </div>
