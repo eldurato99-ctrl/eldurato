@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 if (!function_exists('url')) {
     function url($path) {
-        return '/belt/' . ltrim($path, '/');
+        return '/' . ltrim($path, '/');
     }
 }
 
