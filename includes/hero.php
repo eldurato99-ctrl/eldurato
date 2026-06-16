@@ -123,7 +123,7 @@
 
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=luxury" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="luxury" style="--theme-color: #7c3aed; --bg-shade: #f3e8ff;">
             <div class="circle-wrapper">
-                <img src="/assets/images/premium.webp" alt="Luxury">
+                <img src="/assets/images/premium.jpg" alt="Luxury">
             </div>
             <p class="cat-title">Premium<br>Luxury</p>
         </a>
