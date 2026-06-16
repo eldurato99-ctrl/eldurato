@@ -44,7 +44,7 @@ include '../../includes/navbar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
-    <link class="rounded-pill" rel="icon" type="image/x-icon" href="/belt/assets/images/logo.ico">
+    <link class="rounded-pill" rel="icon" type="image/x-icon" href="/assets/images/logo.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="themes.css" rel="stylesheet">
