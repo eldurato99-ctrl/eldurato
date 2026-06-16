@@ -12,13 +12,13 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <picture>
-                    <img src="/belt/assets/images/hero-slide-1.webp" class="d-block w-100" alt="Premium Leather Belts">
+                    <img src="/assets/images/hero-slide-1.webp" class="d-block w-100" alt="Premium Leather Belts">
                 </picture>
             </div>
 
             <div class="carousel-item">
                 <picture>
-                    <img src="/belt/assets/images/hero-slide-3.webp" class="d-block w-100" alt="Mega Sale Banner">
+                    <img src="/assets/images/hero-slide-3.webp" class="d-block w-100" alt="Mega Sale Banner">
                 </picture>
             </div>
         </div>
@@ -109,35 +109,35 @@
         
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=office" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="formal" style="--theme-color: #0284c7; --bg-shade: #e0f2fe;">
             <div class="circle-wrapper">
-                <img src="/belt/assets/images/formal-belt.jpg" alt="Formal">
+                <img src="/assets/images/formal-belt.jpg" alt="Formal">
             </div>
             <p class="cat-title">Office<br>Belts</p>
         </a>
 
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=casual" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="casual" style="--theme-color: #ea580c; --bg-shade: #ffedd5;">
             <div class="circle-wrapper">
-                <img src="/belt/assets/images/casual-belt.jpg" alt="Casual">
+                <img src="/assets/images/casual-belt.jpg" alt="Casual">
             </div>
             <p class="cat-title">Casual<br>Belts</p>
         </a>
 
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=luxury" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="luxury" style="--theme-color: #7c3aed; --bg-shade: #f3e8ff;">
             <div class="circle-wrapper">
-                <img src="/belt/assets/images/premium.webp" alt="Luxury">
+                <img src="/assets/images/premium.webp" alt="Luxury">
             </div>
             <p class="cat-title">Premium<br>Luxury</p>
         </a>
 
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=leather" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="leather" style="--theme-color: #16a34a; --bg-shade: #dcfce7;">
             <div class="circle-wrapper">
-                <img src="/belt/assets/images/leather-belt.webp" alt="Leather">
+                <img src="/assets/images/leather-belt.webp" alt="Leather">
             </div>
             <p class="cat-title">100% Pure<br>Leather</p>
         </a>
 
         <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=trending" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="trending" style="--theme-color: #ca8a04; --bg-shade: #fef9c3;">
             <div class="circle-wrapper">
-                <img src="/belt/assets/images/black-clothing.avif" alt="Trending">
+                <img src="/assets/images/black-clothing.avif" alt="Trending">
             </div>
             <p class="cat-title">Trending<br>Now</p>
         </a>
@@ -212,7 +212,7 @@
                 View All
             </a>
         </div>
-        <img src="/belt/assets/images/home-belt.webp" class="d-block w-100 mb-4 rounded-0 shadow-sm" alt="Premium Leather Belts" data-aos="zoom-in" data-aos-delay="100">
+        <img src="/assets/images/home-belt.webp" class="d-block w-100 mb-4 rounded-0 shadow-sm" alt="Premium Leather Belts" data-aos="zoom-in" data-aos-delay="100">
 
         <?php 
         define('INCLUDED_IN_HERO', true);
