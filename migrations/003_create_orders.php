@@ -11,6 +11,7 @@ return "CREATE TABLE IF NOT EXISTS `all_orders_list` (
   `total_amount` DECIMAL(10,2) NOT NULL,
   `payment_method` VARCHAR(50) DEFAULT 'COD',
   `order_status` VARCHAR(50) DEFAULT 'pending',
+  `transaction_id` VARCHAR(100) NULL DEFAULT NULL, 
   `tracking_status` VARCHAR(255) NULL DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";

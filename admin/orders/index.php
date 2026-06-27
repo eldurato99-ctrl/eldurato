@@ -21,7 +21,7 @@ if(isset($_POST['ajax_update_status'])) {
     $current_level = $levels[$current_state] ?? 1;
     $new_level = $levels[$new_status] ?? 1;
     
-    // 🔒 STRICT REVERSE BLOCK: Agar naya status purane status se piche ja raha hai, toh block karo
+    // 🔒 STRICT REVERSE BLOCK
     if($new_level < $current_level || $current_state === 'completed' || $current_state === 'cancelled') {
         echo json_encode(['success' => false, 'message' => 'Status reverse operation is strictly blocked! Workflow must move forward.']);
         exit;
@@ -36,13 +36,11 @@ if(isset($_POST['ajax_update_status'])) {
 
         // 🚀 NEW LOGIC: Agar admin order COMPLETE karta hai, toh product ko OUT OF STOCK mark karo
         if($new_status === 'completed') {
-            // Is order se linked product_id nikalein
             $itemStmt = $pdo->prepare("SELECT product_id FROM order_items WHERE order_id = ?");
             $itemStmt->execute([$order_id]);
             $product_id = $itemStmt->fetchColumn();
 
             if($product_id) {
-                // Product list me stock_status ko out_of_stock set karein
                 $updateStock = $pdo->prepare("UPDATE all_products_list SET stock_status = 'out_of_stock' WHERE id = ?");
                 $updateStock->execute([$product_id]);
             }
@@ -56,8 +54,6 @@ if(isset($_POST['ajax_update_status'])) {
     }
     exit;
 }
-
-
 
 // ==========================================
 // 2. AJAX LIVE LOCATION / LOGISTICS TRACKING UPDATE
@@ -76,8 +72,9 @@ if(isset($_POST['ajax_update_tracking'])) {
     }
     exit;
 }
+
 // ==========================================
-// 3. FETCH CONFIGURATION STREAM WITH MULTI-ITEM SPEC
+// 3. FETCH CONFIGURATION STREAM WITH MULTI-ITEM SPEC & TRANSACTION DETAILS
 // ==========================================
 $query = "
     SELECT 
@@ -88,6 +85,7 @@ $query = "
         o.payment_method,
         o.order_status,
         o.tracking_status,
+        o.transaction_id,
         o.created_at,
         COALESCE(u.name, o.customer_name, 'Guest Customer') as customer_real_name,
         oi.size as ordered_size,
@@ -135,7 +133,6 @@ $status_map = [
         <div class="col-lg-10 p-2 offset-lg-2">
             
             <div class="bg-primary bg-gradient p-3 text-white shadow-sm d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 rounded-3">
-                
                 <div class="d-flex align-items-center">
                      <button class="btn btn-outline-light d-lg-none px-2.5 py-1.5 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
                         <i class="ri-menu-2-line fs-5 m-0 align-middle"></i>
@@ -147,7 +144,7 @@ $status_map = [
                 </div>
                 <div class="position-relative" style="min-width: 320px;">
                     <i class="ri-search-2-line position-absolute top-50 start-0 translate-middle-y text-muted ms-3 fs-5"></i>
-                    <input type="text" id="orderSearchInput" class="form-control bg-white border-0 ps-5 py-2 rounded-3 text-dark small" placeholder="Search Customer, ID, Phone, Status...">
+                    <input type="text" id="orderSearchInput" class="form-control bg-white border-0 ps-5 py-2 rounded-3 text-dark small" placeholder="Search Customer, ID, Phone, Status, Transaction...">
                 </div>
                 <a href="../../index.php" class="nav-link-custom m-0 text-white d-flex align-items-center gap-1 small"><i class="ri-store-2-line"></i>View Shop</a>
             </div>
@@ -167,7 +164,7 @@ $status_map = [
                                     <th style="width: 25%;">Product Specification</th>
                                     <th style="width: 18%;">Customer</th>
                                     <th style="width: 10%;">Net Total</th>
-                                    <th style="width: 8%;">Method</th>
+                                    <th style="width: 12%;">Method & Payment</th>
                                     <th style="width: 12%;">Status</th>
                                     <th style="width: 20%;">Live Location Tracking</th>
                                     <th style="width: 5%;" class="text-center">Invoice</th>
@@ -179,6 +176,7 @@ $status_map = [
                                     $pay_method = strtoupper($o['payment_method'] ?? 'COD');
                                     $suffix = ($pay_method == 'COD') ? 'COD' : 'ONL';
                                     $custom_order_id = "ELD-" . $suffix . "-" . $o['id'];
+                                    $txn_id = !empty($o['transaction_id']) ? htmlspecialchars($o['transaction_id'], ENT_QUOTES) : '';
 
                                     $prod_img = 'https://via.placeholder.com/60?text=No+Image';
                                     if (!empty($o['product_images'])) {
@@ -199,13 +197,13 @@ $status_map = [
                                     
                                     $isLockedState = ($curr_status === 'completed' || $curr_status === 'cancelled');
                                 ?>
-                                <tr class="order-row" data-search="<?= strtolower($custom_order_id . ' ' . htmlspecialchars($o['customer_real_name'] . ' ' . ($o['customer_phone'] ?? '') . ' ' . $curr_status . ' ' . $pay_method . ' ' . $p_name . ' ' . ($o['tracking_status'] ?? ''))) ?>">
+                                <tr class="order-row" data-search="<?= strtolower($custom_order_id . ' ' . htmlspecialchars($o['customer_real_name'] . ' ' . ($o['customer_phone'] ?? '') . ' ' . $curr_status . ' ' . $pay_method . ' ' . $p_name . ' ' . ($o['tracking_status'] ?? '') . ' ' . $txn_id)) ?>">
                                     <td>
                                         <p class="fw-bold text-primary mb-0 s"><?= $custom_order_id ?></p>
                                         <small class="text-secondary d-block mt-0" style="font-size: 11px;"><i class="ri-time-line"></i> <?= date('d M Y, h:i A', strtotime($o['created_at'])) ?></small>
                                     </td>
                                     
-                                    <td style="cursor: pointer;" onclick="showProductDetails('<?= $p_name ?>', '<?= htmlspecialchars($prod_img, ENT_QUOTES) ?>', '<?= htmlspecialchars($o['ordered_size'] ?? 'Free') ?>', '<?= intval($o['ordered_qty'] ?? 1) ?>', '<?= $custom_order_id ?>', '<?= $p_brand ?>', '<?= $p_color ?>', '<?= $p_material ?>', '<?= $p_model ?>', '<?= $p_desc ?>')">
+                                    <td style="cursor: pointer;" onclick="showProductDetails('<?= $p_name ?>', '<?= htmlspecialchars($prod_img, ENT_QUOTES) ?>', '<?= htmlspecialchars($o['ordered_size'] ?? 'Free') ?>', '<?= intval($o['ordered_qty'] ?? 1) ?>', '<?= $custom_order_id ?>', '<?= $p_brand ?>', '<?= $p_color ?>', '<?= $p_material ?>', '<?= $p_model ?>', '<?= $p_desc ?>', '<?= $pay_method ?>', '<?= $txn_id ?>')">
                                         <div class="d-flex align-items-center gap-2">
                                             <div class="bg-white p-1 rounded border shadow-sm d-inline-flex">
                                                 <img src="<?= htmlspecialchars($prod_img) ?>" class="rounded object-fit-contain" width="44" height="44" alt="product">
@@ -229,10 +227,21 @@ $status_map = [
                                     
                                     <td><div class="fw-bold text-dark fs-5">₹<?= number_format($o['total_amount']) ?></div></td>
                                     
-                                    <td>
-                                        <span class="badge <?= ($pay_method == 'COD') ? 'bg-light text-dark border' : 'bg-primary-subtle text-primary border border-primary' ?> px-2 py-1 rounded font-monospace fw-bold" style="font-size: 10px;">
-                                            <?= ($pay_method == 'COD') ? '💵 COD' : '💳 ONLINE' ?>
-                                        </span>
+                                    <td style="cursor: pointer;" onclick="showProductDetails('<?= $p_name ?>', '<?= htmlspecialchars($prod_img, ENT_QUOTES) ?>', '<?= htmlspecialchars($o['ordered_size'] ?? 'Free') ?>', '<?= intval($o['ordered_qty'] ?? 1) ?>', '<?= $custom_order_id ?>', '<?= $p_brand ?>', '<?= $p_color ?>', '<?= $p_material ?>', '<?= $p_model ?>', '<?= $p_desc ?>', '<?= $pay_method ?>', '<?= $txn_id ?>')">
+                                        <?php if($pay_method === 'COD'): ?>
+                                            <span class="badge bg-light text-dark border px-2 py-1 rounded font-monospace fw-bold d-block text-center mb-1" style="font-size: 10px;">
+                                                💵 COD
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge bg-success text-white border border-success px-2 py-1 rounded font-monospace fw-bold d-block text-center mb-1" style="font-size: 10px;">
+                                                💳 ONLINE PAID
+                                            </span>
+                                            <?php if(!empty($txn_id)): ?>
+                                                <small class="d-block text-muted text-center font-monospace" style="font-size: 9px;" title="Razorpay Reference Token">
+                                                    <i class="ri-shield-check-line text-success"></i> <?= substr($txn_id, 0, 12) ?>...
+                                                </small>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                     </td>
 
                                     <td>
@@ -282,6 +291,9 @@ $status_map = [
     </div>
 </div>
 
+<!-- ==========================================
+      UPGRADED SYSTEM MODAL DATA ENGINE
+========================================== -->
 <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-3 shadow-lg">
@@ -294,7 +306,7 @@ $status_map = [
                     <img id="modalProductImg" src="" class="img-fluid rounded border bg-light object-fit-contain p-1" style="width: 70px; height: 70px;" alt="Asset">
                     <div>
                         <h6 class="fw-bold text-dark mb-1" id="modalProductName">-</h6>
-                        <span class="badge bg-primary text-white font-monospace" id="modalOrderRef" style="font-size: 10px;">-</span>
+                        <span class="badge bg-primary text-white font-monospace" id="modalOrderRef">-</span>
                     </div>
                 </div>
                 
@@ -310,6 +322,18 @@ $status_map = [
                             <small class="text-secondary d-block fw-bold mb-0.5" style="font-size: 10px;">TOTAL QTY</small>
                             <span class="fw-bold text-dark fs-6" id="modalProductQty">-</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 💵 FINANCIAL AUDIT LOGS EXPANSION NODE -->
+                <div class="card border-0 bg-light p-2.5 mb-3 rounded-3 border-start border-3" id="modalPaymentCardContext">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small fw-bold text-secondary text-uppercase tracking-wider" style="font-size: 10px;">Gateway Status</span>
+                        <span id="modalPaymentBadge" class="badge font-monospace fw-bold px-2 py-0.5" style="font-size: 10px;">-</span>
+                    </div>
+                    <div class="mt-1.5 small font-monospace text-dark d-flex justify-content-between align-items-center" id="modalTxnContainer" style="font-size: 11.5px;">
+                        <span class="text-muted">Transaction ID:</span>
+                        <strong id="modalTxnId" class="text-primary">-</strong>
                     </div>
                 </div>
 
@@ -374,7 +398,7 @@ $status_map = [
         }).catch(() => alert('Network Sync Error!'));
     }
 
-    function showProductDetails(name, img, size, qty, orderId, brand, color, material, model, desc) {
+    function showProductDetails(name, img, size, qty, orderId, brand, color, material, model, desc, payMethod, txnId) {
         document.getElementById('modalProductName').innerText = name;
         document.getElementById('modalProductImg').src = img;
         document.getElementById('modalProductSize').innerText = size;
@@ -385,6 +409,31 @@ $status_map = [
         document.getElementById('modalProductMaterial').innerText = material;
         document.getElementById('modalProductModel').innerText = model;
         document.getElementById('modalProductDesc').innerHTML = desc;
+        
+        // 🛡️ DYNAMIC AUDIT BADGING INJECTOR
+        const cardContext = document.getElementById('modalPaymentCardContext');
+        const badge = document.getElementById('modalPaymentBadge');
+        const txnContainer = document.getElementById('modalTxnContainer');
+        const txnIdText = document.getElementById('modalTxnId');
+
+        if(payMethod === 'ONLINE') {
+            cardContext.className = "card border-0 bg-success-subtle p-2.5 mb-3 rounded-3 border-start border-success border-3";
+            badge.className = "badge bg-success text-white font-monospace fw-bold px-2 py-0.5";
+            badge.innerHTML = "<i class='ri-shield-check-fill'></i> ONLINE PAID (RAZORPAY)";
+            
+            if(txnId !== '') {
+                txnContainer.style.display = 'flex';
+                txnIdText.innerText = txnId;
+            } else {
+                txnContainer.style.display = 'flex';
+                txnIdText.innerHTML = "<span class='text-danger'>Missing Token!</span>";
+            }
+        } else {
+            cardContext.className = "card border-0 bg-warning-subtle p-2.5 mb-3 rounded-3 border-start border-warning border-3";
+            badge.className = "badge bg-warning text-dark font-monospace fw-bold px-2 py-0.5";
+            badge.innerHTML = "💵 CASH ON DELIVERY";
+            txnContainer.style.display = 'none';
+        }
         
         new bootstrap.Modal(document.getElementById('productDetailsModal')).show();
     }

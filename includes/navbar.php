@@ -169,18 +169,22 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
             <button class="btn p-0 border-0 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuDrawer">
                 <i class="ri-menu-2-line fs-3 align-middle"></i>
             </button>
-    <a href="<?php echo SITE_URL; ?>" class="d-flex flex-column align-items-center text-decoration-none text-center">
-        <!-- Logo Section -->
-        <div class="mb-1">
-            <img src="/assets/images/logo.jpg" class="rounded-pill border border-2 border-secondary" width="90" alt="Logo">
-        </div>
-        
-        <!-- Text Section (Logo ke niche)
-        <span class="text-white-50 font-monospace text-uppercase" style="font-size: 10px; font-weight: 700; letter-spacing: 1px;">
-            The Legacy of Genuine Leather
-        </span>
-         -->
-    </a>
+                 <a href="<?php echo SITE_URL; ?>" class="d-flex align-items-center text-decoration-none pe-2 me-2" style="min-height: 50px;">
+                <!-- Logo Image (Square with soft rounded corners) -->
+                <div class="me-2 d-flex align-items-center">
+                    <img src="/assets/images/logo.jpg" class="rounded-circle shadow-sm" width="50" height="50" style="object-fit: contain; background-color: rgba(255,255,255,0.05);" alt="Logo">
+                </div>
+                
+                <!-- Slogan Text Structure (Optimized for Dark Navy Blue) -->
+                <div class="d-flex flex-column align-items-start" style="line-height: 1.2;">
+                    <span class="text-white fw-bold text-uppercase" style="font-size: 9px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif;">
+                        The Legacy
+                    </span>
+                    <span class="text-uppercase" style="font-size: 6px; font-weight: 700; letter-spacing: 1.5px; color: #cbd5e1;">
+                        Of Genuine Leather
+                    </span>
+                </div>
+            </a>
         </div>
 
         <!-- Center Search Box: Desktop Integration with End Button -->

@@ -358,8 +358,8 @@ foreach ($cart_items as $item) {
             <form action="" method="POST" onsubmit="return confirm('Do you want to cancel this order from pipeline?');" class="ms-auto">
                 <input type="hidden" name="remove_item" value="1">
                 <input type="hidden" name="remove_item_key" value="<?php echo $key; ?>">
-                <button type="submit" class="btn p-1 text-muted border-0 bg-transparent shadow-none" title="Cancel/Remove Order">
-                    <i class="ri-delete-bin-line" style="font-size: 1.1rem;"></i>
+                <button type="submit" class="btn p-1 text-danger border-0 bg-transparent shadow-none" title="Cancel/Remove Order">
+                 Cancel order
                 </button>
             </form>
         <?php endif; ?>

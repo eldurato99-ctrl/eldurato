@@ -3,8 +3,17 @@ session_start();
 require_once '../../config/database.php';
 require_once '../../config/cloudinary.php'; 
 
+// Login Check
 if (!isset($_SESSION['user_id'])) {
     header("Location: /pages/auth/login.php");
+    exit;
+}
+
+// 🛡️ SECURITY CHECK: Kahin koyi normal customer is page par na aa jaye
+// Agar aapke session me 'role' ya 'is_admin' jaisa variable hai toh use lagayein
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    // Agar admin nahi hai toh home page par fenk do
+    header("Location: /index.php"); 
     exit;
 }
 
@@ -13,15 +22,17 @@ if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     try {
         $pdo->prepare("DELETE FROM all_products_list WHERE id=?")->execute([$id]);
-    } catch (PDOException $e) { $_SESSION['error_msg'] = "Failed to delete product."; }
+    } catch (PDOException $e) { 
+        $_SESSION['error_msg'] = "Failed to delete product."; 
+    }
     header("Location: index.php");
     exit;
 }
 
 // FETCH DYNAMIC PRODUCTS
 $products = $pdo->query("SELECT * FROM all_products_list ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
