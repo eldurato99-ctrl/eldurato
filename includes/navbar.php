@@ -177,11 +177,11 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
         class="d-flex align-items-center text-decoration-none">
 
         <!-- Logo -->
-        <div class="">
+        <div class="me-3 ">
             <img src="/assets/images/logo.jpg"
                 class="rounded "
-                width="70"
-                height="64"
+                width="70px"
+                height="54px"
                 style="object-fit:cover;"
                 alt="Logo">
         </div>
