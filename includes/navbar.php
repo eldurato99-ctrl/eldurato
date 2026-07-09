@@ -165,29 +165,54 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
 <div class="app-sticky-header">
     <div class="container-fluid px-0 px-md-4 d-flex align-items-center justify-content-between">
         
-        <div class="d-flex align-items-center gap-3">
-            <button class="btn p-0 border-0 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuDrawer">
-                <i class="ri-menu-2-line fs-3 align-middle"></i>
-            </button>
-                 <a href="<?php echo SITE_URL; ?>" class="d-flex align-items-center text-decoration-none pe-2 me-2" style="min-height: 50px;">
-                <!-- Logo Image (Square with soft rounded corners) -->
-                <div class="me-2 d-flex align-items-center">
-                    <img src="/assets/images/logo.jpg" class="rounded-circle shadow-sm" width="50" height="50" style="object-fit: contain; background-color: rgba(255,255,255,0.05);" alt="Logo">
-                </div>
-                
-                <!-- Slogan Text Structure (Optimized for Dark Navy Blue) -->
-                <div class="d-flex flex-column align-items-start" style="line-height: 1.2;">
-                    <span class="text-white fw-bold text-uppercase" style="font-size: 9px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif;">
-                        The Legacy
-                    </span>
-                    <span class="text-uppercase" style="font-size: 6px; font-weight: 700; letter-spacing: 1.5px; color: #cbd5e1;">
-                        Of Genuine Leather
-                    </span>
-                </div>
-            </a>
+<div class="d-flex align-items-center gap-3">
+    <button class="btn p-0 border-0 text-white"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileMenuDrawer">
+        <i class="ri-menu-2-line fs-2 align-middle"></i>
+    </button>
+
+    <a href="<?php echo SITE_URL; ?>"
+        class="d-flex align-items-center text-decoration-none">
+
+        <!-- Logo -->
+        <div class="">
+            <img src="/assets/images/logo.jpg"
+                class="rounded "
+                width="70"
+                height="64"
+                style="object-fit:cover;"
+                alt="Logo">
         </div>
 
-        <!-- Center Search Box: Desktop Integration with End Button -->
+        <!-- Text -->
+        <div class="d-flex flex-column">
+            <span
+                class="text-white fw-bold text-uppercase"
+                style="
+                    font-size:15px;
+                    letter-spacing:2px;
+                    line-height:1;
+                    font-family:'Montserrat',sans-serif;">
+                THE LEGACY
+            </span>
+
+            <span
+                class="text-uppercase"
+                style="
+                    font-size:11px;
+                    font-weight:600;
+                    letter-spacing:1.5px;
+                    color:#d1d5db;
+                    line-height:1.3;">
+                OF GENUINE LEATHER
+            </span>
+        </div>
+
+    </a>
+</div>
+
         <div class="flex-grow-1 mx-3 mx-md-5 d-none d-md-block">
             <form action="<?php echo SITE_URL; ?>/pages/products/products.php" method="GET" class="m-0">
                 <div class="input-group app-search-input-group align-items-center ps-3">

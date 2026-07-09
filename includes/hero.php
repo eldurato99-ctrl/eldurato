@@ -168,18 +168,6 @@
         </div>
     </div>
 
-    <div class="bg-gradient bg-danger text-white p-3 rounded-0 mb-4 d-flex justify-content-between align-items-center flex-wrap" data-aos="zoom-in-up">
-        <div>
-            <span class="badge bg-warning text-dark fs-6">🔥 DEAL OF THE DAY 🔥</span>
-            <h4 class="mt-2 mb-0">Flat 50% Off + Extra 10%</h4>
-            <small>On premium leather belts & luxury gift boxes</small>
-        </div>
-        <div class="mt-2 mt-sm-0">
-            <div class="bg-white text-dark rounded-0 px-3 py-2 fw-bold d-flex gap-3">
-                <span>12 <small>Hrs</small></span> : <span>45 <small>Mins</small></span> : <span>22 <small>Secs</small></span>
-            </div>
-        </div>
-    </div>
 
     <div class="row my-4 g-3">
         <div class="col-md-6" data-aos="fade-right" data-aos-delay="100">
