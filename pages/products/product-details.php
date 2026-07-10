@@ -176,7 +176,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                             <tbody>
                                 <tr><td class="text-muted py-2 px-3 bg-light" style="width:35%;">Model Name</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['model_name'] ?? 'Men Genuine Leather Belt') ?></td></tr>
                                 <tr><td class="text-muted py-2 px-3 bg-light">Weight</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['weight'] ?? '300 g') ?></td></tr>
-                                <tr><td class="text-muted py-2 px-3 bg-light">Warranty</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['warranty'] ?? '6 Months') ?></td></tr>
+                                <!-- <tr><td class="text-muted py-2 px-3 bg-light">Warranty</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['warranty'] ?? '6 Months') ?></td></tr> -->
                                 <tr><td class="text-muted py-2 px-3 bg-light" style="vertical-align: top;">Description</td><td class="text-dark py-2 px-3" style="line-height:1.4; text-align: justify;"><?= nl2br(htmlspecialchars($product['description'] ?? '')) ?></td></tr>
                             </tbody>
                         </table>

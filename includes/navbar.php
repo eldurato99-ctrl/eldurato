@@ -1,6 +1,11 @@
-<?php require_once __DIR__ . '/../config/functions.php'; ?>
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/../config/functions.php';
+require_once __DIR__ . '/../config/database.php'; 
+?>
 <!DOCTYPE html>
-<!-- includes\header.php -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,11 +19,6 @@
 <body>
 
 <?php
-require_once __DIR__ . '/../config/database.php';
-// includes\navbar.php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 $wishlistCount = 0;
@@ -170,45 +170,45 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
         type="button"
         data-bs-toggle="offcanvas"
         data-bs-target="#mobileMenuDrawer">
-        <i class="ri-menu-2-line fs-2 align-middle"></i>
+        <i class="ri-menu-2-line" style="font-size:2rem;"></i>
     </button>
 
     <a href="<?php echo SITE_URL; ?>"
         class="d-flex align-items-center text-decoration-none">
 
         <!-- Logo -->
-        <div class="me-3 ">
-            <img src="/assets/images/logo.jpg"
-                class="rounded "
-                width="70px"
-                height="54px"
-                style="object-fit:cover;"
+        <div class="d-flex align-item-center text-decoration-none">
+            <img src="/assets/images/logo.png"
+                width="auto"
+                height="90px"
+"
                 alt="Logo">
         </div>
 
-        <!-- Text -->
-        <div class="d-flex flex-column">
+        <!-- Brand Text -->
+        <!-- <div class="d-flex flex-column">
             <span
                 class="text-white fw-bold text-uppercase"
                 style="
-                    font-size:15px;
-                    letter-spacing:2px;
+                    font-size:12px;
+                    letter-spacing:2.8px;
                     line-height:1;
                     font-family:'Montserrat',sans-serif;">
-                THE LEGACY
+                THE LEGACY 
             </span>
 
             <span
                 class="text-uppercase"
                 style="
-                    font-size:11px;
-                    font-weight:600;
-                    letter-spacing:1.5px;
+                    font-size:10px;
+                    font-weight:500;
+                    letter-spacing:2px;
                     color:#d1d5db;
-                    line-height:1.3;">
+                    line-height:1.4;
+                    margin-top:6px;">
                 OF GENUINE LEATHER
             </span>
-        </div>
+        </div> -->
 
     </a>
 </div>
