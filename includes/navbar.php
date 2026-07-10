@@ -165,7 +165,7 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
 <div class="app-sticky-header">
     <div class="container-fluid px-0 px-md-4 d-flex align-items-center justify-content-between">
         
-<div class="d-flex align-items-center gap-3">
+<div class="d-flex align-items-center gap-1">
     <button class="btn p-0 border-0 text-white"
         type="button"
         data-bs-toggle="offcanvas"
@@ -179,8 +179,9 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
         <!-- Logo -->
         <div class="d-flex align-item-center text-decoration-none">
             <img src="/assets/images/logo.png"
-                width="auto"
-                height="90px"
+                width="130px"
+                class="img-fluid"
+                height="auto"
 "
                 alt="Logo">
         </div>
@@ -244,9 +245,9 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
             <?php endif; ?>
 
             <!-- shifted: 24/7 Support Link Button Near Cart/Wishlist -->
-            <a href="<?php echo SITE_URL; ?>/pages/contact.php" class="text-white text-decoration-none fs-4 lh-1" title="24/7 Support">
+            <!-- <a href="<?php echo SITE_URL; ?>/pages/contact.php" class="text-white text-decoration-none fs-4 lh-1" title="24/7 Support">
                 <i class="ri-customer-service-2-line"></i>
-            </a>
+            </a> -->
 
             <a href="<?php echo SITE_URL; ?>/pages/products/wishlist.php" class="text-white text-decoration-none position-relative fs-4 lh-1">
                 <i class="ri-heart-3-line text-nowrap"></i>
