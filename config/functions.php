@@ -34,4 +34,3 @@ if (!function_exists('formatPrice')) {
         return '₹' . number_format($amount, 2);
     }
 }
-?>
