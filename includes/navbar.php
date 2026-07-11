@@ -16,8 +16,6 @@ require_once __DIR__ . '/../config/database.php';
 <body>
 
 <?php
-require_once __DIR__ . '/../config/functions.php';
-require_once __DIR__ . '/../config/database.php'; 
 $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 $wishlistCount = 0;
 
