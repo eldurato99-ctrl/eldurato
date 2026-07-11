@@ -1,4 +1,3 @@
-<!-- admin\products\edit.php -->
 <?php
 require_once '../../config/database.php';
 require_once '../../config/cloudinary.php'; 
