@@ -1,10 +1,4 @@
 <?php
-// config/config.php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-
 define('SITE_NAME', getenv('SITE_NAME') ?: 'ELDURATO');
 define(
     'SITE_URL',
