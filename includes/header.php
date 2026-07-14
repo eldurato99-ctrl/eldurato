@@ -7,6 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo SITE_NAME; ?></title>
     <link rel="icon" type="image/x-icon" href="<?php echo ASSETS_URL; ?>/images/logo.ico">
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8L6MVCN6LH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        gtag('js', new Date());
+        gtag('config', 'G-8L6MVCN6LH');
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
