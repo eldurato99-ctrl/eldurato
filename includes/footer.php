@@ -87,26 +87,32 @@
     </ul>
 </div>
 
-            <!-- SUPPORT
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <h6 class="footer-heading">Support</h6>
-                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                    <li><a href="/track-order.php" class="footer-link">Track Order</a></li>
-                    <li><a href="/return-policy.php" class="footer-link">7 Days Returns</a></li>
-                    <li><a href="/size-guide.php" class="footer-link">Size Guide</a></li>
-                    <li><a href="#faq" class="footer-link">FAQs</a></li>
-                </ul>
-            </div> -->
 
             <!-- CONTACT & PAYMENTS -->
             <div class="col-lg-4 col-md-6">
                 <h6 class="footer-heading">Get In Touch</h6>
                 <div class="small d-flex flex-column gap-2 mb-4" style="color: #94a3b8;">
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-map-pin-line text-warning"></i> 123, Leather Market, India</p>
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-phone-line text-warning"></i> +91 7070759003</p>
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-mail-line text-warning"></i> eldurato99@gmail.com</p>
-                </div>
+                <!-- Address with Integrated Google Maps Link -->
+                <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                    <i class="ri-map-pin-line text-warning"></i> 
+                    <a href="https://maps.google.com/?q=26.862131,80.999527" target="_blank" rel="noopener noreferrer" class="text-decoration-none color-inherit" style="color: inherit;">
+                        123, Leather Market, India
+                    </a>
+                </p>
                 
+                <!-- Phone -->
+                <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                    <i class="ri-phone-line text-warning"></i> 
+                    <a href="tel:+917070759003" class="text-decoration-none" style="color: inherit;">+91 7070759003</a>
+                </p>
+                
+                <!-- Email -->
+                <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                    <i class="ri-mail-line text-warning"></i> 
+                    <a href="mailto:eldurato99@gmail.com" class="text-decoration-none" style="color: inherit;">eldurato99@gmail.com</a>
+                </p>
+            </div>
+
                 <h6 class="footer-heading mb-2" style="font-size: 10px; color: #64748b;">100% Safe Checkout</h6>
                 <div class="d-flex justify-content-center justify-content-md-start gap-3">
                     <i class="ri-visa-line pay-icon pay-icon-visa" title="Visa"></i>
