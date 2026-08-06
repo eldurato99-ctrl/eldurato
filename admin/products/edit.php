@@ -1,6 +1,6 @@
 <?php
 require_once '../../config/database.php';
-require_once '../../config/cloudinary.php'; 
+require_once '../../config/cloudinary.php';
 
 include '../../includes/header.php';
 include '../../includes/navbar.php';
@@ -25,43 +25,50 @@ if (!empty($rawImages) && (json_last_error() !== JSON_ERROR_NONE || !is_array($c
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $brand = trim($_POST['brand']); 
-    $name = trim($_POST['name']); 
+    $brand = trim($_POST['brand']);
+    $name = trim($_POST['name']);
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-    $price = floatval($_POST['price']); 
-    $old_price = floatval($_POST['old_price']); 
-    $stock = intval($_POST['stock']); 
+    $price = floatval($_POST['price']);
+    $old_price = floatval($_POST['old_price']);
+    $stock = intval($_POST['stock']);
     $desc = trim($_POST['description']);
     $material = trim($_POST['material']);
     $color = trim($_POST['color']);
     $warranty = trim($_POST['warranty']);
-    
-    $imageUrls = $currentImages; 
+   
+    // 1. Jo purani images delete nahi ki gayi hain unhe preserve karein
+    $retainedImages = [];
+    if (isset($_POST['existing_images']) && is_array($_POST['existing_images'])) {
+        foreach ($_POST['existing_images'] as $jsonItem) {
+            $decoded = json_decode($jsonItem, true);
+            $retainedImages[] = ($decoded !== null) ? $decoded : $jsonItem;
+        }
+    }
 
+    // 2. Nayi uploaded images process karein
+    $newUploadedImages = [];
     if (!empty($_FILES["images"]["name"][0])) {
         try {
-            $newImages = [];
             foreach ($_FILES['images']['name'] as $key => $val) {
                 if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
                     $uploadResult = $cloudinary->uploadApi()->upload($_FILES['images']['tmp_name'][$key], [
                         'folder' => 'belt_store/products'
                     ]);
-                    $newImages[] = $uploadResult['secure_url'];
+                    $newUploadedImages[] = $uploadResult['secure_url'];
                 }
-            }
-            if (!empty($newImages)) {
-                $imageUrls = $newImages; 
             }
         } catch (Exception $e) {
             echo "<script>alert('Upload Error: " . addslashes($e->getMessage()) . "');</script>";
         }
     }
 
-    $imagesJson = json_encode($imageUrls);
+    // 3. Purani aur Nayi images ko Merge karein
+    $finalImages = array_merge($retainedImages, $newUploadedImages);
+    $imagesJson = json_encode($finalImages);
 
     $stmt = $pdo->prepare("UPDATE all_products_list SET brand=?, name=?, slug=?, price=?, old_price=?, stock=?, description=?, material=?, color=?, warranty=?, images=? WHERE id=?");
     $stmt->execute([$brand, $name, $slug, $price, $old_price, $stock, $desc, $material, $color, $warranty, $imagesJson, $id]);
-    
+   
     echo "<script>window.location.href='index.php';</script>";
     exit;
 }
@@ -74,8 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     .app-label { font-size: 11px; font-weight: 600; color: #718096; text-uppercase: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; display: block; }
     .app-input { width: 100%; border: none; background: #f1f5f9; padding: 10px 12px; font-size: 14px; color: #1a202c; border-radius: 6px; transition: all 0.2s; }
     .app-input:focus { outline: none; background: #fff; box-shadow: inset 0 0 0 2px #e61a61; }
-    .app-gallery-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .app-gallery-thumb { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .app-btn-submit { background: #e61a61; color: #fff; border: none; width: 100%; padding: 12px; font-size: 14px; font-weight: 700; border-radius: 6px; letter-spacing: 0.3px; text-transform: uppercase; }
+   
+    .thumb-wrapper { position: relative; display: inline-block; }
+    .btn-delete-img { position: absolute; top: -6px; right: -6px; background: #dc3545; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .btn-delete-img:hover { background: #bb2d3b; }
+
     @media (min-width: 768px) {
         .app-container { max-width: 680px; margin: 20px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-radius: 8px; overflow: hidden; border: 1px solid #edf2f7; }
         .app-form-section { border-bottom: 1px solid #edf2f7; }
@@ -143,20 +155,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 
         <div class="app-form-section">
-            <?php if (!empty($currentImages)): ?>
-                <label class="app-label">Active Gallery</label>
-                <div class="d-flex gap-2 flex-wrap mb-3">
-                    <?php foreach($currentImages as $imgUrl): 
-                        $actualUrl = is_array($imgUrl) ? ($imgUrl['url'] ?? '') : $imgUrl;
+            <!-- Active Gallery with Delete Buttons -->
+            <label class="app-label">Active Gallery (Click 'X' to remove)</label>
+            <div class="d-flex gap-3 flex-wrap mb-3" id="activeGalleryContainer">
+                <?php if (!empty($currentImages)): ?>
+                    <?php foreach($currentImages as $imgItem):
+                        $actualUrl = is_array($imgItem) ? ($imgItem['url'] ?? '') : $imgItem;
                         if(empty($actualUrl)) continue;
+                        $jsonVal = htmlspecialchars(json_encode($imgItem), ENT_QUOTES, 'UTF-8');
                     ?>
-                        <img src="<?= $actualUrl ?>" class="app-gallery-thumb">
+                        <div class="thumb-wrapper">
+                            <input type="hidden" name="existing_images[]" value="<?= $jsonVal ?>">
+                            <img src="<?= htmlspecialchars($actualUrl) ?>" class="app-gallery-thumb">
+                            <button type="button" class="btn-delete-img" onclick="this.parentElement.remove()" title="Delete Image">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
                     <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                <?php else: ?>
+                    <span class="text-muted small">No images available</span>
+                <?php endif; ?>
+            </div>
 
-            <label class="app-label">Replace Images</label>
-            <input type="file" name="images[]" class="form-control form-control-sm border-0 bg-light p-2" style="font-size:13px; border-radius:6px;" accept="image/*" multiple>
+            <!-- New Image Upload and Live Preview -->
+            <label class="app-label">Add / Replace Images</label>
+            <input type="file" name="images[]" id="imageInput" class="form-control form-control-sm border-0 bg-light p-2" style="font-size:13px; border-radius:6px;" accept="image/*" multiple onchange="previewNewImages(this)">
+           
+            <!-- Live Preview Container for Newly Selected Images -->
+            <div id="newImagesPreview" class="d-flex gap-2 flex-wrap mt-3"></div>
         </div>
 
         <div class="p-3 bg-white">
@@ -166,5 +192,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
+<script>
+function previewNewImages(input) {
+    const previewContainer = document.getElementById('newImagesPreview');
+    previewContainer.innerHTML = '';
+
+    if (input.files && input.files.length > 0) {
+        const titleLabel = document.createElement('div');
+        titleLabel.className = 'w-100 text-uppercase fw-semibold text-muted small mb-1';
+        titleLabel.style.fontSize = '10px';
+        titleLabel.innerText = 'New Selected Images Preview:';
+        previewContainer.appendChild(titleLabel);
+
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'app-gallery-thumb';
+                img.style.border = '2px solid #e61a61';
+                previewContainer.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        });
+    }
+}
+</script>
 
 <?php include '../../includes/footer.php'; ?>
