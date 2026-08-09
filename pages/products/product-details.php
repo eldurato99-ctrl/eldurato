@@ -21,8 +21,9 @@ if (!$product) {
     exit;
 }
 
-// 🚫 CHECK STOCK STATUS
-$isOutOfStock = (isset($product['stock_status']) && $product['stock_status'] === 'out_of_stock');
+// 🚫 CHECK STOCK STATUS (Numeric stock <= 0 OR stock_status string)
+$stock = isset($product['stock']) ? (int)$product['stock'] : null;
+$isOutOfStock = ($stock !== null && $stock <= 0) || (isset($product['stock_status']) && $product['stock_status'] === 'out_of_stock');
 
 $imagesData = !empty($product['images']) ? json_decode($product['images'], true) : [];
 
@@ -42,7 +43,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
 
 <style>
     body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; }
-   
+    
     /* Native Size Chips Layout */
     .size-chip {
         display: inline-flex;
@@ -52,7 +53,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
         height: 45px;
         background: #fff;
         border: 1px solid #e2e8f0;
-        border-radius: 50%; /* Pure circular android style design */
+        border-radius: 50%;
         font-size: 13px;
         font-weight: 600;
         color: #334155;
@@ -63,7 +64,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
         color: #fff !important;
         background-color: #1a202c !important;
     }
-   
+    
     /* Carousel Overrides */
     .carousel-item img { height: 340px; object-fit: contain; }
     @media (min-width: 768px) {
@@ -74,7 +75,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
 
 <div class="container py-2 py-md-4">
     <div class="row g-3">
-       
+        
         <div class="col-12 col-md-6">
             <div class="bg-white rounded-4 border p-2 position-sticky shadow-sm" style="top: 20px;">
                 <div id="productImagesCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
@@ -85,16 +86,16 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                                 $imgSizes = isset($imgItem['sizes']) ? $imgItem['sizes'] : '28,30,32,34,36,38,40';
                             ?>
                                 <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>" data-imgurl="<?= $imgUrl ?>" data-sizes="<?= htmlspecialchars($imgSizes) ?>">
-                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" style="<?= $isOutOfStock ? 'filter: grayscale(100%); opacity: 0.8;' : '' ?>">
+                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" ">
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="carousel-item active" data-imgurl="<?= $firstImgUrl ?>" data-sizes="<?= $firstImgSizes ?>">
-                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2" style="<?= $isOutOfStock ? 'filter: grayscale(100%); opacity: 0.8;' : '' ?>">
+                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2">
                             </div>
                         <?php endif; ?>
                     </div>
-                   
+                    
                     <?php if(!empty($imagesData) && count($imagesData) > 1): ?>
                         <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev" style="filter: invert(0.8); width: 8%;">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -104,7 +105,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                         </button>
                     <?php endif; ?>
                 </div>
-               
+                
                 <?php if(!empty($imagesData) && is_array($imagesData) && count($imagesData) > 1): ?>
                     <div class="d-flex justify-content-center gap-2 overflow-auto border-top pt-2 mt-1">
                         <?php foreach($imagesData as $index => $imgItem):
@@ -118,10 +119,10 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                 <?php endif; ?>
             </div>
         </div>
-       
+        
         <div class="col-12 col-md-6">
             <div class="d-flex flex-column gap-2">
-               
+                
                 <div class="bg-white p-3 rounded-4 border shadow-sm">
                     <span class="text-uppercase text-muted fw-bold small tracking-wider" style="font-size: 10px;"><?= htmlspecialchars($product['brand']) ?></span>
                     <h5 class="fw-bold text-dark mt-1 mb-2" style="font-size: 17px; line-height: 1.4;"><?= htmlspecialchars($product['name']) ?></h5>
@@ -188,14 +189,19 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
     </div>
 </div>
 
-<?php if (!$isOutOfStock): ?>
-    <div class="fixed-bottom bg-white border-top py-2 px-3 shadow-lg d-md-none" style="z-index: 1040;">
+<!-- Mobile Action Section -->
+<div class="fixed-bottom bg-white border-top py-2 px-3 shadow-lg d-md-none" style="z-index: 1040;">
+    <?php if ($isOutOfStock): ?>
+        <button class="btn btn-secondary w-100 py-2 text-uppercase fw-bold disabled" style="font-size: 12px; border-radius: 8px; height: 42px;">
+            <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
+        </button>
+    <?php else: ?>
         <form action="<?php echo url('pages/products/cart.php'); ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;">
             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
             <input type="hidden" name="quantity" value="1">
             <input type="hidden" name="selected_image" id="cart_selected_image" value="<?php echo $firstImgUrl; ?>">
             <input type="hidden" name="size" id="cart_selected_size" value="">
-           
+            
             <button type="submit" name="add_to_cart" class="btn btn-outline-dark w-50 py-2 fw-bold d-flex align-items-center justify-content-center gap-1" style="font-size: 13px; border-radius: 8px; height: 42px;">
                 <i class="ri-shopping-cart-2-line"></i> ADD TO CART
             </button>
@@ -203,13 +209,18 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                 <i class="ri-flash-line"></i> BUY NOW
             </button>
         </form>
-    </div>
-<?php endif; ?>
+    <?php endif; ?>
+</div>
 
-<?php if (!$isOutOfStock): ?>
-    <div class="container d-none d-md-block mb-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-6 px-1">
+<!-- Desktop Action Section -->
+<div class="container d-none d-md-block mb-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-6 px-1">
+            <?php if ($isOutOfStock): ?>
+                <button class="btn btn-secondary w-100 py-2.5 text-uppercase fw-bold disabled" style="border-radius: 8px; font-size: 14px;">
+                    <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
+                </button>
+            <?php else: ?>
                 <form action="<?php echo url('pages/products/cart.php'); ?>" method="POST" class="d-flex gap-3">
                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                     <input type="hidden" name="quantity" value="1">
@@ -219,21 +230,20 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                     <button type="submit" name="add_to_cart" class="btn btn-outline-dark px-4 py-2.5 fw-bold" style="border-radius: 8px; font-size: 14px;"><i class="ri-shopping-cart-2-line me-1"></i> ADD TO CART</button>
                     <button type="submit" name="buy_now" class="btn btn-dark px-5 py-2.5 fw-bold text-white" style="background-color: #1a202c; border:none; border-radius: 8px; font-size: 14px;"><i class="ri-flash-line me-1"></i> BUY NOW</button>
                 </form>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
-<?php endif; ?>
+</div>
 
 <script>
-    let currentSelectedSize = "";
+let currentSelectedSize = "";
 
 const carouselEl = document.getElementById('productImagesCarousel');
 
 if (carouselEl) {
-    // Bootstrap Carousel instance initialize karein
     const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
 
-    // Hover (mouseenter) par slide trigger karein
+    // 1. Left/Right arrow buttons par hover se slide
     const prevBtn = carouselEl.querySelector('.carousel-control-prev');
     const nextBtn = carouselEl.querySelector('.carousel-control-next');
 
@@ -244,15 +254,23 @@ if (carouselEl) {
         nextBtn.addEventListener('mouseenter', () => bsCarousel.next());
     }
 
-    // Existing slide listener
+    // 2. Bottom Thumbnails par hover (mouseenter) se image switch
+    const thumbBoxes = document.querySelectorAll('.thumb-box');
+    thumbBoxes.forEach((thumb, idx) => {
+        thumb.addEventListener('mouseenter', () => {
+            bsCarousel.to(idx);
+        });
+    });
+
+    // 3. Carousel slide event listener
     carouselEl.addEventListener('slide.bs.carousel', event => {
         const activeSlide = event.relatedTarget;
         const imgUrl = activeSlide.getAttribute('data-imgurl');
         const sizesString = activeSlide.getAttribute('data-sizes');
-       
+        
         if(document.getElementById('cart_selected_image')) document.getElementById('cart_selected_image').value = imgUrl;
         if(document.getElementById('desktop_selected_image')) document.getElementById('desktop_selected_image').value = imgUrl;
-       
+        
         renderSizes(sizesString);
     });
 }
@@ -260,12 +278,12 @@ if (carouselEl) {
 function renderSizes(sizesString) {
     const container = document.getElementById('dynamicSizesRow');
     container.innerHTML = '';
-   
+    
     const sizesArray = sizesString ? sizesString.split(',') : [];
-   
+    
     if(sizesArray.length > 0 && sizesArray[0].trim() !== "") {
         let matchedIndex = -1;
-       
+        
         sizesArray.forEach((size, idx) => {
             if(size.trim() === currentSelectedSize) {
                 matchedIndex = idx;
@@ -280,7 +298,7 @@ function renderSizes(sizesString) {
             const cleanSize = size.trim();
             if(cleanSize) {
                 const isSelected = (cleanSize === currentSelectedSize);
-               
+                
                 if(isSelected) {
                     updateFormSizeValues(cleanSize);
                 }
@@ -299,7 +317,7 @@ function selectSize(element, size) {
     document.querySelectorAll('.size-chip').forEach(chip => {
         chip.classList.remove('active-size');
     });
-   
+    
     element.classList.add('active-size');
     currentSelectedSize = size;
     updateFormSizeValues(size);
@@ -310,12 +328,19 @@ function updateFormSizeValues(sizeValue) {
     if (mobileInput) {
         mobileInput.value = sizeValue;
     }
-   
+    
     const desktopInput = document.querySelector('.desktop-size-mirror');
     if (desktopInput) {
         desktopInput.value = sizeValue;
     }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    renderSizes('<?= htmlspecialchars($firstImgSizes) ?>');
+});
+</script>
+
+<?php include '../../includes/footer.php'; ?>
 
 document.addEventListener("DOMContentLoaded", function() {
     renderSizes('<?= htmlspecialchars($firstImgSizes) ?>');
