@@ -9,10 +9,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// 🛡️ SECURITY CHECK: Kahin koyi normal customer is page par na aa jaye
-// Agar aapke session me 'role' ya 'is_admin' jaisa variable hai toh use lagayein
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-    // Agar admin nahi hai toh home page par fenk do
     header("Location: /index.php"); 
     exit;
 }
@@ -145,8 +142,8 @@ $products = $pdo->query("SELECT * FROM all_products_list ORDER BY id DESC")->fet
                                     </td>
                                     <td class="text-center">
                                         <div class="d-inline-flex gap-1.5">
-                                            <a href="edit.php?id=<?= $p['id'] ?>" class="action-btn text-primary" title="Edit Listing"><i class="ri-pencil-line"></i></a>
-                                            <a href="index.php?delete=<?= $p['id'] ?>" class="action-btn text-danger" onclick="return confirm('⚠️ Delete this listing permanently?')" title="Delete Listing"><i class="ri-delete-bin-5-line"></i></a>
+                                            <a href="edit.php?id=<?= $p['id'] ?>" class=" text-primary btn btn-light border px-2 m-1" title="Edit Listing"><i class="ri-pencil-line"></i></a>
+                                            <a href="index.php?delete=<?= $p['id'] ?>" class=" text-danger  btn btn-light border px-2 m-1" onclick="return confirm('⚠️ Delete this listing permanently?')" title="Delete Listing"><i class="ri-delete-bin-5-line"></i></a>
                                         </div>
                                     </td>
                                 </tr>
