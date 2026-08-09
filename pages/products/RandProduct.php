@@ -24,13 +24,12 @@ $cartActionUrl = url('pages/products/cart.php');
     .text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
     .hover-shadow:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06) !important; transition: all 0.2s ease; }
 </style>
-
 <div class="container-fluid my-3 bg-white p-3 rounded-3 shadow-sm">
     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
         <div class="d-flex align-items-center gap-2">
             <h5 class="fw-bold text-dark m-0">Suggested For You</h5>
         </div>
-        <a href="<?php echo 'pages/products/products.php'; ?>" class="btn btn-light btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center border" style="width: 32px; height: 32px;">
+        <a href="<?php echo $allProductsUrl; ?>" class="btn btn-light btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center border" style="width: 32px; height: 32px;">
             <i class="ri-arrow-right-s-line fs-5 text-dark"></i>
         </a>
     </div>
@@ -40,7 +39,6 @@ $cartActionUrl = url('pages/products/cart.php');
             <div class="col-12 text-center py-5 bg-white rounded-3 border">
                 <p class="text-muted small mb-0">No suggested items found.</p>
             </div>
-        <?php autumn: ?>
         <?php else: ?>
             <?php foreach ($randProducts as $product): ?>
                 <?php
@@ -57,9 +55,11 @@ $cartActionUrl = url('pages/products/cart.php');
                 $detailsUrl = url('pages/products/product-details.php?id=' . $product['id']);
                 $brand = isset($product['brand']) ? trim($product['brand']) : 'Premium Collection';
                 
-                // 🚫 Stock Status Check
-                $stockStatus = isset($product['stock_status']) ? trim($product['stock_status']) : 'available';
-                $isOutOfStock = ($stockStatus === 'out_of_stock');
+
+                 $stock = isset($product['stock']) ? (int)$product['stock'] : null;
+                 $stockStatus = isset($product['stock_status']) ? trim($product['stock_status']) : '';
+                 $isOutOfStock = ($stock !== null && $stock <= 0) || ($stockStatus === 'out_of_stock');
+
                 ?>
                 
                 <div class="col-6 col-md-4 col-lg-2 d-flex">
