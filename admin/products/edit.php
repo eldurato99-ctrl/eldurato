@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // 3. Purani aur Nayi images ko Merge karein
-    $finalImages = array_merge($retainedImages, $newUploadedImages);
+    $finalImages = array_merge($newUploadedImages, $retainedImages);
     $imagesJson = json_encode($finalImages);
 
     $stmt = $pdo->prepare("UPDATE all_products_list SET brand=?, name=?, slug=?, price=?, old_price=?, stock=?, description=?, material=?, color=?, warranty=?, images=? WHERE id=?");
