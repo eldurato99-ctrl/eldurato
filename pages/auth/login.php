@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             $role = strtolower($user['role'] ?? 'user');
 
-            // बेहतर सुरक्षा और रोल चेकिंग
             if ($role === 'admin') {
                 header("Location: " . SITE_URL . "/admin/index.php");
             } else {
@@ -77,8 +76,13 @@ include '../../includes/navbar.php';
                         <div class="mb-3">
                             <input type="text" name="login_input" class="form-control auth-input" placeholder="Mobile Number or Email" required>
                         </div>
-                        <div class="mb-4">
-                            <input type="password" name="password" class="form-control auth-input" placeholder="Password" required>
+                        
+                        <!-- Password field with Show/Hide toggle button -->
+                        <div class="mb-4 input-group">
+                            <input type="password" name="password" id="passwordInput" class="form-control auth-input" placeholder="Password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+                            </button>
                         </div>
                         
                         <button class="btn btn-gradient text-white w-100 py-2 border-0 mb-3 fw-semibold shadow-sm">
@@ -98,10 +102,25 @@ include '../../includes/navbar.php';
             </div>
         </div>
     </div>
-    
 </div>
 
 <?php include '../../includes/footer.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Simple JavaScript to toggle password visibility -->
+<script>
+    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    togglePasswordBtn.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Icon toggle (eye / eye-slash)
+        toggleIcon.classList.toggle('bi-eye');
+        toggleIcon.classList.toggle('bi-eye-slash');
+    });
+</script>
 </body>
 </html>
