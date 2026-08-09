@@ -73,6 +73,7 @@ foreach ($dbProducts as $product) {
         'image' => $firstImage,
         'is_wishlisted' => in_array((int)$product['id'], $userWishlistItems),
         'details_url' => url('pages/products/product-details.php?id=' . $product['id']),
+        'stock' => isset($product['stock']) ? (int)$product['stock'] : null,
         'stock_status' => isset($product['stock_status']) ? trim($product['stock_status']) : 'available'
     ];
 }
@@ -350,7 +351,8 @@ foreach ($dbProducts as $product) {
                     <span style="font-size: 10px; color: #4a5568; font-weight:700;">${product.rating}</span>
                 </div>` : '';
 
-            const isOutOfStock = product.stock_status === 'out_of_stock';
+            // 🚫 Dual Stock Check (Numeric Stock <= 0 OR stock_status === 'out_of_stock')
+            const isOutOfStock = (product.stock !== null && product.stock <= 0) || product.stock_status === 'out_of_stock';
             
             let badgeHTML = '';
             if (isOutOfStock) {
