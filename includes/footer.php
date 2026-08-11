@@ -69,8 +69,8 @@
                 </p>
                 
                 <div class="d-flex justify-content-center justify-content-md-start gap-2 mt-4">
-                    <a href="https://www.facebook.com/share/1EwAjj9cag/?mibextid=wwXIfr" class="social-btn" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
-                    <a href="https://www.instagram.com/eldurato_official?igsh=c3d1eDlwNDRkamNl&utm_source=qr" class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+                    <a target="_blank"  href="https://www.facebook.com/share/1EwAjj9cag/?mibextid=wwXIfr" class="social-btn" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+                    <a target="_blank" href="https://www.instagram.com/eldurato_official?igsh=c3d1eDlwNDRkamNl&utm_source=qr" class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
                     <a href="#" class="social-btn" aria-label="Twitter"><i class="ri-twitter-x-fill"></i></a>
                     <a href="#" class="social-btn" aria-label="YouTube"><i class="ri-youtube-fill"></i></a>
                 </div>
