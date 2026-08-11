@@ -1,5 +1,5 @@
-
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
 <style>
     .site-footer {
         background-color: #0d0f12; /* Premium Slate Black */
@@ -69,50 +69,45 @@
                 </p>
                 
                 <div class="d-flex justify-content-center justify-content-md-start gap-2 mt-4">
-                    <a href="#" class="social-btn" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
-                    <a href="#" class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+                    <a href="https://www.facebook.com/share/1EwAjj9cag/?mibextid=wwXIfr" class="social-btn" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+                    <a href="https://www.instagram.com/eldurato_official?igsh=c3d1eDlwNDRkamNl&utm_source=qr" class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
                     <a href="#" class="social-btn" aria-label="Twitter"><i class="ri-twitter-x-fill"></i></a>
                     <a href="#" class="social-btn" aria-label="YouTube"><i class="ri-youtube-fill"></i></a>
                 </div>
             </div>
 
-           <!-- COLLECTIONS -->
-                <div class="col-lg-2 col-md-6 col-sm-6">
-    <h6 class="footer-heading">Collections</h6>
-    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
-        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
-        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
-        <li><a href="<?php echo defined('SITE_URL') ? SITE_URL : 'https://eldurato.com'; ?>/pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
-    </ul>
-</div>
+            <!-- COLLECTIONS -->
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <h6 class="footer-heading">Collections</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                    <!-- PATH FIXED: सब-फ़ोल्डर से लिंक सही काम करने के लिए ../ लगाया गया है -->
+                    <li><a href="../pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
+                    <li><a href="../pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
+                    <li><a href="../pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
+                    <li><a href="../pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
+                </ul>
+            </div>
 
+            <!-- SUPPORT -->
+            <div class="col-lg-2 col-md-6 col-sm-6">
+                <h6 class="footer-heading">Support</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                    <li><a href="../track-order.php" class="footer-link">Track Order</a></li>
+                    <li><a href="../return-policy.php" class="footer-link">7 Days Returns</a></li>
+                    <li><a href="../size-guide.php" class="footer-link">Size Guide</a></li>
+                    <li><a href="#faq" class="footer-link">FAQs</a></li>
+                </ul>
+            </div>
 
             <!-- CONTACT & PAYMENTS -->
             <div class="col-lg-4 col-md-6">
                 <h6 class="footer-heading">Get In Touch</h6>
                 <div class="small d-flex flex-column gap-2 mb-4" style="color: #94a3b8;">
-                <!-- Address with Integrated Google Maps Link -->
-                <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                    <i class="ri-map-pin-line text-warning"></i> 
-                    <a href="https://maps.google.com/?q=26.862131,80.999527" target="_blank" rel="noopener noreferrer" class="text-decoration-none color-inherit" style="color: inherit;">
-                        123, Leather Market, India
-                    </a>
-                </p>
+                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-map-pin-line text-warning"></i> 123, Leather Market, India</p>
+                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-phone-line text-warning"></i> +91 7070759003</p>
+                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2"><i class="ri-mail-line text-warning"></i> support@<?php echo strtolower(defined('SITE_NAME') ? SITE_NAME : 'eldurato'); ?>.com</p>
+                </div>
                 
-                <!-- Phone -->
-                <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                    <i class="ri-phone-line text-warning"></i> 
-                    <a href="tel:+917070759003" class="text-decoration-none" style="color: inherit;">+91 7070759003</a>
-                </p>
-                
-                <!-- Email -->
-                <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                    <i class="ri-mail-line text-warning"></i> 
-                    <a href="mailto:eldurato99@gmail.com" class="text-decoration-none" style="color: inherit;">eldurato99@gmail.com</a>
-                </p>
-            </div>
-
                 <h6 class="footer-heading mb-2" style="font-size: 10px; color: #64748b;">100% Safe Checkout</h6>
                 <div class="d-flex justify-content-center justify-content-md-start gap-3">
                     <i class="ri-visa-line pay-icon pay-icon-visa" title="Visa"></i>
@@ -130,7 +125,7 @@
         <div class="row align-items-center">
             <div class="col-md-12 text-center">
                 <p class="mb-0 small" style="color: #64748b; font-size: 0.8rem;">
-                    &copy; <?php echo date('Y'); ?> <span class="text-white fw-medium"><?php echo defined('SITE_NAME') ? SITE_NAME : 'ELDURATO'; ?></span>. All Rights Reserved. Developed and Maintain by https://www.awebgrow.com
+                    &copy; <?php echo date('Y'); ?> <span class="text-white fw-medium"><?php echo defined('SITE_NAME') ? SITE_NAME : 'ELDURATO'; ?></span>. All Rights Reserved.
                 </p>
             </div>
         </div>
