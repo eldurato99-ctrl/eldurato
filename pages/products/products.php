@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/functions.php';
 
-// ✅ DYNAMIC SEO DATA (Restored from your old file)
+// ✅ DYNAMIC SEO DATA
 $page_title = "Buy Premium Leather Belts Online - Eldurato | Best Quality Belts for Men & Women";
 $page_description = "Shop premium genuine leather belts at Eldurato. Find formal, casual, and luxury belts for men & women. Free shipping, COD, and 7-day replacement available.";
 $page_keywords = "leather belts, men belts, women belts, formal belts, casual belts, premium leather, buy belts online India";
@@ -18,14 +18,13 @@ $og_image = "https://eldurato.com/assets/images/logo.png";
 // 1. Base Canonical URL
 $canonical_url = "https://eldurato.com/pages/products/products.php";
 
-// 2. If filters are applied, make the Canonical URL dynamic (so Google doesn't see them as duplicates of the main page)
+// 2. If filters are applied, make the Canonical URL dynamic
 if (!empty($_GET)) {
     $canonical_url = "https://eldurato.com/pages/products/products.php?" . http_build_query($_GET);
 }
 
 // 3. Dynamic Noindex Logic (Prevent deep filter pages from appearing in Google Search)
-$robots_meta = "index, follow"; // Default: Google index kare
-// If URL has 'style', 'q' (search), 'color', or 'material', tell Google NOT to index, but follow links
+$robots_meta = "index, follow"; 
 if (isset($_GET['style']) || isset($_GET['q']) || isset($_GET['color']) || isset($_GET['material'])) {
     $robots_meta = "noindex, follow"; 
 }
@@ -122,7 +121,7 @@ foreach ($dbProducts as $product) {
     <!-- ✅ TITLE - DYNAMIC -->
     <title><?php echo $page_title; ?></title>
     
-    <!-- ✅ META DESCRIPTION -->
+    <!-- ✅ META DESCRIPTION - CRITICAL FIX -->
     <meta name="description" content="<?php echo $page_description; ?>">
     <meta name="keywords" content="<?php echo $page_keywords; ?>">
     
@@ -181,96 +180,44 @@ foreach ($dbProducts as $product) {
     }
     </script>
 
-    <!-- ✅ CSS FILES -->
+    <!-- CSS FILES -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        .product-card { 
-            background: #ffffff; 
-            border: 1px solid #e2e8f0 !important; 
-            border-radius: 0px !important; 
-            overflow: hidden; 
-            box-shadow: none;
-            transition: transform 0.2s ease; 
-        }
+        .product-card { background: #ffffff; border: 1px solid #e2e8f0 !important; border-radius: 0px !important; overflow: hidden; box-shadow: none; transition: transform 0.2s ease; }
         .product-card:active { transform: scale(0.98); }
-        
-        .text-truncate-2 { 
-            display: -webkit-box; 
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical; 
-            overflow: hidden; 
-            height: 34px; 
-        }
-        
-        .product-img-wrapper { 
-            position: relative; 
-            background-color: #ffffff; 
-            border-radius: 0px !important;
-            margin: 0px;
-            aspect-ratio: 1/1; 
-            overflow: hidden; 
-        }
-        .discount-badge { 
-            position: absolute; 
-            bottom: 6px; 
-            left: 6px; 
-            background: #dc3545; 
-            color: white; 
-            padding: 3px 6px; 
-            border-radius: 0px !important; 
-            font-size: 9px; 
-            font-weight: 700; 
-            z-index: 2; 
-        }
-        .wishlist-btn { 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 0px !important; 
-            background: rgba(255, 255, 255, 0.9); 
-            border: 1px solid #e2e8f0; 
-        }
-        .add-to-cart-btn { 
-            background: #1a202c; 
-            border: none; 
-            color: white; 
-            font-weight: 600; 
-            font-size: 11px; 
-            padding: 8px; 
-            border-radius: 0px !important; 
-        }
-        
+        .text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
+        .product-img-wrapper { position: relative; background-color: #ffffff; border-radius: 0px !important; margin: 0px; aspect-ratio: 1/1; overflow: hidden; }
+        .discount-badge { position: absolute; bottom: 6px; left: 6px; background: #dc3545; color: white; padding: 3px 6px; border-radius: 0px !important; font-size: 9px; font-weight: 700; z-index: 2; }
+        .wishlist-btn { width: 32px; height: 32px; border-radius: 0px !important; background: rgba(255, 255, 255, 0.9); border: 1px solid #e2e8f0; }
+        .add-to-cart-btn { background: #1a202c; border: none; color: white; font-weight: 600; font-size: 11px; padding: 8px; border-radius: 0px !important; }
         .filter-card { border-radius: 0px !important; border: 1px solid #e2e8f0; background: white; box-shadow: none; }
         .filter-section-title { font-size: 10px; font-weight: 700; color: #a0aec0; letter-spacing: 0.8px; margin-bottom: 12px; text-transform: uppercase; }
         .custom-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
         .custom-checkbox input { width: 17px; height: 17px; accent-color: #1a202c; cursor: pointer; border-radius: 0px !important; }
         .custom-checkbox span { font-size: 13px; color: #4a5568; }
         .price-input { border-radius: 0px !important; border: 1px solid #e2e8f0; padding: 6px 12px; font-size: 13px; background: #f8fafc; }
-        .price-input:focus { border-color: #1a202c; box-shadow: none; background: #fff; }
-        
         .rating-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
         .rating-option input { width: 17px; height: 17px; accent-color: #1a202c; }
         .rating-option span { font-size: 13px; color: #4a5568; }
         .clear-btn { background: #fff5f5; border: 1px solid #fed7d7; color: #e53e3e; font-weight: 600; font-size: 12px; padding: 9px; border-radius: 0px !important; }
-        
         .skeleton-card { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 0px !important; }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        
         .pagination .page-link { color: #4a5568; border-radius: 0px !important; margin: 0 3px; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 600; box-shadow: none !important; }
         .pagination .page-item.active .page-link { background-color: #1a202c; border-color: #1a202c; color: #fff; }
     </style>
 </head>
 <body class="bg-light">
 
-<!-- ✅ H1 TAG - CRITICAL FIX -->
+<!-- ✅ H1 TAG -->
 <h1 class="visually-hidden">Buy Premium Leather Belts Online - Eldurato India's Best Belt Store</h1>
 
 <!-- ✅ BREADCRUMB NAVIGATION -->
 <nav aria-label="breadcrumb" class="container-fluid px-2 px-md-3 mt-2">
     <ol class="breadcrumb small">
-        <li class="breadcrumb-item"><a href="<?php echo SITE_URL; ?>" class="text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="https://eldurato.com" class="text-decoration-none">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page">Products</li>
     </ol>
 </nav>
@@ -311,7 +258,7 @@ foreach ($dbProducts as $product) {
                     <?php endfor; ?>
                 </div>
 
-                <!-- ✅ PAGINATION WITH REL="prev/next" -->
+                <!-- PAGINATION -->
                 <div class="d-flex justify-content-center mt-4 mb-2">
                     <nav aria-label="Product navigation">
                         <ul class="pagination pagination-sm m-0" id="paginationContainer"></ul>
@@ -489,7 +436,7 @@ foreach ($dbProducts as $product) {
                             <div class="product-img-wrapper d-flex align-items-center justify-content-center bg-white position-relative rounded-0">
                                 ${badgeHTML}
                                 <a href="${product.details_url}" class="w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <img src="${product.image}" class="w-100 h-100 object-fit-contain p-1 rounded-0" alt="${product.name}">
+                                    <img src="${product.image}" class="w-100 h-100 object-fit-contain p-1 rounded-0" alt="${product.name}" loading="lazy" width="300" height="300">
                                 </a>
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <button type="button" class="wishlist-btn d-flex align-items-center justify-content-center shadow-none rounded-0" data-product-id="${product.id}">
@@ -511,7 +458,6 @@ foreach ($dbProducts as $product) {
                                 <input type="hidden" name="product_id" value="${product.id}">
                                 <input type="hidden" name="quantity" value="1">
                                 <input type="hidden" name="size" value="32">
-                                
                                 ${isOutOfStock ? 
                                     `<button type="button" class="btn btn-secondary w-100 disabled py-2 text-uppercase fw-bold rounded-0" style="font-size:10px;"><i class="ri-close-circle-line me-1"></i> Sold Out</button>` : 
                                     `<button type="submit" name="add_to_cart" class="btn add-to-cart-btn w-100 shadow-none rounded-0"><i class="ri-shopping-bag-line me-1"></i> Add to Cart</button>`
@@ -536,34 +482,17 @@ foreach ($dbProducts as $product) {
         }
 
         let html = '';
-        
-        html += `
-            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" rel="${currentPage > 1 ? 'prev' : ''}">
-                    <i class="ri-arrow-left-s-line"></i>
-                </a>
-            </li>`;
+        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" rel="${currentPage > 1 ? 'prev' : ''}"><i class="ri-arrow-left-s-line"></i></a></li>`;
 
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                html += `
-                    <li class="page-item ${currentPage === i ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${i}); return false;" ${i > currentPage ? 'rel="next"' : ''}>
-                            ${i}
-                        </a>
-                    </li>`;
+                html += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i}); return false;" ${i > currentPage ? 'rel="next"' : ''}>${i}</a></li>`;
             } else if (i === currentPage - 2 || i === currentPage + 2) {
                 html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
             }
         }
 
-        html += `
-            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" rel="${currentPage < totalPages ? 'next' : ''}">
-                    <i class="ri-arrow-right-s-line"></i>
-                </a>
-            </li>`;
-
+        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" rel="${currentPage < totalPages ? 'next' : ''}"><i class="ri-arrow-right-s-line"></i></a></li>`;
         container.innerHTML = html;
     }
 
@@ -576,7 +505,6 @@ foreach ($dbProducts as $product) {
     function applyFilters() {
         const selectedCategories = Array.from(document.querySelectorAll('.filter-checkbox[data-type="category"]:checked')).map(el => el.value.trim());
         const selectedBrands = Array.from(document.querySelectorAll('.filter-checkbox[data-type="brand"]:checked')).map(el => el.value.trim());
-        
         const selectedColors = Array.from(document.querySelectorAll('.filter-checkbox[data-type="color"]:checked')).map(el => el.value.trim().toLowerCase());
         const selectedMaterials = Array.from(document.querySelectorAll('.filter-checkbox[data-type="material"]:checked')).map(el => el.value.trim().toLowerCase());
 
@@ -590,10 +518,8 @@ foreach ($dbProducts as $product) {
             if (globalSalesFilter === 'high-discount' && product.discount < 45) return false;
             if (selectedCategories.length > 0 && !selectedCategories.includes(product.category.trim())) return false;
             if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand.trim())) return false;
-            
             if (selectedColors.length > 0 && !selectedColors.includes(product.color.trim().toLowerCase())) return false;
             if (selectedMaterials.length > 0 && !selectedMaterials.includes(product.material.trim().toLowerCase())) return false;
-
             if (product.price < minPrice || product.price > maxPrice) return false;
             if (ratingValue !== 'any' && product.rating < parseInt(ratingValue)) return false;
             return true;
@@ -614,7 +540,6 @@ foreach ($dbProducts as $product) {
 
     document.addEventListener('change', e => { if (e.target.classList.contains('filter-checkbox') || e.target.classList.contains('rating-radio')) applyFilters(); });
     document.addEventListener('input', e => { if (e.target.classList.contains('price-input')) applyFilters(); });
-    
     document.addEventListener('click', e => {
         if (e.target.closest('#btnClearAll')) {
             document.getElementById('filterForm').reset();
@@ -640,7 +565,6 @@ foreach ($dbProducts as $product) {
         }
 
         const globalCategoryQuery = urlParams.get('category') ? urlParams.get('category').trim().toLowerCase() : '';
-
         if(globalCategoryQuery) {
             document.querySelectorAll('.filter-checkbox[data-type="category"]').forEach(cb => {
                 if(cb.value.trim().toLowerCase() === globalCategoryQuery) {
@@ -656,19 +580,13 @@ foreach ($dbProducts as $product) {
     document.addEventListener('click', async e => {
         const btn = e.target.closest('.wishlist-btn');
         if(!btn) return;
-
         const productId = parseInt(btn.dataset.productId);
         const formData = new FormData();
         formData.append('product_id', productId);
 
         try {
-            const response = await fetch('/pages/products/wishlist.php', { 
-                method: 'POST', 
-                body: formData 
-            });
-            
+            const response = await fetch('/pages/products/wishlist.php', { method: 'POST', body: formData });
             const data = await response.json();
-            
             if(data.success) {
                 const icon = btn.querySelector('i');
                 if(data.action === 'added') {
@@ -676,15 +594,10 @@ foreach ($dbProducts as $product) {
                 } else {
                     icon.className = 'ri-heart-line text-secondary';
                 }
-                
                 const targetProduct = allProducts.find(p => p.id === productId);
                 if(targetProduct) targetProduct.is_wishlisted = (data.action === 'added');
-                
                 const wishlistBadges = document.querySelectorAll('#wishlist-count, #mobile-wishlist-count');
-                wishlistBadges.forEach(badge => {
-                    if(badge) badge.innerText = data.count;
-                });
-                
+                wishlistBadges.forEach(badge => { if(badge) badge.innerText = data.count; });
             } else if(data.message.toLowerCase().includes('login') || data.message === 'Please login first') {
                 if(confirm('Please login to add items to wishlist')) {
                     window.location.href = '/pages/auth/login.php';
@@ -692,14 +605,15 @@ foreach ($dbProducts as $product) {
             } else {
                 alert(data.message);
             }
-        } catch(error) { 
-            console.error('Wishlist AJAX Error:', error); 
-        }
+        } catch(error) { console.error('Wishlist AJAX Error:', error); }
     });
 </script>
 
-<?php if (!$isIncluded) {
+<?php 
+// ✅ Footer Include
+if (!$isIncluded) {
     include __DIR__ . '/../../includes/footer.php';
-} ?>
+} 
+?>
 </body>
 </html>
