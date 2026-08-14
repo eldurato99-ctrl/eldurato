@@ -1,16 +1,8 @@
 <?php
-// ✅ SESSION START
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// ✅ INCLUDE CONFIG
 require_once '../../config/database.php';
-require_once '../../config/functions.php';
 include '../../includes/header.php';
 include '../../includes/navbar.php';
 
-// ✅ URL FUNCTION
 if (!function_exists('url')) {
     function url($path) {
         $baseUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '/eldurato';
@@ -18,10 +10,8 @@ if (!function_exists('url')) {
     }
 }
 
-// ✅ GET PRODUCT ID
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// ✅ GET PRODUCT DATA
 $stmt = $pdo->prepare("SELECT * FROM all_products_list WHERE id = ?");
 $stmt->execute([$id]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,11 +22,10 @@ if (!$product) {
     exit;
 }
 
-// ✅ CHECK STOCK
+// 🚫 CHECK STOCK STATUS (Numeric stock <= 0 OR stock_status string)
 $stock = isset($product['stock']) ? (int)$product['stock'] : null;
 $isOutOfStock = ($stock !== null && $stock <= 0) || (isset($product['stock_status']) && $product['stock_status'] === 'out_of_stock');
 
-// ✅ IMAGE DATA
 $imagesData = !empty($product['images']) ? json_decode($product['images'], true) : [];
 
 if (!empty($imagesData) && isset($imagesData[0]['url'])) {
@@ -47,199 +36,47 @@ if (!empty($imagesData) && isset($imagesData[0]['url'])) {
     $firstImgSizes = '28,30,32,34,36,38,40';
 }
 
-// ✅ CALCULATE DISCOUNT
 $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $product['price']) / $product['old_price']) * 100) : 0;
-
-// ✅ DYNAMIC SEO DATA
-$product_name = htmlspecialchars($product['name']);
-$product_brand = htmlspecialchars($product['brand'] ?? 'Eldurato');
-$product_price = number_format($product['price']);
-$product_description = htmlspecialchars($product['description'] ?? 'Premium genuine leather belt from Eldurato');
-
-$page_title = "Buy $product_name - Premium Leather Belt | Eldurato India";
-$page_description = "Shop $product_name premium genuine leather belt at Eldurato. $product_brand leather belt with free shipping, COD, and 7-day replacement. Best price ₹$product_price.";
-$page_keywords = "$product_name, $product_brand leather belt, premium leather belt, buy belt online, Eldurato";
-$canonical_url = "https://eldurato.com/pages/products/product-details.php?id=" . $id;
-$og_image = $firstImgUrl;
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; }
     
-    <!-- ✅ TITLE - DYNAMIC -->
-    <title><?php echo $page_title; ?></title>
-    
-    <!-- ✅ META DESCRIPTION - CRITICAL FIX -->
-    <meta name="description" content="<?php echo $page_description; ?>">
-    <meta name="keywords" content="<?php echo $page_keywords; ?>">
-    <meta name="robots" content="index, follow">
-    
-    <!-- ✅ CANONICAL TAG - CRITICAL FIX -->
-    <link rel="canonical" href="<?php echo $canonical_url; ?>">
-    
-    <!-- ✅ OPEN GRAPH TAGS -->
-    <meta property="og:title" content="<?php echo $page_title; ?>">
-    <meta property="og:description" content="<?php echo $page_description; ?>">
-    <meta property="og:image" content="<?php echo $og_image; ?>">
-    <meta property="og:url" content="<?php echo $canonical_url; ?>">
-    <meta property="og:type" content="product">
-    <meta property="og:site_name" content="Eldurato">
-    <meta property="product:price:amount" content="<?php echo $product['price']; ?>">
-    <meta property="product:price:currency" content="INR">
-    <meta property="product:availability" content="<?php echo $isOutOfStock ? 'out of stock' : 'in stock'; ?>">
-    
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?php echo $page_title; ?>">
-    <meta name="twitter:description" content="<?php echo $page_description; ?>">
-    <meta name="twitter:image" content="<?php echo $og_image; ?>">
-    
-    <!-- ✅ PRODUCT SCHEMA - CRITICAL FIX -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "<?php echo $product_name; ?>",
-      "description": "<?php echo $product_description; ?>",
-      "brand": {
-        "@type": "Brand",
-        "name": "<?php echo $product_brand; ?>"
-      },
-      "sku": "<?php echo $product['id']; ?>",
-      "mpn": "ELD-<?php echo str_pad($product['id'], 4, '0', STR_PAD_LEFT); ?>",
-      "image": "<?php echo $firstImgUrl; ?>",
-      "offers": {
-        "@type": "Offer",
-        "price": "<?php echo $product['price']; ?>",
-        "priceCurrency": "INR",
-        "availability": "<?php echo $isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock'; ?>",
-        "url": "<?php echo $canonical_url; ?>",
-        "shippingDetails": {
-          "@type": "OfferShippingDetails",
-          "shippingRate": {
-            "@type": "MonetaryAmount",
-            "value": "0",
-            "currency": "INR"
-          },
-          "deliveryTime": {
-            "@type": "ShippingDeliveryTime",
-            "handlingTime": {
-              "@type": "QuantitativeValue",
-              "minValue": 1,
-              "maxValue": 2,
-              "unitCode": "DAY"
-            },
-            "transitTime": {
-              "@type": "QuantitativeValue",
-              "minValue": 3,
-              "maxValue": 5,
-              "unitCode": "DAY"
-            }
-          }
-        }
-      },
-      "review": {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "<?php echo $product['rating'] ?? '4.5'; ?>",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Verified Buyer"
-        }
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "<?php echo $product['rating'] ?? '4.5'; ?>",
-        "reviewCount": "<?php echo $product['total_reviews'] ?? '142'; ?>"
-      }
+    /* Native Size Chips Layout */
+    .size-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 50%;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        transition: all 0.15s ease;
     }
-    </script>
-    
-    <!-- ✅ BREADCRUMB SCHEMA -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://eldurato.com/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Products",
-          "item": "https://eldurato.com/pages/products/products.php"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "<?php echo $product_name; ?>",
-          "item": "<?php echo $canonical_url; ?>"
-        }
-      ]
+    .size-chip.active-size {
+        border-color: #1a202c !important;
+        color: #fff !important;
+        background-color: #1a202c !important;
     }
-    </script>
-
-    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; }
-        
-        .size-chip {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 50%;
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            transition: all 0.15s ease;
-        }
-        .size-chip.active-size {
-            border-color: #1a202c !important;
-            color: #fff !important;
-            background-color: #1a202c !important;
-        }
-        
-        .carousel-item img { height: 340px; object-fit: contain; }
-        @media (min-width: 768px) {
-            body { padding-bottom: 20px !important; }
-            .carousel-item img { height: 440px; }
-        }
-    </style>
-</head>
-<body>
-
-<!-- ✅ H1 TAG - CRITICAL FIX -->
-<h1 class="visually-hidden"><?php echo $product_name; ?> - Premium Genuine Leather Belt | Buy Online at Eldurato</h1>
-
-<!-- ✅ BREADCRUMB NAVIGATION -->
-<nav aria-label="breadcrumb" class="container py-2">
-    <ol class="breadcrumb small">
-        <li class="breadcrumb-item"><a href="<?php echo SITE_URL; ?>" class="text-decoration-none">Home</a></li>
-        <li class="breadcrumb-item"><a href="<?php echo url('pages/products/products.php'); ?>" class="text-decoration-none">Products</a></li>
-        <li class="breadcrumb-item active" aria-current="page"><?php echo $product_name; ?></li>
-    </ol>
-</nav>
+    
+    /* Carousel Overrides */
+    .carousel-item img { height: 340px; object-fit: contain; }
+    @media (min-width: 768px) {
+        body { padding-bottom: 20px !important; }
+        .carousel-item img { height: 440px; }
+    }
+</style>
 
 <div class="container py-2 py-md-4">
     <div class="row g-3">
         
-        <!-- PRODUCT IMAGES -->
         <div class="col-12 col-md-6">
             <div class="bg-white rounded-4 border p-2 position-sticky shadow-sm" style="top: 20px;">
                 <div id="productImagesCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
@@ -250,23 +87,12 @@ $og_image = $firstImgUrl;
                                 $imgSizes = isset($imgItem['sizes']) ? $imgItem['sizes'] : '28,30,32,34,36,38,40';
                             ?>
                                 <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>" data-imgurl="<?= $imgUrl ?>" data-sizes="<?= htmlspecialchars($imgSizes) ?>">
-                                    <!-- ✅ FIXED: Descriptive Alt Text -->
-                                    <img src="<?= $imgUrl; ?>" 
-                                         class="d-block w-100 p-2" 
-                                         alt="<?php echo $product_name; ?> - Premium genuine leather belt by <?php echo $product_brand; ?> | Eldurato" 
-                                         loading="lazy"
-                                         width="600" 
-                                         height="400">
+                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" ">
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="carousel-item active" data-imgurl="<?= $firstImgUrl ?>" data-sizes="<?= $firstImgSizes ?>">
-                                <img src="<?= $firstImgUrl; ?>" 
-                                     class="d-block w-100 p-2" 
-                                     alt="<?php echo $product_name; ?> - Premium genuine leather belt | Eldurato"
-                                     loading="lazy"
-                                     width="600" 
-                                     height="400">
+                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2">
                             </div>
                         <?php endif; ?>
                     </div>
@@ -287,10 +113,7 @@ $og_image = $firstImgUrl;
                             $imgUrl = isset($imgItem['url']) ? $imgItem['url'] : $imgItem;
                         ?>
                             <div class="border rounded p-1 bg-light cursor-pointer thumb-box" data-bs-target="#productImagesCarousel" data-bs-slide-to="<?= $index ?>" style="width: 48px; height: 48px; flex-shrink: 0;">
-                                <img src="<?= $imgUrl; ?>" 
-                                     class="w-100 h-100 object-fit-contain" 
-                                     alt="<?php echo $product_name; ?> - Product image <?php echo $index + 1; ?>"
-                                     loading="lazy">
+                                <img src="<?= $imgUrl; ?>" class="w-100 h-100 object-fit-contain" style="<?= $isOutOfStock ? 'filter: grayscale(100%);' : '' ?>">
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -298,21 +121,18 @@ $og_image = $firstImgUrl;
             </div>
         </div>
         
-        <!-- PRODUCT INFO -->
         <div class="col-12 col-md-6">
             <div class="d-flex flex-column gap-2">
                 
-                <!-- ✅ PRODUCT NAME AS H2 -->
                 <div class="bg-white p-3 rounded-4 border shadow-sm">
-                    <span class="text-uppercase text-muted fw-bold small tracking-wider" style="font-size: 10px;"><?= htmlspecialchars($product['brand'] ?? 'Eldurato') ?></span>
-                    <h2 class="fw-bold text-dark mt-1 mb-2" style="font-size: 17px; line-height: 1.4;"><?= $product_name ?></h2>
+                    <span class="text-uppercase text-muted fw-bold small tracking-wider" style="font-size: 10px;"><?= htmlspecialchars($product['brand']) ?></span>
+                    <h5 class="fw-bold text-dark mt-1 mb-2" style="font-size: 17px; line-height: 1.4;"><?= htmlspecialchars($product['name']) ?></h5>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-success rounded-2 px-2 py-1" style="font-size: 11px;"><?= $product['rating'] ?? '4.5' ?> ★</span>
+                        <span class="badge bg-success rounded-2 px-2 py-1" style="font-size: 11px;"><?= $product['rating'] ?? '4.1' ?> ★</span>
                         <span class="text-muted small">(<?= number_format($product['total_reviews'] ?? 142) ?> Ratings)</span>
                     </div>
                 </div>
 
-                <!-- PRICE -->
                 <div class="bg-white p-3 rounded-4 border shadow-sm">
                     <div class="d-flex align-items-baseline gap-2">
                         <span class="fw-bold text-dark fs-3">₹<?= number_format($product['price']) ?></span>
@@ -324,7 +144,6 @@ $og_image = $firstImgUrl;
                     <small class="text-muted d-block mt-1" style="font-size: 11px;"><i class="ri-checkbox-circle-line text-success"></i> Free Delivery • Cash on Delivery Available</small>
                 </div>
 
-                <!-- STOCK STATUS -->
                 <?php if ($isOutOfStock): ?>
                     <div class="alert alert-danger border-0 rounded-4 shadow-sm p-3 m-0 d-flex align-items-center gap-3">
                         <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
@@ -337,15 +156,13 @@ $og_image = $firstImgUrl;
                     </div>
                 <?php endif; ?>
 
-                <!-- SIZE SELECTOR -->
                 <div class="bg-white p-3 rounded-4 border shadow-sm">
                     <span class="fw-bold text-dark d-block small mb-2" style="font-size: 13px;">Select Waist Size:</span>
                     <div id="dynamicSizesRow" class="d-flex gap-2 flex-wrap"></div>
                 </div>
 
-                <!-- PRODUCT HIGHLIGHTS -->
                 <div class="bg-white p-3 rounded-4 border shadow-sm">
-                    <h3 class="fw-bold text-dark border-bottom pb-2 mb-2" style="font-size: 13px;">Product Highlights</h3>
+                    <h6 class="fw-bold text-dark border-bottom pb-2 mb-2" style="font-size: 13px;">Product Highlights</h6>
                     <div class="row g-2 text-dark small" style="font-size: 12.5px;">
                         <div class="col-6"><span class="text-muted d-block" style="font-size: 10px;">Color</span><strong><?= htmlspecialchars($product['color'] ?? 'Black') ?></strong></div>
                         <div class="col-6"><span class="text-muted d-block" style="font-size: 10px;">Belt Width</span><strong><?= htmlspecialchars($product['belt_width'] ?? '1.5 inches') ?></strong></div>
@@ -354,18 +171,15 @@ $og_image = $firstImgUrl;
                     </div>
                 </div>
 
-                <!-- SPECIFICATIONS -->
                 <div class="bg-white p-3 rounded-4 border shadow-sm mb-4">
-                    <h3 class="fw-bold text-dark border-bottom pb-2 mb-2" style="font-size: 13px;">Specifications</h3>
+                    <h6 class="fw-bold text-dark border-bottom pb-2 mb-2" style="font-size: 13px;">Specifications</h6>
                     <div class="table-responsive rounded-3 border overflow-hidden m-0">
                         <table class="table table-sm table-striped table-borderless small mb-0" style="font-size: 12px;">
                             <tbody>
                                 <tr><td class="text-muted py-2 px-3 bg-light" style="width:35%;">Model Name</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['model_name'] ?? 'Men Genuine Leather Belt') ?></td></tr>
                                 <tr><td class="text-muted py-2 px-3 bg-light">Weight</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['weight'] ?? '300 g') ?></td></tr>
                                 <tr><td class="text-muted py-2 px-3 bg-light">Warranty</td><td class="text-dark py-2 px-3 fw-medium"><?= htmlspecialchars($product['warranty'] ?? '6 Months') ?></td></tr>
-                                <tr><td class="text-muted py-2 px-3 bg-light" style="vertical-align: top;">Description</td>
-                                    <td class="text-dark py-2 px-3" style="line-height:1.4; text-align: justify;"><?= nl2br(htmlspecialchars($product['description'] ?? '')) ?></td>
-                                </tr>
+                                <tr><td class="text-muted py-2 px-3 bg-light" style="vertical-align: top;">Description</td><td class="text-dark py-2 px-3" style="line-height:1.4; text-align: justify;"><?= nl2br(htmlspecialchars($product['description'] ?? '')) ?></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -376,7 +190,7 @@ $og_image = $firstImgUrl;
     </div>
 </div>
 
-<!-- MOBILE ACTION SECTION -->
+<!-- Mobile Action Section -->
 <div class="fixed-bottom bg-white border-top py-2 px-3 shadow-lg d-md-none" style="z-index: 1040;">
     <?php if ($isOutOfStock): ?>
         <button class="btn btn-secondary w-100 py-2 text-uppercase fw-bold disabled" style="font-size: 12px; border-radius: 8px; height: 42px;">
@@ -399,7 +213,7 @@ $og_image = $firstImgUrl;
     <?php endif; ?>
 </div>
 
-<!-- DESKTOP ACTION SECTION -->
+<!-- Desktop Action Section -->
 <div class="container d-none d-md-block mb-5">
     <div class="row">
         <div class="col-md-6 offset-md-6 px-1">
@@ -430,6 +244,7 @@ const carouselEl = document.getElementById('productImagesCarousel');
 if (carouselEl) {
     const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
 
+    // 1. Left/Right arrow buttons par hover se slide
     const prevBtn = carouselEl.querySelector('.carousel-control-prev');
     const nextBtn = carouselEl.querySelector('.carousel-control-next');
 
@@ -440,6 +255,7 @@ if (carouselEl) {
         nextBtn.addEventListener('mouseenter', () => bsCarousel.next());
     }
 
+    // 2. Bottom Thumbnails par hover (mouseenter) se image switch
     const thumbBoxes = document.querySelectorAll('.thumb-box');
     thumbBoxes.forEach((thumb, idx) => {
         thumb.addEventListener('mouseenter', () => {
@@ -447,6 +263,7 @@ if (carouselEl) {
         });
     });
 
+    // 3. Carousel slide event listener
     carouselEl.addEventListener('slide.bs.carousel', event => {
         const activeSlide = event.relatedTarget;
         const imgUrl = activeSlide.getAttribute('data-imgurl');
@@ -525,5 +342,3 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <?php include '../../includes/footer.php'; ?>
-</body>
-</html>
