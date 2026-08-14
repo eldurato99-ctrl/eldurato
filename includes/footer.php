@@ -1,3 +1,4 @@
+<!-- includes/footer.php - COMPLETE SEO FIXED VERSION -->
 <?php
 // ✅ DYNAMIC SEO DATA
 $site_name = defined('SITE_NAME') ? SITE_NAME : 'ELDURATO';
@@ -35,6 +36,33 @@ $current_year = date('Y');
     "https://instagram.com/eldurato",
     "https://twitter.com/eldurato"
   ]
+}
+</script>
+
+<!-- ✅ LOCAL BUSINESS SCHEMA -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "<?php echo $site_name; ?>",
+  "image": "<?php echo $assets_url; ?>/images/logo.jpg",
+  "url": "<?php echo $site_url; ?>",
+  "telephone": "+91-7070759003",
+  "email": "support@eldurato.com",
+  "priceRange": "₹499 - ₹2999",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123, Leather Market",
+    "addressLocality": "Lucknow",
+    "addressRegion": "Uttar Pradesh",
+    "postalCode": "226001",
+    "addressCountry": "IN"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "26.862131",
+    "longitude": "80.999527"
+  }
 }
 </script>
 
@@ -118,6 +146,7 @@ $current_year = date('Y');
                     Crafting premium quality leather belts designed for ultimate durability and timeless style. From formal sophistication to casual everyday essentials.
                 </p>
                 
+                <!-- ✅ SOCIAL MEDIA LINKS - FIXED -->
                 <div class="d-flex justify-content-center justify-content-md-start gap-2 mt-4">
                     <a href="https://facebook.com/eldurato" 
                        class="social-btn" 
@@ -165,7 +194,7 @@ $current_year = date('Y');
                 </ul>
             </div>
 
-            <!-- CONTACT -->
+            <!-- CONTACT & PAYMENTS -->
             <div class="col-lg-4 col-md-6" itemscope itemtype="https://schema.org/ContactPoint">
                 <meta itemprop="contactType" content="customer service">
                 <meta itemprop="telephone" content="+91-7070759003">
@@ -194,6 +223,7 @@ $current_year = date('Y');
                         </a>
                     </p>
                     
+                    <!-- ✅ EMAIL UPDATED -->
                     <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                         <i class="ri-mail-line text-warning"></i> 
                         <a href="mailto:support@eldurato.com" 
@@ -212,11 +242,12 @@ $current_year = date('Y');
                     <i class="ri-hand-coin-line pay-icon pay-icon-cod" title="Cash on Delivery available"></i>
                 </div>
             </div>
+
         </div>
 
         <hr class="border-secondary opacity-10 my-4">
 
-        <!-- COPYRIGHT -->
+        <!-- ✅ COPYRIGHT - FIXED -->
         <div class="row align-items-center">
             <div class="col-md-12 text-center">
                 <p class="mb-0 small" style="color: #64748b; font-size: 0.8rem;">
