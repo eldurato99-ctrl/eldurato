@@ -1,4 +1,4 @@
-<!-- includes/hero.php - COMPLETE SEO FIXED VERSION -->
+<!-- includes/hero.php - COMPLETE SEO FIXED + TEXT OVERLAY REMOVED -->
 <?php
 // Dynamic SEO Data for Hero Section
 $hero_title = "Premium Genuine Leather Belts for Men & Women - Eldurato India";
@@ -10,20 +10,18 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-<!-- ✅ HERO SECTION WITH STRUCTURED DATA -->
+<!-- ✅ HERO SECTION - TEXT OVERLAY REMOVED -->
 <section class="hero-carousel-section mb-4" data-aos="fade-down" data-aos-duration="1000" aria-label="Hero Banner">
     <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
         
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1 - Premium Leather Belts"></button>
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2 - Mega Sale Banner"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3 - New Arrivals"></button>
         </div>
 
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <picture>
-                    <!-- ✅ FIXED: Descriptive Alt Text with Keywords -->
                     <img src="/assets/images/hero-slide-1.webp" 
                          class="d-block w-100" 
                          alt="Buy premium genuine leather belts for men online at Eldurato - Best quality formal and casual belts" 
@@ -31,12 +29,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
                          width="1200" 
                          height="400">
                 </picture>
-                <!-- ✅ H2 Tag for Hero Content -->
-                <div class="carousel-caption d-none d-md-block">
-                    <h2 class="fw-bold">Premium Genuine Leather Belts</h2>
-                    <p class="lead">Shop the best quality leather belts for men & women</p>
-                    <a href="<?php echo SITE_URL; ?>/pages/products/products.php" class="btn btn-primary btn-lg">Shop Now</a>
-                </div>
+                <!-- ✅ CAPTION HATAYA - Image mein already text hai -->
             </div>
 
             <div class="carousel-item">
@@ -48,11 +41,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
                          width="1200" 
                          height="400">
                 </picture>
-                <div class="carousel-caption d-none d-md-block">
-                    <h2 class="fw-bold">Mega Sale - Up to 50% Off</h2>
-                    <p class="lead">Limited time offer on luxury leather collection</p>
-                    <a href="<?php echo SITE_URL; ?>/pages/products/products.php?filter=hot-sales" class="btn btn-warning btn-lg">Grab Deal</a>
-                </div>
+                <!-- ✅ CAPTION HATAYA - Image mein already text hai -->
             </div>
         </div>
 
@@ -137,6 +126,18 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
             line-height: 1.2;
             color: var(--theme-color);
         }
+
+        /* ✅ CAROUSEL IMAGE RATIO FIX */
+        .carousel-item img { 
+            object-fit: cover; 
+            width: 100%; 
+            height: 400px; 
+        }
+        @media (max-width: 768px) {
+            .carousel-item img { 
+                height: 250px; 
+            }
+        }
     </style>
 
     <!-- ✅ CATEGORY SECTION WITH H2 -->
@@ -144,7 +145,6 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
         <h2 class="visually-hidden">Shop by Category - Leather Belts for Men & Women</h2>
         <div class="d-flex justify-content-around flex-nowrap csv-scroll" style="overflow-x: auto; white-space: nowrap; padding-bottom: 5px;">
             
-            <!-- ✅ FIXED: Descriptive Alt Text -->
             <a href="<?php echo SITE_URL; ?>/pages/products/products.php?q=office" class="p-2 d-inline-block cat-item text-decoration-none" data-cat="formal" style="--theme-color: #0284c7; --bg-shade: #e0f2fe;">
                 <div class="circle-wrapper">
                     <img src="/assets/images/formal-belt.jpg" alt="Buy formal office leather belt for men - Premium quality at Eldurato" loading="lazy">
@@ -187,7 +187,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
         <?php include __DIR__ . '/../pages/products/RandProduct.php'; ?>
     </div>
 
-    <!-- ✅ FEATURES SECTION WITH H3 -->
+    <!-- ✅ FEATURES SECTION -->
     <section class="row text-center bg-white py-3 my-4 mx-0 shadow-sm border-bottom border-primary border-3 g-0" data-aos="fade-up" data-aos-delay="150" aria-label="Why Choose Eldurato">
         <h3 class="visually-hidden">Why Choose Eldurato - Free Shipping, COD, 7 Days Replacement</h3>
         
@@ -209,7 +209,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
         </div>
     </section>
 
-    <!-- ✅ PROMO BANNERS WITH H3 -->
+    <!-- ✅ PROMO BANNERS -->
     <section class="row my-4 g-3" aria-label="Special Offers">
         <h3 class="visually-hidden">Special Offers - Buy 1 Get 1 Free and Luxury Gift Box Packs</h3>
         
@@ -233,7 +233,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
         </div>
     </section>
 
-    <!-- ✅ PRODUCT SECTION WITH H2 -->
+    <!-- ✅ PRODUCT SECTION -->
     <section class="p-2 my-3" data-aos="fade-up" data-aos-duration="800" aria-label="Products For You - Latest Premium Collection">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
@@ -260,7 +260,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
         ?>
     </section>
 
-    <!-- ✅ REVIEWS SECTION WITH H2 + REVIEW SCHEMA -->
+    <!-- ✅ REVIEWS SECTION -->
     <section class="container my-5 py-3" aria-label="Customer Reviews">
         <div class="text-center mb-5" data-aos="fade-down">
             <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-0 px-3 py-2 mb-2 text-uppercase tracking-wider small fw-bold" style="color: #db2777 !important; background-color: #fce7f3 !important; border-color: #fbcfe8 !important;">Reviews</span>
@@ -358,7 +358,7 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
         </div>
     </section>
 
-    <!-- ✅ FAQ SECTION WITH FAQ SCHEMA -->
+    <!-- ✅ FAQ SECTION -->
     <section id="faq" class="faq-section my-5 py-4" data-aos="fade-up" data-aos-duration="800" aria-label="Frequently Asked Questions">
         <div class="container-fluid px-3 px-md-5">
             <div class="text-center mb-5">
@@ -435,7 +435,6 @@ $hero_description = "Shop 100% genuine leather belts at Eldurato. Formal, casual
 
 <style>
     body { background-color: #f1f3f6; font-family: Roboto, Arial, sans-serif; overflow-x: hidden; }
-    .carousel-item img { object-fit: cover; width: 100%; }
     .hover-zoom:hover { transform: scale(1.03); transition: transform 0.2s ease-in-out; box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
     .product-card:hover { border-color: #2874f0 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .csv-scroll::-webkit-scrollbar { display: none; }
