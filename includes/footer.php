@@ -1,267 +1,235 @@
-<!-- includes/footer.php - COMPLETE SEO FIXED VERSION -->
 <?php
-// ✅ DYNAMIC SEO DATA
-$site_name = defined('SITE_NAME') ? SITE_NAME : 'ELDURATO';
-$site_url = defined('SITE_URL') ? SITE_URL : 'https://eldurato.com';
-$assets_url = defined('ASSETS_URL') ? ASSETS_URL : '../assets';
-$current_year = date('Y');
+// ✅ SEO DATA - SIRF SEO KE LIYE
+$page_title = "Contact Us - Eldurato | Premium Leather Belts Customer Support";
+$page_description = "Contact Eldurato for premium leather belts inquiries. Customer support for orders, returns, and product questions. Reach us via WhatsApp or email.";
+$page_keywords = "contact Eldurato, leather belts support, customer care, order inquiry, WhatsApp support";
+$canonical_url = "https://eldurato.com/pages/contact.php";
+$og_image = "https://eldurato.com/assets/images/logo.png";
 
-// ✅ ORGANIZATION SCHEMA
+// अगर फॉर्म सबमिट हुआ है
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = urlencode(trim($_POST['name']));
+    $phone = urlencode(trim($_POST['phone']));
+    $email = urlencode(trim($_POST['email']));
+    $message = urlencode(trim($_POST['message']));
+
+    // आपका व्हाट्सएप नंबर (कंट्री कोड के साथ, बिना '+' के)
+    $my_whatsapp = "917070759003"; 
+
+    // व्हाट्सएप पर भेजने के लिए मैसेज का फॉर्मेट
+    $whatsapp_text = "🛍️ *New Customer Inquiry* 🛍️%0A%0A"
+                   . "*Name:* " . $name . "%0A"
+                   . "*Contact No:* " . $phone . "%0A"
+                   . "*Email:* " . $email . "%0A"
+                   . "*Message:* " . $message;
+
+    // व्हाट्सएप API URL
+    $whatsapp_url = "https://api.whatsapp.com/send?phone=" . $my_whatsapp . "&text=" . $whatsapp_text;
+
+    // सीधे व्हाट्सएप पर भेजें
+    header("Location: " . $whatsapp_url);
+    exit;
+}
 ?>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "<?php echo $site_name; ?>",
-  "url": "<?php echo $site_url; ?>",
-  "logo": "<?php echo $assets_url; ?>/images/logo.jpg",
-  "description": "Premium genuine leather belts brand in India. Handcrafted formal, casual, and luxury belts with free shipping and COD.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "123, Leather Market",
-    "addressLocality": "Lucknow",
-    "addressRegion": "Uttar Pradesh",
-    "postalCode": "226001",
-    "addressCountry": "IN"
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+91-7070759003",
-    "email": "support@eldurato.com",
-    "contactType": "customer service",
-    "availableLanguage": ["English", "Hindi"]
-  },
-  "sameAs": [
-    "https://facebook.com/eldurato",
-    "https://instagram.com/eldurato",
-    "https://twitter.com/eldurato"
-  ]
-}
-</script>
 
-<!-- ✅ LOCAL BUSINESS SCHEMA -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "<?php echo $site_name; ?>",
-  "image": "<?php echo $assets_url; ?>/images/logo.jpg",
-  "url": "<?php echo $site_url; ?>",
-  "telephone": "+91-7070759003",
-  "email": "support@eldurato.com",
-  "priceRange": "₹499 - ₹2999",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "123, Leather Market",
-    "addressLocality": "Lucknow",
-    "addressRegion": "Uttar Pradesh",
-    "postalCode": "226001",
-    "addressCountry": "IN"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": "26.862131",
-    "longitude": "80.999527"
-  }
-}
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ✅ TITLE - SEO ADDED -->
+    <title><?php echo $page_title; ?></title>
+    
+    <!-- ✅ META DESCRIPTION - SEO ADDED -->
+    <meta name="description" content="<?php echo $page_description; ?>">
+    <meta name="keywords" content="<?php echo $page_keywords; ?>">
+    <meta name="robots" content="index, follow">
+    
+    <!-- ✅ CANONICAL TAG - SEO ADDED -->
+    <link rel="canonical" href="<?php echo $canonical_url; ?>">
+    
+    <!-- ✅ OPEN GRAPH TAGS - SEO ADDED -->
+    <meta property="og:title" content="<?php echo $page_title; ?>">
+    <meta property="og:description" content="<?php echo $page_description; ?>">
+    <meta property="og:image" content="<?php echo $og_image; ?>">
+    <meta property="og:url" content="<?php echo $canonical_url; ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Eldurato">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo $page_title; ?>">
+    <meta name="twitter:description" content="<?php echo $page_description; ?>">
+    <meta name="twitter:image" content="<?php echo $og_image; ?>">
+    
+    <!-- ✅ CONTACT PAGE SCHEMA - SEO ADDED -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Eldurato",
+      "description": "<?php echo $page_description; ?>",
+      "url": "<?php echo $canonical_url; ?>",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "Eldurato",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91-7070759003",
+          "email": "support@eldurato.com",
+          "contactType": "customer service",
+          "availableLanguage": ["English", "Hindi"]
+        }
+      }
+    }
+    </script>
+    
+    <!-- ✅ BREADCRUMB SCHEMA - SEO ADDED -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://eldurato.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Contact Us",
+          "item": "https://eldurato.com/pages/contact.php"
+        }
+      ]
+    }
+    </script>
+    
+    <link rel="icon" type="image/x-icon" href="<?php echo defined('ASSETS_URL') ? rtrim(ASSETS_URL, '/') . '/images/logo.ico' : '../assets/images/logo.ico'; ?>">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
 
-<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+<!-- ✅ H1 TAG - VISUALLY HIDDEN (Design par koi effect nahi) -->
+<h1 class="visually-hidden">Contact Eldurato - Premium Leather Belts Customer Support | WhatsApp Inquiry</h1>
 
-<style>
-    .site-footer {
-        background-color: #0d0f12;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        letter-spacing: 0.3px;
-    }
-    .footer-heading {
-        font-size: 0.85rem;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 1.25rem;
-    }
-    .footer-link {
-        font-size: 0.9rem;
-        color: #94a3b8 !important;
-        text-decoration: none;
-        transition: color 0.2s ease, transform 0.2s ease;
-        display: inline-block;
-    }
-    .footer-link:hover {
-        color: #ffc107 !important;
-        transform: translateX(4px);
-    }
-    .social-btn {
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.03);
-        color: #94a3b8 !important;
-        transition: all 0.2s ease;
-    }
-    .social-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff !important;
-        transform: translateY(-2px);
-    }
-    .pay-icon {
-        color: #64748b;
-        transition: color 0.2s ease;
-        font-size: 1.75rem;
-    }
-    .pay-icon-visa:hover { color: #1A1F71; }
-    .pay-icon-mc:hover { color: #EB001B; }
-    .pay-icon-up:hover { color: #008CFF; }
-    .pay-icon-cod:hover { color: #10b981; }
-    .color-inherit { color: inherit; }
-    .color-inherit:hover { color: #ffc107; }
-</style>
+<!-- ✅ BREADCRUMB NAVIGATION - SEO ADDED (Design same) -->
+<nav aria-label="breadcrumb" class="container mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="https://eldurato.com/"><i class="fas fa-home"></i> Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+    </ol>
+</nav>
 
-<footer class="site-footer text-white pt-5 pb-4" role="contentinfo">
-    <div class="container">
-        <div class="row g-4 text-md-start text-center">
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
             
-            <!-- BRAND & DESCRIPTION -->
-            <div class="col-lg-4 col-md-6" itemscope itemtype="https://schema.org/Organization">
-                <meta itemprop="name" content="<?php echo $site_name; ?>">
-                <meta itemprop="url" content="<?php echo $site_url; ?>">
-                <meta itemprop="logo" content="<?php echo $assets_url; ?>/images/logo.jpg">
-                
-                <h5 class="fw-bold mb-3 d-flex align-items-center justify-content-center justify-content-md-start text-warning" style="letter-spacing: 1px; font-size: 1.2rem;">
-                    <img src="<?php echo $assets_url; ?>/images/logo.jpg" 
-                         class="me-2 rounded-1" 
-                         alt="<?php echo $site_name; ?> - Premium Leather Belts Brand India" 
-                         width="40" 
-                         onerror="this.style.display='none'"
-                         loading="lazy">
-                    <?php echo $site_name; ?>
-                </h5>
-                
-                <p class="small lh-lg text-secondary pe-lg-4" style="color: #94a3b8;">
-                    Crafting premium quality leather belts designed for ultimate durability and timeless style. From formal sophistication to casual everyday essentials.
-                </p>
-                
-                <!-- ✅ SOCIAL MEDIA LINKS - FIXED -->
-                <div class="d-flex justify-content-center justify-content-md-start gap-2 mt-4">
-                    <a href="https://facebook.com/eldurato" 
-                       class="social-btn" 
-                       aria-label="Follow Eldurato on Facebook" 
-                       target="_blank" 
-                       rel="noopener noreferrer nofollow">
-                        <i class="ri-facebook-fill"></i>
-                    </a>
-                    <a href="https://instagram.com/eldurato" 
-                       class="social-btn" 
-                       aria-label="Follow Eldurato on Instagram" 
-                       target="_blank" 
-                       rel="noopener noreferrer nofollow">
-                        <i class="ri-instagram-line"></i>
-                    </a>
-                    <a href="https://twitter.com/eldurato" 
-                       class="social-btn" 
-                       aria-label="Follow Eldurato on Twitter" 
-                       target="_blank" 
-                       rel="noopener noreferrer nofollow">
-                        <i class="ri-twitter-x-fill"></i>
-                    </a>
-                </div>
+            <!-- ✅ PAGE HEADER - SEO ADDED -->
+            <div class="text-center mb-4">
+                <h2 class="display-5 fw-bold text-dark">Get in Touch</h2>
+                <p class="text-muted">We'd love to hear from you! Reach out for any inquiries about our premium leather belts.</p>
             </div>
 
-            <!-- COLLECTIONS -->
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <h6 class="footer-heading">Collections</h6>
-                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                    <li><a href="<?php echo $site_url; ?>/pages/products/products.php?q=formal" class="footer-link">Premium Formal</a></li>
-                    <li><a href="<?php echo $site_url; ?>/pages/products/products.php?q=casual" class="footer-link">Casual Leather</a></li>
-                    <li><a href="<?php echo $site_url; ?>/pages/products/products.php?q=luxury" class="footer-link">Luxury Edition</a></li>
-                    <li><a href="<?php echo $site_url; ?>/pages/products/products.php?q=reversible" class="footer-link">Reversible 2-in-1</a></li>
-                </ul>
-            </div>
-
-            <!-- QUICK LINKS -->
-            <div class="col-lg-2 col-md-6 col-sm-6">
-                <h6 class="footer-heading">Quick Links</h6>
-                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                    <li><a href="<?php echo $site_url; ?>/pages/about.php" class="footer-link">About Us</a></li>
-                    <li><a href="<?php echo $site_url; ?>/pages/contact.php" class="footer-link">Contact Us</a></li>
-                    <li><a href="<?php echo $site_url; ?>/pages/products/new-arrivals.php" class="footer-link">New Arrivals</a></li>
-                    <li><a href="<?php echo $site_url; ?>/pages/products/products.php?filter=hot-sales" class="footer-link">Hot Sales</a></li>
-                </ul>
-            </div>
-
-            <!-- CONTACT & PAYMENTS -->
-            <div class="col-lg-4 col-md-6" itemscope itemtype="https://schema.org/ContactPoint">
-                <meta itemprop="contactType" content="customer service">
-                <meta itemprop="telephone" content="+91-7070759003">
-                <meta itemprop="email" content="support@eldurato.com">
+            <div class="card shadow border-0 rounded-3">
                 
-                <h6 class="footer-heading">Get In Touch</h6>
-                <div class="small d-flex flex-column gap-2 mb-4" style="color: #94a3b8;">
-                    
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                        <i class="ri-map-pin-line text-warning"></i> 
-                        <a href="https://maps.google.com/?q=26.862131,80.999527" 
-                           target="_blank" 
-                           rel="noopener noreferrer nofollow" 
-                           class="text-decoration-none color-inherit"
-                           aria-label="Find Eldurato on Google Maps">
-                            123, Leather Market, Lucknow, India
-                        </a>
-                    </p>
-                    
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                        <i class="ri-phone-line text-warning"></i> 
-                        <a href="tel:+917070759003" 
-                           class="text-decoration-none color-inherit" 
-                           aria-label="Call Eldurato at +91 7070759003">
-                            +91 7070759003
-                        </a>
-                    </p>
-                    
-                    <!-- ✅ EMAIL UPDATED -->
-                    <p class="mb-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                        <i class="ri-mail-line text-warning"></i> 
-                        <a href="mailto:support@eldurato.com" 
-                           class="text-decoration-none color-inherit" 
-                           aria-label="Email Eldurato at support@eldurato.com">
-                            support@eldurato.com
-                        </a>
-                    </p>
+                <!-- कार्ड हेडर -->
+                <div class="card-header bg-success text-white text-center py-3">
+                    <h4><i class="fab fa-whatsapp me-2"></i>Chat with Us on WhatsApp</h4>
+                    <p class="mb-0 small">Quick response within 24 hours</p>
                 </div>
 
-                <h6 class="footer-heading mb-2" style="font-size: 10px; color: #64748b;">100% Safe Checkout</h6>
-                <div class="d-flex justify-content-center justify-content-md-start gap-3">
-                    <i class="ri-visa-line pay-icon pay-icon-visa" title="Visa accepted"></i>
-                    <i class="ri-mastercard-line pay-icon pay-icon-mc" title="Mastercard accepted"></i>
-                    <i class="ri-bank-card-line pay-icon pay-icon-up" title="UPI / RuPay accepted"></i>
-                    <i class="ri-hand-coin-line pay-icon pay-icon-cod" title="Cash on Delivery available"></i>
+                <div class="card-body p-4">
+                    
+                    <!-- ✅ CONTACT INFO - EMAIL UPDATED -->
+                    <div class="row text-center mb-4">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <i class="fas fa-phone text-success fs-4"></i>
+                                <p class="mb-0 fw-bold">+91 7070759003</p>
+                                <small class="text-muted">Call or WhatsApp</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <i class="fas fa-envelope text-primary fs-4"></i>
+                                <p class="mb-0 fw-bold">support@eldurato.com</p>
+                                <small class="text-muted">Email us</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST" action="">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-user me-1"></i> Full Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-phone me-1"></i> Contact Number</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="Enter your mobile number" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-envelope me-1"></i> Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter your email (optional)">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-comment me-1"></i> Your Message / Query</label>
+                            <textarea name="message" class="form-control" rows="4" placeholder="What would you like to know? (Product name, Order ID, etc.)" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                            <i class="fab fa-whatsapp me-2"></i> Send to WhatsApp
+                        </button>
+
+                    </form>
                 </div>
+
+                <div class="card-footer text-center bg-white border-0 pb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-user-tie me-1"></i> Owner: Raj Sahni 
+                        | <i class="fas fa-headset me-1"></i> Support: 7070759003
+                        | <i class="fas fa-clock me-1"></i> Response: 24/7
+                    </small>
+                </div>
+
             </div>
 
-        </div>
-
-        <hr class="border-secondary opacity-10 my-4">
-
-        <!-- ✅ COPYRIGHT - FIXED -->
-        <div class="row align-items-center">
-            <div class="col-md-12 text-center">
-                <p class="mb-0 small" style="color: #64748b; font-size: 0.8rem;">
-                    &copy; <?php echo $current_year; ?> 
-                    <span class="text-white fw-medium"><?php echo $site_name; ?></span>. 
-                    All Rights Reserved. 
-                    Developed by <a href="https://www.awebgrow.com" 
-                                     target="_blank" 
-                                     rel="noopener noreferrer nofollow" 
-                                     style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">
-                        AWebGrow
-                    </a>
-                </p>
+            <!-- ✅ TRUST BADGES - Design Same -->
+            <div class="row mt-4 g-3">
+                <div class="col-md-4">
+                    <div class="text-center p-3 bg-white rounded-3 shadow-sm">
+                        <i class="fas fa-truck fs-2 text-warning"></i>
+                        <p class="fw-bold mb-0 mt-2">Free Shipping</p>
+                        <small class="text-muted">On all orders</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3 bg-white rounded-3 shadow-sm">
+                        <i class="fas fa-undo fs-2 text-primary"></i>
+                        <p class="fw-bold mb-0 mt-2">7-Day Return</p>
+                        <small class="text-muted">Easy replacement</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3 bg-white rounded-3 shadow-sm">
+                        <i class="fas fa-shield-alt fs-2 text-success"></i>
+                        <p class="fw-bold mb-0 mt-2">100% Genuine</p>
+                        <small class="text-muted">Pure leather</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
