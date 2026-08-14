@@ -8,12 +8,27 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/functions.php';
 
-// ✅ DYNAMIC SEO DATA
+// ✅ DYNAMIC SEO DATA (Restored from your old file)
 $page_title = "Buy Premium Leather Belts Online - Eldurato | Best Quality Belts for Men & Women";
 $page_description = "Shop premium genuine leather belts at Eldurato. Find formal, casual, and luxury belts for men & women. Free shipping, COD, and 7-day replacement available.";
 $page_keywords = "leather belts, men belts, women belts, formal belts, casual belts, premium leather, buy belts online India";
-$canonical_url = "https://eldurato.com/pages/products/products.php";
 $og_image = "https://eldurato.com/assets/images/logo.png";
+
+// ✅ CRITICAL FIXES FOR GOOGLE DUPLICATE ERROR
+// 1. Base Canonical URL
+$canonical_url = "https://eldurato.com/pages/products/products.php";
+
+// 2. If filters are applied, make the Canonical URL dynamic (so Google doesn't see them as duplicates of the main page)
+if (!empty($_GET)) {
+    $canonical_url = "https://eldurato.com/pages/products/products.php?" . http_build_query($_GET);
+}
+
+// 3. Dynamic Noindex Logic (Prevent deep filter pages from appearing in Google Search)
+$robots_meta = "index, follow"; // Default: Google index kare
+// If URL has 'style', 'q' (search), 'color', or 'material', tell Google NOT to index, but follow links
+if (isset($_GET['style']) || isset($_GET['q']) || isset($_GET['color']) || isset($_GET['material'])) {
+    $robots_meta = "noindex, follow"; 
+}
 
 // ✅ CHECK IF INCLUDED IN HERO
 $isIncluded = defined('INCLUDED_IN_HERO') || basename($_SERVER['SCRIPT_FILENAME']) !== 'products.php';
@@ -107,12 +122,12 @@ foreach ($dbProducts as $product) {
     <!-- ✅ TITLE - DYNAMIC -->
     <title><?php echo $page_title; ?></title>
     
-    <!-- ✅ META DESCRIPTION - CRITICAL FIX -->
+    <!-- ✅ META DESCRIPTION -->
     <meta name="description" content="<?php echo $page_description; ?>">
     <meta name="keywords" content="<?php echo $page_keywords; ?>">
-    <meta name="robots" content="index, follow">
     
-    <!-- ✅ CANONICAL TAG - CRITICAL FIX -->
+    <!-- ✅ CRITICAL FIX: DYNAMIC ROBOTS & CANONICAL TAGS -->
+    <meta name="robots" content="<?php echo $robots_meta; ?>">
     <link rel="canonical" href="<?php echo $canonical_url; ?>">
     
     <!-- ✅ OPEN GRAPH TAGS -->
@@ -166,6 +181,7 @@ foreach ($dbProducts as $product) {
     }
     </script>
 
+    <!-- ✅ CSS FILES -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -466,44 +482,14 @@ foreach ($dbProducts as $product) {
                 badgeHTML = `<div class="discount-badge">${product.discount}% OFF</div>`;
             }
 
-            // ✅ PRODUCT SCHEMA - EACH PRODUCT
-            const productSchema = {
-                "@context": "https://schema.org",
-                "@type": "Product",
-                "name": product.name,
-                "brand": { "@type": "Brand", "name": product.brand },
-                "image": product.image,
-                "offers": {
-                    "@type": "Offer",
-                    "price": product.price,
-                    "priceCurrency": "INR",
-                    "availability": isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-                    "url": product.details_url
-                }
-            };
-
             return `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="product-card card h-100 p-1 d-flex flex-column justify-content-between rounded-0 ${isOutOfStock ? 'opacity-75' : ''}" 
-                         itemscope itemtype="https://schema.org/Product">
-                        <meta itemprop="name" content="${product.name}">
-                        <meta itemprop="brand" content="${product.brand}">
-                        <meta itemprop="image" content="${product.image}">
-                        <meta itemprop="price" content="${product.price}">
-                        <meta itemprop="priceCurrency" content="INR">
-                        <meta itemprop="availability" content="${isOutOfStock ? 'OutOfStock' : 'InStock'}">
-                        
+                    <div class="product-card card h-100 p-1 d-flex flex-column justify-content-between rounded-0 ${isOutOfStock ? 'opacity-75' : ''}">
                         <div>
                             <div class="product-img-wrapper d-flex align-items-center justify-content-center bg-white position-relative rounded-0">
                                 ${badgeHTML}
                                 <a href="${product.details_url}" class="w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <!-- ✅ FIXED: Descriptive Alt Text -->
-                                    <img src="${product.image}" 
-                                         class="w-100 h-100 object-fit-contain p-1 rounded-0" 
-                                         alt="Buy ${product.name} premium leather belt online at Eldurato - Best quality" 
-                                         loading="lazy"
-                                         width="300" 
-                                         height="300">
+                                    <img src="${product.image}" class="w-100 h-100 object-fit-contain p-1 rounded-0" alt="${product.name}">
                                 </a>
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <button type="button" class="wishlist-btn d-flex align-items-center justify-content-center shadow-none rounded-0" data-product-id="${product.id}">
@@ -513,13 +499,13 @@ foreach ($dbProducts as $product) {
                             </div>
                             <div class="px-2 pt-1">
                                 <div style="font-size: 9px; color: #a0aec0; font-weight: 700; text-transform: uppercase; letter-spacing:0.3px;">${product.brand}</div>
-                                <div class="text-truncate-2 mt-0.5 text-dark fw-medium" style="font-size: 12.5px; line-height: 1.3;" itemprop="description">${product.name}</div>
+                                <div class="text-truncate-2 mt-0.5 text-dark fw-medium" style="font-size: 12.5px; line-height: 1.3;">${product.name}</div>
                                 ${finalStarsView}
                             </div>
                         </div>
                         <div class="px-2 pb-2 mt-auto">
                             <div class="d-flex align-items-baseline gap-1 mb-2">
-                                <span class="fw-bold text-dark" style="font-size: 15px;" itemprop="price">₹${formatMoney(product.price)}</span> ${oldPriceHTML}
+                                <span class="fw-bold text-dark" style="font-size: 15px;">₹${formatMoney(product.price)}</span> ${oldPriceHTML}
                             </div>
                             <form action="${cartActionUrl}" method="POST" class="m-0">
                                 <input type="hidden" name="product_id" value="${product.id}">
@@ -551,7 +537,6 @@ foreach ($dbProducts as $product) {
 
         let html = '';
         
-        // ✅ PREV BUTTON WITH rel="prev"
         html += `
             <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                 <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" rel="${currentPage > 1 ? 'prev' : ''}">
@@ -572,7 +557,6 @@ foreach ($dbProducts as $product) {
             }
         }
 
-        // ✅ NEXT BUTTON WITH rel="next"
         html += `
             <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
                 <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" rel="${currentPage < totalPages ? 'next' : ''}">
@@ -669,7 +653,6 @@ foreach ($dbProducts as $product) {
         applyFilters();
     });
 
-    // ✅ WISHLIST AJAX
     document.addEventListener('click', async e => {
         const btn = e.target.closest('.wishlist-btn');
         if(!btn) return;
