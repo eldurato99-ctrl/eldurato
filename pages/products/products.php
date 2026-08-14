@@ -1,20 +1,36 @@
 <?php
+// ✅ SESSION START
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// ✅ INCLUDE CONFIG
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/functions.php';
+
+// ✅ DYNAMIC SEO DATA
+$page_title = "Buy Premium Leather Belts Online - Eldurato | Best Quality Belts for Men & Women";
+$page_description = "Shop premium genuine leather belts at Eldurato. Find formal, casual, and luxury belts for men & women. Free shipping, COD, and 7-day replacement available.";
+$page_keywords = "leather belts, men belts, women belts, formal belts, casual belts, premium leather, buy belts online India";
+$canonical_url = "https://eldurato.com/pages/products/products.php";
+$og_image = "https://eldurato.com/assets/images/logo.png";
+
+// ✅ CHECK IF INCLUDED IN HERO
 $isIncluded = defined('INCLUDED_IN_HERO') || basename($_SERVER['SCRIPT_FILENAME']) !== 'products.php';
+
 if (!$isIncluded) {
     include __DIR__ . '/../../includes/header.php';
     include __DIR__ . '/../../includes/navbar.php';
 }
+
+// ✅ URL FUNCTION
 if (!function_exists('url')) {
     function url($path) {
         return '/' . ltrim($path, '/');
     }
 }
 
+// ✅ GET USER WISHLIST
 $loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 $userWishlistItems = [];
 if ($loggedInUserId > 0) {
@@ -27,6 +43,7 @@ if ($loggedInUserId > 0) {
     }
 }
 
+// ✅ CHECK TABLE COLUMNS
 try {
     $colQuery = $pdo->query("SHOW COLUMNS FROM all_products_list");
     $columns = $colQuery->fetchAll(PDO::FETCH_COLUMN);
@@ -39,15 +56,17 @@ try {
     $hasCategory = $hasBrand = $hasRating = $hasColor = $hasMaterial = false;
 }
 
+// ✅ GET FILTERS DATA
 $allCategories = $hasCategory ? $pdo->query("SELECT DISTINCT category FROM all_products_list WHERE category IS NOT NULL AND category != '' ORDER BY category")->fetchAll(PDO::FETCH_COLUMN) : [];
 $allBrands = $hasBrand ? $pdo->query("SELECT DISTINCT brand FROM all_products_list WHERE brand IS NOT NULL AND brand != '' ORDER BY brand")->fetchAll(PDO::FETCH_COLUMN) : [];
-
 $allColors = $hasColor ? $pdo->query("SELECT DISTINCT color FROM all_products_list WHERE color IS NOT NULL AND color != '' ORDER BY color")->fetchAll(PDO::FETCH_COLUMN) : [];
 $allMaterials = $hasMaterial ? $pdo->query("SELECT DISTINCT material FROM all_products_list WHERE material IS NOT NULL AND material != '' ORDER BY material")->fetchAll(PDO::FETCH_COLUMN) : [];
 
+// ✅ GET PRODUCTS
 $stmt = $pdo->query("SELECT * FROM all_products_list ORDER BY id DESC");
 $dbProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// ✅ BUILD PRODUCTS ARRAY
 $jsProducts = [];
 foreach ($dbProducts as $product) {
     $price = (int)$product['price'];
@@ -79,100 +98,183 @@ foreach ($dbProducts as $product) {
 }
 ?>
 
-<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ✅ TITLE - DYNAMIC -->
+    <title><?php echo $page_title; ?></title>
+    
+    <!-- ✅ META DESCRIPTION - CRITICAL FIX -->
+    <meta name="description" content="<?php echo $page_description; ?>">
+    <meta name="keywords" content="<?php echo $page_keywords; ?>">
+    <meta name="robots" content="index, follow">
+    
+    <!-- ✅ CANONICAL TAG - CRITICAL FIX -->
+    <link rel="canonical" href="<?php echo $canonical_url; ?>">
+    
+    <!-- ✅ OPEN GRAPH TAGS -->
+    <meta property="og:title" content="<?php echo $page_title; ?>">
+    <meta property="og:description" content="<?php echo $page_description; ?>">
+    <meta property="og:image" content="<?php echo $og_image; ?>">
+    <meta property="og:url" content="<?php echo $canonical_url; ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Eldurato">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo $page_title; ?>">
+    <meta name="twitter:description" content="<?php echo $page_description; ?>">
+    <meta name="twitter:image" content="<?php echo $og_image; ?>">
+    
+    <!-- ✅ COLLECTION PAGE SCHEMA -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Premium Leather Belts Collection",
+      "description": "<?php echo $page_description; ?>",
+      "url": "<?php echo $canonical_url; ?>",
+      "brand": {
+        "@type": "Brand",
+        "name": "Eldurato"
+      }
+    }
+    </script>
+    
+    <!-- ✅ BREADCRUMB SCHEMA -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://eldurato.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Products",
+          "item": "https://eldurato.com/pages/products/products.php"
+        }
+      ]
+    }
+    </script>
 
-<style>
-    .product-card { 
-        background: #ffffff; 
-        border: 1px solid #e2e8f0 !important; 
-        border-radius: 0px !important; 
-        overflow: hidden; 
-        box-shadow: none;
-        transition: transform 0.2s ease; 
-    }
-    .product-card:active { transform: scale(0.98); }
-    
-    .text-truncate-2 { 
-        display: -webkit-box; 
-        -webkit-line-clamp: 2; 
-        -webkit-box-orient: vertical; 
-        overflow: hidden; 
-        height: 34px; 
-    }
-    
-    .product-img-wrapper { 
-        position: relative; 
-        background-color: #ffffff; 
-        border-radius: 0px !important;
-        margin: 0px;
-        aspect-ratio: 1/1; 
-        overflow: hidden; 
-    }
-    .discount-badge { 
-        position: absolute; 
-        bottom: 6px; 
-        left: 6px; 
-        background: #dc3545; 
-        color: white; 
-        padding: 3px 6px; 
-        border-radius: 0px !important; 
-        font-size: 9px; 
-        font-weight: 700; 
-        z-index: 2; 
-    }
-    .wishlist-btn { 
-        width: 32px; 
-        height: 32px; 
-        border-radius: 0px !important; 
-        background: rgba(255, 255, 255, 0.9); 
-        border: 1px solid #e2e8f0; 
-    }
-    .add-to-cart-btn { 
-        background: #1a202c; 
-        border: none; 
-        color: white; 
-        font-weight: 600; 
-        font-size: 11px; 
-        padding: 8px; 
-        border-radius: 0px !important; 
-    }
-    
-    .filter-card { border-radius: 0px !important; border: 1px solid #e2e8f0; background: white; box-shadow: none; }
-    .filter-section-title { font-size: 10px; font-weight: 700; color: #a0aec0; letter-spacing: 0.8px; margin-bottom: 12px; text-transform: uppercase; }
-    .custom-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
-    .custom-checkbox input { width: 17px; height: 17px; accent-color: #1a202c; cursor: pointer; border-radius: 0px !important; }
-    .custom-checkbox span { font-size: 13px; color: #4a5568; }
-    .price-input { border-radius: 0px !important; border: 1px solid #e2e8f0; padding: 6px 12px; font-size: 13px; background: #f8fafc; }
-    .price-input:focus { border-color: #1a202c; box-shadow: none; background: #fff; }
-    
-    .rating-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
-    .rating-option input { width: 17px; height: 17px; accent-color: #1a202c; }
-    .rating-option span { font-size: 13px; color: #4a5568; }
-    .clear-btn { background: #fff5f5; border: 1px solid #fed7d7; color: #e53e3e; font-weight: 600; font-size: 12px; padding: 9px; border-radius: 0px !important; }
-    
-    .skeleton-card { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 0px !important; }
-    @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    
-    .pagination .page-link { color: #4a5568; border-radius: 0px !important; margin: 0 3px; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 600; box-shadow: none !important; }
-    .pagination .page-item.active .page-link { background-color: #1a202c; border-color: #1a202c; color: #fff; }
-</style>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .product-card { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0 !important; 
+            border-radius: 0px !important; 
+            overflow: hidden; 
+            box-shadow: none;
+            transition: transform 0.2s ease; 
+        }
+        .product-card:active { transform: scale(0.98); }
+        
+        .text-truncate-2 { 
+            display: -webkit-box; 
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical; 
+            overflow: hidden; 
+            height: 34px; 
+        }
+        
+        .product-img-wrapper { 
+            position: relative; 
+            background-color: #ffffff; 
+            border-radius: 0px !important;
+            margin: 0px;
+            aspect-ratio: 1/1; 
+            overflow: hidden; 
+        }
+        .discount-badge { 
+            position: absolute; 
+            bottom: 6px; 
+            left: 6px; 
+            background: #dc3545; 
+            color: white; 
+            padding: 3px 6px; 
+            border-radius: 0px !important; 
+            font-size: 9px; 
+            font-weight: 700; 
+            z-index: 2; 
+        }
+        .wishlist-btn { 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 0px !important; 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 1px solid #e2e8f0; 
+        }
+        .add-to-cart-btn { 
+            background: #1a202c; 
+            border: none; 
+            color: white; 
+            font-weight: 600; 
+            font-size: 11px; 
+            padding: 8px; 
+            border-radius: 0px !important; 
+        }
+        
+        .filter-card { border-radius: 0px !important; border: 1px solid #e2e8f0; background: white; box-shadow: none; }
+        .filter-section-title { font-size: 10px; font-weight: 700; color: #a0aec0; letter-spacing: 0.8px; margin-bottom: 12px; text-transform: uppercase; }
+        .custom-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .custom-checkbox input { width: 17px; height: 17px; accent-color: #1a202c; cursor: pointer; border-radius: 0px !important; }
+        .custom-checkbox span { font-size: 13px; color: #4a5568; }
+        .price-input { border-radius: 0px !important; border: 1px solid #e2e8f0; padding: 6px 12px; font-size: 13px; background: #f8fafc; }
+        .price-input:focus { border-color: #1a202c; box-shadow: none; background: #fff; }
+        
+        .rating-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .rating-option input { width: 17px; height: 17px; accent-color: #1a202c; }
+        .rating-option span { font-size: 13px; color: #4a5568; }
+        .clear-btn { background: #fff5f5; border: 1px solid #fed7d7; color: #e53e3e; font-weight: 600; font-size: 12px; padding: 9px; border-radius: 0px !important; }
+        
+        .skeleton-card { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 0px !important; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        .pagination .page-link { color: #4a5568; border-radius: 0px !important; margin: 0 3px; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 600; box-shadow: none !important; }
+        .pagination .page-item.active .page-link { background-color: #1a202c; border-color: #1a202c; color: #fff; }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- ✅ H1 TAG - CRITICAL FIX -->
+<h1 class="visually-hidden">Buy Premium Leather Belts Online - Eldurato India's Best Belt Store</h1>
+
+<!-- ✅ BREADCRUMB NAVIGATION -->
+<nav aria-label="breadcrumb" class="container-fluid px-2 px-md-3 mt-2">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="<?php echo SITE_URL; ?>" class="text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Products</li>
+    </ol>
+</nav>
 
 <div class="<?php echo $isIncluded ? 'p-0' : 'container-fluid'; ?>">
     <div class="container-fluid py-2 px-2 px-md-3">
         
-        <div class="d-flex align-items-center justify-content-between mb-3 px-1 d-md-none">
-            <div class="d-flex align-items-center">
-                <a href="javascript:history.back()" class="text-dark me-2 text-decoration-none"><i class="ri-arrow-left-line fs-4"></i></a>
-                <h5 class="fw-bold mb-0">Products</h5>
+        <!-- ✅ H2 TAG -->
+        <div class="d-flex align-items-center justify-content-between mb-3 px-1">
+            <div>
+                <h2 class="fw-bold mb-0" style="font-size: 1.25rem;">Premium Leather Belts Collection</h2>
+                <small class="text-muted">Handcrafted genuine leather belts for men & women</small>
             </div>
-            <button class="btn btn-sm btn-dark rounded-0 px-3 py-1.5 fw-bold" style="font-size: 12px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+            <button class="btn btn-sm btn-dark rounded-0 px-3 py-1.5 fw-bold d-md-none" style="font-size: 12px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
                 <i class="ri-filter-3-line"></i> Filter
             </button>
         </div>
 
         <div class="row g-2 g-md-3">
+            <!-- FILTER SIDEBAR -->
             <div class="col-md-4 col-lg-3 d-none d-md-block">
                 <div class="filter-card p-3 sticky-top" style="top: 20px; z-index: 100;">
                     <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
@@ -183,6 +285,7 @@ foreach ($dbProducts as $product) {
                 </div>
             </div>
 
+            <!-- PRODUCT GRID -->
             <div class="col-md-8 col-lg-9">
                 <div class="row g-2 g-md-3" id="productGrid">
                     <?php for($i = 0; $i < 8; $i++): ?>
@@ -192,6 +295,7 @@ foreach ($dbProducts as $product) {
                     <?php endfor; ?>
                 </div>
 
+                <!-- ✅ PAGINATION WITH REL="prev/next" -->
                 <div class="d-flex justify-content-center mt-4 mb-2">
                     <nav aria-label="Product navigation">
                         <ul class="pagination pagination-sm m-0" id="paginationContainer"></ul>
@@ -202,6 +306,7 @@ foreach ($dbProducts as $product) {
     </div>
 </div>
 
+<!-- MOBILE FILTER OFFCANVAS -->
 <div class="offcanvas offcanvas-bottom h-75 rounded-0" tabindex="-1" id="filterOffcanvas">
     <div class="offcanvas-header border-bottom py-3 px-3">
         <h6 class="offcanvas-title fw-bold text-dark" style="font-size: 15px;"><i class="ri-filter-3-line me-1"></i> Sort & Filter</h6>
@@ -210,6 +315,7 @@ foreach ($dbProducts as $product) {
     <div class="offcanvas-body p-3" id="mobileFilterContainer"></div>
 </div>
 
+<!-- FILTER FORM TEMPLATE -->
 <div id="masterFormTemplate" class="d-none">
     <form id="filterForm" onsubmit="event.preventDefault();">
         <?php if ($hasCategory && !empty($allCategories)): ?>
@@ -351,7 +457,6 @@ foreach ($dbProducts as $product) {
                     <span style="font-size: 10px; color: #4a5568; font-weight:700;">${product.rating}</span>
                 </div>` : '';
 
-            // 🚫 Dual Stock Check (Numeric Stock <= 0 OR stock_status === 'out_of_stock')
             const isOutOfStock = (product.stock !== null && product.stock <= 0) || product.stock_status === 'out_of_stock';
             
             let badgeHTML = '';
@@ -361,14 +466,44 @@ foreach ($dbProducts as $product) {
                 badgeHTML = `<div class="discount-badge">${product.discount}% OFF</div>`;
             }
 
+            // ✅ PRODUCT SCHEMA - EACH PRODUCT
+            const productSchema = {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": product.name,
+                "brand": { "@type": "Brand", "name": product.brand },
+                "image": product.image,
+                "offers": {
+                    "@type": "Offer",
+                    "price": product.price,
+                    "priceCurrency": "INR",
+                    "availability": isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                    "url": product.details_url
+                }
+            };
+
             return `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="product-card card h-100 p-1 d-flex flex-column justify-content-between rounded-0 ${isOutOfStock ? 'opacity-75' : ''}">
+                    <div class="product-card card h-100 p-1 d-flex flex-column justify-content-between rounded-0 ${isOutOfStock ? 'opacity-75' : ''}" 
+                         itemscope itemtype="https://schema.org/Product">
+                        <meta itemprop="name" content="${product.name}">
+                        <meta itemprop="brand" content="${product.brand}">
+                        <meta itemprop="image" content="${product.image}">
+                        <meta itemprop="price" content="${product.price}">
+                        <meta itemprop="priceCurrency" content="INR">
+                        <meta itemprop="availability" content="${isOutOfStock ? 'OutOfStock' : 'InStock'}">
+                        
                         <div>
                             <div class="product-img-wrapper d-flex align-items-center justify-content-center bg-white position-relative rounded-0">
                                 ${badgeHTML}
                                 <a href="${product.details_url}" class="w-100 h-100 d-flex align-items-center justify-content-center">
-                                    <img src="${product.image}" class="w-100 h-100 object-fit-contain p-1 rounded-0" alt="${product.name}">
+                                    <!-- ✅ FIXED: Descriptive Alt Text -->
+                                    <img src="${product.image}" 
+                                         class="w-100 h-100 object-fit-contain p-1 rounded-0" 
+                                         alt="Buy ${product.name} premium leather belt online at Eldurato - Best quality" 
+                                         loading="lazy"
+                                         width="300" 
+                                         height="300">
                                 </a>
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <button type="button" class="wishlist-btn d-flex align-items-center justify-content-center shadow-none rounded-0" data-product-id="${product.id}">
@@ -378,17 +513,18 @@ foreach ($dbProducts as $product) {
                             </div>
                             <div class="px-2 pt-1">
                                 <div style="font-size: 9px; color: #a0aec0; font-weight: 700; text-transform: uppercase; letter-spacing:0.3px;">${product.brand}</div>
-                                <div class="text-truncate-2 mt-0.5 text-dark fw-medium" style="font-size: 12.5px; line-height: 1.3;">${product.name}</div>
+                                <div class="text-truncate-2 mt-0.5 text-dark fw-medium" style="font-size: 12.5px; line-height: 1.3;" itemprop="description">${product.name}</div>
                                 ${finalStarsView}
                             </div>
                         </div>
                         <div class="px-2 pb-2 mt-auto">
                             <div class="d-flex align-items-baseline gap-1 mb-2">
-                                <span class="fw-bold text-dark" style="font-size: 15px;">₹${formatMoney(product.price)}</span> ${oldPriceHTML}
+                                <span class="fw-bold text-dark" style="font-size: 15px;" itemprop="price">₹${formatMoney(product.price)}</span> ${oldPriceHTML}
                             </div>
                             <form action="${cartActionUrl}" method="POST" class="m-0">
                                 <input type="hidden" name="product_id" value="${product.id}">
-                                <input type="hidden" name="quantity" value="1"><input type="hidden" name="size" value="32">
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="size" value="32">
                                 
                                 ${isOutOfStock ? 
                                     `<button type="button" class="btn btn-secondary w-100 disabled py-2 text-uppercase fw-bold rounded-0" style="font-size:10px;"><i class="ri-close-circle-line me-1"></i> Sold Out</button>` : 
@@ -413,25 +549,35 @@ foreach ($dbProducts as $product) {
             return;
         }
 
-        let html = `
+        let html = '';
+        
+        // ✅ PREV BUTTON WITH rel="prev"
+        html += `
             <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;"><i class="ri-arrow-left-s-line"></i></a>
+                <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" rel="${currentPage > 1 ? 'prev' : ''}">
+                    <i class="ri-arrow-left-s-line"></i>
+                </a>
             </li>`;
 
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                 html += `
                     <li class="page-item ${currentPage === i ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
+                        <a class="page-link" href="#" onclick="changePage(${i}); return false;" ${i > currentPage ? 'rel="next"' : ''}>
+                            ${i}
+                        </a>
                     </li>`;
             } else if (i === currentPage - 2 || i === currentPage + 2) {
                 html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
             }
         }
 
+        // ✅ NEXT BUTTON WITH rel="next"
         html += `
             <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;"><i class="ri-arrow-right-s-line"></i></a>
+                <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" rel="${currentPage < totalPages ? 'next' : ''}">
+                    <i class="ri-arrow-right-s-line"></i>
+                </a>
             </li>`;
 
         container.innerHTML = html;
@@ -523,6 +669,7 @@ foreach ($dbProducts as $product) {
         applyFilters();
     });
 
+    // ✅ WISHLIST AJAX
     document.addEventListener('click', async e => {
         const btn = e.target.closest('.wishlist-btn');
         if(!btn) return;
@@ -567,3 +714,9 @@ foreach ($dbProducts as $product) {
         }
     });
 </script>
+
+<?php if (!$isIncluded) {
+    include __DIR__ . '/../../includes/footer.php';
+} ?>
+</body>
+</html>
