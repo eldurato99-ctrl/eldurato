@@ -210,7 +210,6 @@ foreach ($cart_items as $item) {
 ?>
 
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-
 <style>
     body { background-color: #eef2f7 !important; }
     .table-card-wrapper { border: none !important; border-radius: 16px !important; background: #fff !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important; padding: 0px; overflow: hidden; }
@@ -226,82 +225,102 @@ foreach ($cart_items as $item) {
     .hover-link-blue:hover { color: #4f46e5 !important; text-decoration: none; }
     .product-hover-effect { transition: transform 0.2s ease, border-color 0.2s ease; cursor: pointer; }
     .product-hover-effect:hover { transform: scale(1.04); border-color: #4f46e5 !important; }
+
     /* Footer actions layout architecture */
-.cart-actions-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.qty-counter-zone {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.btn-action-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-action {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    padding: 6px 12px !important;
-    border-radius: 6px !important;
-    border: none !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none !important;
-    white-space: nowrap;
-}
-
-.btn-check-details {
-    background: #ffa011 !important;
-    color: #fff !important;
-}
-
-.btn-buy-now {
-    background: #4f46e5 !important;
-    color: #fff !important;
-}
-
-/* Responsive Mobile Breaks (<= 768px) */
-@media (max-width: 768px) {
     .cart-actions-footer {
-        flex-direction: column;
-        align-items: stretch;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         gap: 12px;
+        flex-wrap: wrap;
     }
 
     .qty-counter-zone {
-        justify-content: space-between;
-        background: #f8fafc;
-        padding: 6px 10px;
-        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
     .btn-action-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        display: flex;
+        align-items: center;
         gap: 8px;
-        width: 100%;
-    }
-    
-    /* Conditional catch: Agar pipeline active ho aur buy button hide ho, to check details full width le */
-    .btn-action-group:not(:has(.btn-buy-now)) {
-        grid-template-columns: 1fr;
     }
 
     .btn-action {
-        padding: 9px !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        padding: 6px 12px !important;
+        border-radius: 6px !important;
+        border: none !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        white-space: nowrap;
     }
-}
+
+    .btn-check-details {
+        background: #ffa011 !important;
+        color: #fff !important;
+    }
+
+    .btn-buy-now {
+        background: #4f46e5 !important;
+        color: #fff !important;
+    }
+
+    /* Responsive Mobile Fixes (<= 768px) */
+    @media (max-width: 768px) {
+        .cart-item-row {
+            flex-direction: column;
+            align-items: stretch !important;
+            padding: 16px !important;
+        }
+
+        .cart-item-row > a img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: contain;
+        }
+
+        .cart-details-area {
+            width: 100% !important;
+        }
+
+        .cart-actions-footer {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            margin-top: 12px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 12px;
+        }
+
+        .qty-counter-zone {
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .btn-action-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .btn-action-group:not(:has(.btn-buy-now)) {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-action {
+            padding: 10px !important;
+            font-size: 12px !important;
+        }
+    }
 </style>
 
 <div class="container py-4">
