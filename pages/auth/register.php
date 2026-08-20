@@ -10,8 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);  
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     
-    $adminMobile = getenv('ADMIN_MOBILE') ?: '7267995307';
-    $adminEmail = getenv('ADMIN_EMAIL') ?: 'hridesh027@gmail.com';
+    $adminMobile = getenv('ADMIN_MOBILE') ?: '7070759003';
+    $adminEmail = getenv('ADMIN_EMAIL') ?: 'eldurato99@gmail.com';
+    
     if (empty($email)) {
         $error = "Email address is required!";
     } else {
