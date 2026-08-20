@@ -151,7 +151,11 @@ $status_map = [
                 </div>
                 
                 <div class="p-0" style="font-size: 0.8rem;">
-                    <div class="table-responsive">
+                    
+                    <!-- ==========================================
+                          DESKTOP TABLE VIEW (Visible on LG+)
+                    ========================================== -->
+                    <div class="table-responsive d-none d-lg-block">
                         <table class="table align-middle mb-0 table-hover">
                             <thead class="table-light small text-muted text-uppercase">
                                 <tr>
@@ -173,7 +177,6 @@ $status_map = [
                                     $custom_order_id = "ELD-" . $suffix . "-" . $o['id'];
                                     $txn_id = !empty($o['transaction_id']) ? htmlspecialchars($o['transaction_id'], ENT_QUOTES) : '';
 
-                                    // Fixed image parsing logic for Cloudinary / JSON / URLs
                                     $prod_img = 'https://via.placeholder.com/60?text=No+Image';
                                     if (!empty($o['product_images'])) {
                                         $img_raw = trim($o['product_images']);
@@ -286,6 +289,123 @@ $status_map = [
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- ==========================================
+                          MOBILE CARD VIEW (Visible below LG)
+                    ========================================== -->
+                    <div class="d-lg-none p-2">
+                        <?php if(!empty($orders)): foreach($orders as $o): 
+                            $curr_status = strtolower($o['order_status'] ?? 'pending');
+                            $pay_method = strtoupper($o['payment_method'] ?? 'COD');
+                            $suffix = ($pay_method == 'COD') ? 'COD' : 'ONL';
+                            $custom_order_id = "ELD-" . $suffix . "-" . $o['id'];
+                            $txn_id = !empty($o['transaction_id']) ? htmlspecialchars($o['transaction_id'], ENT_QUOTES) : '';
+
+                            $prod_img = 'https://via.placeholder.com/60?text=No+Image';
+                            if (!empty($o['product_images'])) {
+                                $img_raw = trim($o['product_images']);
+                                $img_json = json_decode($img_raw, true);
+                                if (is_array($img_json)) {
+                                    if (isset($img_json[0]['url'])) {
+                                        $prod_img = $img_json[0]['url'];
+                                    } elseif (isset($img_json[0]) && is_string($img_json[0])) {
+                                        $prod_img = $img_json[0];
+                                    }
+                                } else {
+                                    $prod_img = $img_raw;
+                                }
+                            }
+
+                            $p_name = htmlspecialchars($o['product_name'] ?: 'Canceled Product', ENT_QUOTES);
+                            $p_brand = htmlspecialchars($o['product_brand'] ?? 'N/A', ENT_QUOTES);
+                            $p_color = htmlspecialchars($o['product_color'] ?? 'N/A', ENT_QUOTES);
+                            $p_material = htmlspecialchars($o['product_material'] ?? 'N/A', ENT_QUOTES);
+                            $p_model = htmlspecialchars($o['product_model'] ?? 'N/A', ENT_QUOTES);
+                            $p_desc = !empty($o['product_desc']) ? htmlspecialchars(str_replace(["\r", "\n", "'", '"'], [" ", " ", "\\'", '\\"'], $o['product_desc']), ENT_QUOTES) : 'No Description Available.';
+                            
+                            $isLockedState = ($curr_status === 'completed' || $curr_status === 'cancelled');
+                        ?>
+                        <div class="card border mb-3 rounded-3 shadow-sm bg-white order-row" data-search="<?= strtolower($custom_order_id . ' ' . htmlspecialchars($o['customer_real_name'] . ' ' . ($o['customer_phone'] ?? '') . ' ' . $curr_status . ' ' . $pay_method . ' ' . $p_name . ' ' . ($o['tracking_status'] ?? '') . ' ' . $txn_id)) ?>">
+                            <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-primary"><?= $custom_order_id ?></span>
+                                    <small class="text-muted d-block" style="font-size: 10px;"><i class="ri-time-line"></i> <?= date('d M Y, h:i A', strtotime($o['created_at'])) ?></small>
+                                </div>
+                                <a href="invoice.php?id=<?= $o['id'] ?>" target="_blank" class="btn btn-sm btn-outline-dark p-1 px-2" title="Print Invoice"><i class="ri-printer-fill"></i> Invoice</a>
+                            </div>
+
+                            <div class="card-body p-3">
+                                <!-- Product Info clickable -->
+                                <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom" style="cursor: pointer;" onclick="showProductDetails('<?= $p_name ?>', '<?= htmlspecialchars($prod_img, ENT_QUOTES) ?>', '<?= htmlspecialchars($o['ordered_size'] ?? 'Free') ?>', '<?= intval($o['ordered_qty'] ?? 1) ?>', '<?= $custom_order_id ?>', '<?= $p_brand ?>', '<?= $p_color ?>', '<?= $p_material ?>', '<?= $p_model ?>', '<?= $p_desc ?>', '<?= $pay_method ?>', '<?= $txn_id ?>')">
+                                    <img src="<?= htmlspecialchars($prod_img) ?>" class="rounded object-fit-contain border bg-light p-1" width="50" height="50" alt="product">
+                                    <div>
+                                        <div class="fw-bold text-dark text-truncate" style="max-width: 220px;"><?= htmlspecialchars($o['product_name'] ?: 'Canceled Product') ?></div>
+                                        <div class="d-flex gap-1 mt-1">
+                                            <span class="badge bg-dark text-white px-1 py-0" style="font-size: 9px;">Size: <?= htmlspecialchars($o['ordered_size'] ?? 'Free') ?></span>
+                                            <span class="badge bg-secondary text-white px-1 py-0" style="font-size: 9px;">Qty: <?= intval($o['ordered_qty'] ?? 1) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Customer & Amount -->
+                                <div class="row g-2 mb-2 text-muted small">
+                                    <div class="col-7">
+                                        <div class="fw-bold text-dark"><i class="ri-user-3-line text-muted"></i> <?= htmlspecialchars($o['customer_real_name']) ?></div>
+                                        <div><i class="ri-phone-line text-primary"></i> <?= htmlspecialchars($o['customer_phone'] ?? 'N/A') ?></div>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <small class="d-block text-uppercase text-secondary" style="font-size: 9px;">Net Total</small>
+                                        <div class="fw-bold text-dark fs-6">₹<?= number_format($o['total_amount']) ?></div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Method Badge -->
+                                <div class="mb-2">
+                                    <?php if($pay_method === 'COD'): ?>
+                                        <span class="badge bg-light text-dark border px-2 py-1 font-monospace fw-bold w-100 text-center" style="font-size: 10px;">💵 CASH ON DELIVERY (COD)</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1 font-monospace fw-bold w-100 text-center" style="font-size: 10px;">💳 ONLINE PAID</span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Status Dropdown -->
+                                <div class="mb-2">
+                                    <label class="form-label text-muted mb-1" style="font-size: 10px;">ORDER STATUS:</label>
+                                    <select class="form-select form-select-sm border-0 cursor-pointer py-1.5 px-2 rounded-3 text-center small <?= $status_map[$curr_status] ?? 'bg-secondary text-white' ?>" 
+                                            onchange="updateOrderStatus(<?= $o['id'] ?>, this)" 
+                                            <?= $isLockedState ? 'disabled' : '' ?>>
+                                        <?php if($curr_status === 'pending'): ?>
+                                            <option value="pending" selected class="text-dark bg-white fw-semibold">PENDING</option>
+                                        <?php endif; ?>
+                                        <?php if($curr_status === 'pending' || $curr_status === 'processing'): ?>
+                                            <option value="processing" <?= $curr_status == 'processing' ? 'selected' : '' ?> class="text-dark bg-white fw-semibold">PROCESSING</option>
+                                        <?php endif; ?>
+                                        <option value="completed" <?= $curr_status == 'completed' ? 'selected' : '' ?> class="text-dark bg-white fw-semibold">COMPLETED</option>
+                                        <option value="cancelled" <?= $curr_status == 'cancelled' ? 'selected' : '' ?> class="text-dark bg-white fw-semibold">CANCELLED</option>
+                                    </select>
+                                </div>
+
+                                <!-- Tracking Location Input -->
+                                <div>
+                                    <label class="form-label text-muted mb-1" style="font-size: 10px;">TRACKING LOCATION:</label>
+                                    <div class="d-flex align-items-center gap-1">
+                                        <input type="text" class="form-control form-control-sm text-dark border bg-white rounded-3 px-2 py-1 small w-100" 
+                                               id="track_input_mobile_<?= $o['id'] ?>" 
+                                               value="<?= htmlspecialchars($o['tracking_status'] ?? '') ?>" 
+                                               placeholder="e.g. Gorakhpur Hub...">
+                                        <button type="button" class="btn btn-sm btn-primary py-1 px-2 border-0" 
+                                                onclick="saveTrackingInfoMobile(<?= $o['id'] ?>)" title="Save Location">
+                                            <i class="ri-save-2-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; else: ?>
+                        <div class="text-center text-muted py-5 fw-bold fs-6">🚫 No Active Fulfillment Records Found.</div>
+                        <?php endif; ?>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -296,7 +416,7 @@ $status_map = [
       UPGRADED SYSTEM MODAL DATA ENGINE
 ========================================== -->
 <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 rounded-3 shadow-lg">
             <div class="modal-header bg-dark text-white py-2.5 px-3">
                 <h6 class="modal-title fw-bold d-flex align-items-center gap-2"><i class="ri-survey-line text-warning"></i> Full Product Specifications</h6>
@@ -343,7 +463,13 @@ $status_map = [
                         <tr><td class="text-secondary fw-bold bg-light px-2 py-1.5">Color Code</td><td class="text-dark px-2 py-1.5 fw-medium" id="modalProductColor">-</td></tr>
                         <tr><td class="text-secondary fw-bold bg-light px-2 py-1.5">Material</td><td class="text-dark px-2 py-1.5 fw-medium" id="modalProductMaterial">-</td></tr>
                         <tr><td class="text-secondary fw-bold bg-light px-2 py-1.5">Model</td><td class="text-dark px-2 py-1.5 font-monospace" id="modalProductModel">-</td></tr>
-                        <tr><td class="text-secondary fw-bold bg-light px-2 py-1.5">Description</td><td class="text-dark px-2 py-1.5" style="line-height:1.4;" id="modalProductDesc">-</td></tr>
+                        <!-- Mobile-friendly scrollable & word-break description row -->
+                        <tr>
+                            <td class="text-secondary fw-bold bg-light px-2 py-1.5 align-top">Description</td>
+                            <td class="text-dark px-2 py-1.5" style="line-height:1.4;">
+                                <div id="modalProductDesc" style="max-height: 140px; overflow-y: auto; word-break: break-word;">-</div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -382,6 +508,15 @@ $status_map = [
 
     function saveTrackingInfo(id) {
         const trackingValue = document.getElementById('track_input_' + id).value.trim();
+        sendTrackingRequest(id, trackingValue);
+    }
+
+    function saveTrackingInfoMobile(id) {
+        const trackingValue = document.getElementById('track_input_mobile_' + id).value.trim();
+        sendTrackingRequest(id, trackingValue);
+    }
+
+    function sendTrackingRequest(id, trackingValue) {
         const formData = new FormData();
         formData.append('ajax_update_tracking', '1');
         formData.append('order_id', id);
