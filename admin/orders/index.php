@@ -10,18 +10,15 @@ if(isset($_POST['ajax_update_status'])) {
     $order_id = intval($_POST['order_id']);
     $new_status = strtolower(trim($_POST['status']));
     
-    // Database se current status nikalein
     $chkStmt = $pdo->prepare("SELECT order_status FROM all_orders_list WHERE id = ?");
     $chkStmt->execute([$order_id]);
     $current_state = strtolower($chkStmt->fetchColumn() ?: 'pending');
     
-    // Define State Hierarchy (Workflow levels)
     $levels = ['pending' => 1, 'processing' => 2, 'completed' => 3, 'cancelled' => 3];
     
     $current_level = $levels[$current_state] ?? 1;
     $new_level = $levels[$new_status] ?? 1;
     
-    // 🔒 STRICT REVERSE BLOCK
     if($new_level < $current_level || $current_state === 'completed' || $current_state === 'cancelled') {
         echo json_encode(['success' => false, 'message' => 'Status reverse operation is strictly blocked! Workflow must move forward.']);
         exit;
@@ -30,11 +27,9 @@ if(isset($_POST['ajax_update_status'])) {
     try {
         $pdo->beginTransaction();
 
-        // 1. Order Status Update karein
         $stmt = $pdo->prepare("UPDATE all_orders_list SET order_status=? WHERE id=?");
         $stmt->execute([$new_status, $order_id]);
 
-        // 🚀 NEW LOGIC: Agar admin order COMPLETE karta hai, toh product ko OUT OF STOCK mark karo
         if($new_status === 'completed') {
             $itemStmt = $pdo->prepare("SELECT product_id FROM order_items WHERE order_id = ?");
             $itemStmt->execute([$order_id]);
@@ -178,13 +173,19 @@ $status_map = [
                                     $custom_order_id = "ELD-" . $suffix . "-" . $o['id'];
                                     $txn_id = !empty($o['transaction_id']) ? htmlspecialchars($o['transaction_id'], ENT_QUOTES) : '';
 
+                                    // Fixed image parsing logic for Cloudinary / JSON / URLs
                                     $prod_img = 'https://via.placeholder.com/60?text=No+Image';
                                     if (!empty($o['product_images'])) {
-                                        $img_json = json_decode($o['product_images'], true);
-                                        if (is_array($img_json) && isset($img_json[0]['url'])) {
-                                            $prod_img = $img_json[0]['url'];
-                                        } elseif (!is_array($img_json)) {
-                                            $prod_img = $o['product_images'];
+                                        $img_raw = trim($o['product_images']);
+                                        $img_json = json_decode($img_raw, true);
+                                        if (is_array($img_json)) {
+                                            if (isset($img_json[0]['url'])) {
+                                                $prod_img = $img_json[0]['url'];
+                                            } elseif (isset($img_json[0]) && is_string($img_json[0])) {
+                                                $prod_img = $img_json[0];
+                                            }
+                                        } else {
+                                            $prod_img = $img_raw;
                                         }
                                     }
 
@@ -325,7 +326,6 @@ $status_map = [
                     </div>
                 </div>
 
-                <!-- 💵 FINANCIAL AUDIT LOGS EXPANSION NODE -->
                 <div class="card border-0 bg-light p-2.5 mb-3 rounded-3 border-start border-3" id="modalPaymentCardContext">
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="small fw-bold text-secondary text-uppercase tracking-wider" style="font-size: 10px;">Gateway Status</span>
@@ -410,7 +410,6 @@ $status_map = [
         document.getElementById('modalProductModel').innerText = model;
         document.getElementById('modalProductDesc').innerHTML = desc;
         
-        // 🛡️ DYNAMIC AUDIT BADGING INJECTOR
         const cardContext = document.getElementById('modalPaymentCardContext');
         const badge = document.getElementById('modalPaymentBadge');
         const txnContainer = document.getElementById('modalTxnContainer');
