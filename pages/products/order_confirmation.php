@@ -4,8 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once '../../config/database.php';
 
+// ==========================================
+// 🔒 AUTH GUARD: Strict Login Check for Orders
+// ==========================================
+$user_id = $_SESSION['user_id'] ?? null;
+if (empty($user_id)) {
+    header("Location: /pages/auth/login.php");
+    exit;
+}
+
 // =========================================================================
-// 🔄 AUTOMATIC MINIMAL .ENV PARSER MATRIX (Bina Iske Keys Read Nahi Hongi)
+// 🔄 AUTOMATIC MINIMAL .ENV PARSER MATRIX
 // =========================================================================
 if (file_exists(__DIR__ . '/../../.env')) {
     $lines = file(__DIR__ . '/../../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -22,19 +31,16 @@ if (file_exists(__DIR__ . '/../../.env')) {
     }
 }
 
-// Check if request method is valid
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: /pages/products/cart.php");
     exit;
 }
 
-// Check if trigger is single item checkout button context
 if (!isset($_POST['checkout_target_key']) || empty($_SESSION['cart'])) {
     header("Location: /pages/products/cart.php");
     exit;
 }
 
-// Targeted single item verification node
 $checkout_target_key = isset($_POST['checkout_target_key']) ? trim($_POST['checkout_target_key']) : '';
 $payment_method = isset($_POST['payment_method']) ? trim($_POST['payment_method']) : 'COD';
 
@@ -43,12 +49,10 @@ if (empty($checkout_target_key) || !isset($_SESSION['cart'][$checkout_target_key
     exit;
 }
 
-// Extract target checkout specs
 $targeted_item = $_SESSION['cart'][$checkout_target_key];
 $p_id = intval($targeted_item['product_id']);
 $item_size = trim($targeted_item['size']);
 
-// Fetch single product data details safely (Direct from Admin Database)
 $stmt_prod = $pdo->prepare("SELECT id, name, price FROM all_products_list WHERE id = ?");
 $stmt_prod->execute([$p_id]);
 $product_data = $stmt_prod->fetch(PDO::FETCH_ASSOC);
@@ -58,17 +62,12 @@ if (!$product_data) {
     exit;
 }
 
-// Exact 1-to-1 matrix calculations (Server Side Expected Price)
 $grandTotal = (float)$product_data['price'] * $targeted_item['quantity'];
 
-// =========================================================================
-// 🛡️ CRITICAL ACTION: Cryptographic Signature Interception & Processing
-// =========================================================================
 $rz_payment_id = isset($_POST['razorpay_payment_id']) ? trim($_POST['razorpay_payment_id']) : '';
 $rz_order_id   = isset($_POST['razorpay_order_id']) ? trim($_POST['razorpay_order_id']) : '';
 $rz_signature  = isset($_POST['razorpay_signature']) ? trim($_POST['razorpay_signature']) : '';
 
-// Hacker Bypass Protection: If a payment payload exists, FORCE upgrade validation to ONLINE
 if (!empty($rz_payment_id)) {
     $payment_method = 'ONLINE';
 }
@@ -80,14 +79,12 @@ if ($payment_method === 'ONLINE') {
         die("Security Exception: Missing dynamic verification checksum tokens.");
     }
     
-    // FIX: Aligned exactly to your .env variable naming tokens -> RAZOR_PAY_SECRET_KEY
     $razorpaySecret = isset($_ENV['RAZOR_PAY_SECRET_KEY']) ? $_ENV['RAZOR_PAY_SECRET_KEY'] : getenv('RAZOR_PAY_SECRET_KEY');
     
     if (empty($razorpaySecret)) {
         die("Security Exception: Server configuration missing secret signature components.");
     }
     
-    // HMAC SHA256 Signature Verification Strategy
     $expectedSignature = hash_hmac('sha256', $rz_order_id . '|' . $rz_payment_id, $razorpaySecret);
     
     if (!hash_equals($expectedSignature, $rz_signature)) {
@@ -95,18 +92,14 @@ if ($payment_method === 'ONLINE') {
         die("Tampering detected. Transaction rejected by server infrastructure security matrix.");
     }
     
-    // Signature verified successfully -> Upgrade order status immediately
     $orderStatus = "paid"; 
 }
-// =========================================================================
 
-// Collect and sanitize input attributes
 $customer_name    = htmlspecialchars(trim($_POST['customer_name']));
 $customer_phone   = htmlspecialchars(trim($_POST['customer_phone']));
 $shipping_address = htmlspecialchars(trim($_POST['shipping_address']));
 $city             = htmlspecialchars(trim($_POST['city']));
 $pincode          = htmlspecialchars(trim($_POST['pincode']));
-$user_id          = $_SESSION['user_id'] ?? null;
 
 $order_id = 0;
 $inserted_products_summary = [];
@@ -114,7 +107,6 @@ $inserted_products_summary = [];
 try {
     $pdo->beginTransaction();
 
-    // 1. Database table schema serialization (Order Insert)
     $order_query = "INSERT INTO all_orders_list (user_id, customer_name, customer_phone, shipping_address, city, pincode, total_amount, payment_method, order_status, transaction_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $order_stmt = $pdo->prepare($order_query);
     $order_stmt->execute([
@@ -132,7 +124,6 @@ try {
     
     $order_id = $pdo->lastInsertId();
     
-    // 2. Insert items safely into order_items
     $item_query = "INSERT INTO order_items (order_id, product_id, size, quantity, price) VALUES (?, ?, ?, ?, ?)";
     $item_stmt = $pdo->prepare($item_query);
     $item_stmt->execute([
@@ -143,22 +134,17 @@ try {
         $product_data['price']
     ]);
 
-    // =========================================================================
-    // 🔥 STEP 2.5: AUTOMATIC INVENTORY DEDUCTION (Stock Kam Karne Ka Logic)
-    // =========================================================================
     $update_stock_query = "UPDATE all_products_list SET stock = stock - ? WHERE id = ? AND stock >= ?";
     $stock_stmt = $pdo->prepare($update_stock_query);
     $stock_stmt->execute([
         $targeted_item['quantity'], 
         $p_id,
-        $targeted_item['quantity'] // Taaki stock minus me na chala jaye
+        $targeted_item['quantity']
     ]);
 
-    // Agar stock update nahi hua (yani product out of stock ho gaya tha check-out karte karte)
     if ($stock_stmt->rowCount() === 0) {
         throw new Exception("Requested quantity exceeds available stock layers.");
     }
-    // =========================================================================
 
     $inserted_products_summary[] = [
         'name'  => $product_data['name'],
@@ -166,12 +152,11 @@ try {
         'id'    => $p_id
     ];
 
-    // 3. Destruct processed inventory indices from ongoing cart sessions
     unset($_SESSION['cart'][$checkout_target_key]);
     
     $pdo->commit();
 
-} catch (Exception $e) { // PDOException ko general Exception kiya taaki stock check bhi catch ho sake
+} catch (Exception $e) {
     $pdo->rollBack();
     error_log("Order Database Write Failure Exception: " . $e->getMessage());
     die("Internal Engine Error processing order synchronization workflows. Details: " . $e->getMessage());
