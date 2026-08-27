@@ -4,19 +4,19 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once '../../config/database.php';
 
-// Dynamic URL helper - Smart Subfolder & Double Slash Prevention
+// Dynamic URL helper - Double Slash & Duplicate Eldurato Prevention
 if (!function_exists('url')) {
     function url($path) {
         $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+        $cleanPath = ltrim($path, '/');
         
-        // Agar SITE_URL define nahi hai toh relative path use karein
         if (empty($siteUrl)) {
-            $baseFolder = '/eldurato';
-            return $baseFolder . '/' . ltrim($path, '/');
+            // Agar SITE_URL set nahi hai, toh check karein ki current path me eldurato hai ya nahi
+            $baseFolder = (strpos($_SERVER['REQUEST_URI'], '/eldurato') !== false) ? '/eldurato' : '';
+            return $baseFolder . '/' . $cleanPath;
         }
         
-        // Agar SITE_URL me pehle se '/eldurato' hai aur path me bhi aa rha hai toh duplicate avoid karein
-        $cleanPath = ltrim($path, '/');
+        // Agar SITE_URL me pehle se eldurato hai, toh wahi use karein
         return $siteUrl . '/' . $cleanPath;
     }
 }
