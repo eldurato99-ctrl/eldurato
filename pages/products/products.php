@@ -1,35 +1,26 @@
 <?php
-// ✅ SESSION START
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ✅ INCLUDE CONFIG
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/functions.php';
 
-// ✅ DYNAMIC SEO DATA
 $page_title = "Buy Premium Leather Belts Online - Eldurato | Best Quality Belts for Men & Women";
 $page_description = "Shop premium genuine leather belts at Eldurato. Find formal, casual, and luxury belts for men & women. Free shipping, COD, and 7-day replacement available.";
 $page_keywords = "leather belts, men belts, women belts, formal belts, casual belts, premium leather, buy belts online India";
 $og_image = "https://eldurato.com/assets/images/logo.png";
 
-// ✅ CRITICAL FIXES FOR GOOGLE DUPLICATE ERROR
-// 1. Base Canonical URL
 $canonical_url = "https://eldurato.com/pages/products/products.php";
-
-// 2. If filters are applied, make the Canonical URL dynamic
 if (!empty($_GET)) {
     $canonical_url = "https://eldurato.com/pages/products/products.php?" . http_build_query($_GET);
 }
 
-// 3. Dynamic Noindex Logic (Prevent deep filter pages from appearing in Google Search)
 $robots_meta = "index, follow"; 
 if (isset($_GET['style']) || isset($_GET['q']) || isset($_GET['color']) || isset($_GET['material'])) {
     $robots_meta = "noindex, follow"; 
 }
 
-// ✅ CHECK IF INCLUDED IN HERO
 $isIncluded = defined('INCLUDED_IN_HERO') || basename($_SERVER['SCRIPT_FILENAME']) !== 'products.php';
 
 if (!$isIncluded) {
@@ -37,14 +28,12 @@ if (!$isIncluded) {
     include __DIR__ . '/../../includes/navbar.php';
 }
 
-// ✅ URL FUNCTION
 if (!function_exists('url')) {
     function url($path) {
         return '/' . ltrim($path, '/');
     }
 }
 
-// ✅ GET USER WISHLIST
 $loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 $userWishlistItems = [];
 if ($loggedInUserId > 0) {
@@ -57,7 +46,6 @@ if ($loggedInUserId > 0) {
     }
 }
 
-// ✅ CHECK TABLE COLUMNS
 try {
     $colQuery = $pdo->query("SHOW COLUMNS FROM all_products_list");
     $columns = $colQuery->fetchAll(PDO::FETCH_COLUMN);
@@ -70,17 +58,14 @@ try {
     $hasCategory = $hasBrand = $hasRating = $hasColor = $hasMaterial = false;
 }
 
-// ✅ GET FILTERS DATA
 $allCategories = $hasCategory ? $pdo->query("SELECT DISTINCT category FROM all_products_list WHERE category IS NOT NULL AND category != '' ORDER BY category")->fetchAll(PDO::FETCH_COLUMN) : [];
 $allBrands = $hasBrand ? $pdo->query("SELECT DISTINCT brand FROM all_products_list WHERE brand IS NOT NULL AND brand != '' ORDER BY brand")->fetchAll(PDO::FETCH_COLUMN) : [];
 $allColors = $hasColor ? $pdo->query("SELECT DISTINCT color FROM all_products_list WHERE color IS NOT NULL AND color != '' ORDER BY color")->fetchAll(PDO::FETCH_COLUMN) : [];
 $allMaterials = $hasMaterial ? $pdo->query("SELECT DISTINCT material FROM all_products_list WHERE material IS NOT NULL AND material != '' ORDER BY material")->fetchAll(PDO::FETCH_COLUMN) : [];
 
-// ✅ GET PRODUCTS
 $stmt = $pdo->query("SELECT * FROM all_products_list ORDER BY id DESC");
 $dbProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ✅ BUILD PRODUCTS ARRAY
 $jsProducts = [];
 foreach ($dbProducts as $product) {
     $price = (int)$product['price'];
@@ -117,19 +102,12 @@ foreach ($dbProducts as $product) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ✅ TITLE - DYNAMIC -->
     <title><?php echo $page_title; ?></title>
-    
-    <!-- ✅ META DESCRIPTION - CRITICAL FIX -->
     <meta name="description" content="<?php echo $page_description; ?>">
     <meta name="keywords" content="<?php echo $page_keywords; ?>">
-    
-    <!-- ✅ CRITICAL FIX: DYNAMIC ROBOTS & CANONICAL TAGS -->
     <meta name="robots" content="<?php echo $robots_meta; ?>">
     <link rel="canonical" href="<?php echo $canonical_url; ?>">
     
-    <!-- ✅ OPEN GRAPH TAGS -->
     <meta property="og:title" content="<?php echo $page_title; ?>">
     <meta property="og:description" content="<?php echo $page_description; ?>">
     <meta property="og:image" content="<?php echo $og_image; ?>">
@@ -137,13 +115,11 @@ foreach ($dbProducts as $product) {
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Eldurato">
     
-    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?php echo $page_title; ?>">
     <meta name="twitter:description" content="<?php echo $page_description; ?>">
     <meta name="twitter:image" content="<?php echo $og_image; ?>">
     
-    <!-- ✅ COLLECTION PAGE SCHEMA -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -158,7 +134,6 @@ foreach ($dbProducts as $product) {
     }
     </script>
     
-    <!-- ✅ BREADCRUMB SCHEMA -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -180,7 +155,6 @@ foreach ($dbProducts as $product) {
     }
     </script>
 
-    <!-- CSS FILES -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
@@ -211,10 +185,8 @@ foreach ($dbProducts as $product) {
 </head>
 <body class="bg-light">
 
-<!-- ✅ H1 TAG -->
 <h1 class="visually-hidden">Buy Premium Leather Belts Online - Eldurato India's Best Belt Store</h1>
 
-<!-- ✅ BREADCRUMB NAVIGATION -->
 <nav aria-label="breadcrumb" class="container-fluid px-2 px-md-3 mt-2">
     <ol class="breadcrumb small">
         <li class="breadcrumb-item"><a href="https://eldurato.com" class="text-decoration-none">Home</a></li>
@@ -224,8 +196,6 @@ foreach ($dbProducts as $product) {
 
 <div class="<?php echo $isIncluded ? 'p-0' : 'container-fluid'; ?>">
     <div class="container-fluid py-2 px-2 px-md-3">
-        
-        <!-- ✅ H2 TAG -->
         <div class="d-flex align-items-center justify-content-between mb-3 px-1">
             <div>
                 <h2 class="fw-bold mb-0" style="font-size: 1.25rem;">Premium Leather Belts Collection</h2>
@@ -237,7 +207,6 @@ foreach ($dbProducts as $product) {
         </div>
 
         <div class="row g-2 g-md-3">
-            <!-- FILTER SIDEBAR -->
             <div class="col-md-4 col-lg-3 d-none d-md-block">
                 <div class="filter-card p-3 sticky-top" style="top: 20px; z-index: 100;">
                     <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
@@ -248,7 +217,6 @@ foreach ($dbProducts as $product) {
                 </div>
             </div>
 
-            <!-- PRODUCT GRID -->
             <div class="col-md-8 col-lg-9">
                 <div class="row g-2 g-md-3" id="productGrid">
                     <?php for($i = 0; $i < 8; $i++): ?>
@@ -258,7 +226,6 @@ foreach ($dbProducts as $product) {
                     <?php endfor; ?>
                 </div>
 
-                <!-- PAGINATION -->
                 <div class="d-flex justify-content-center mt-4 mb-2">
                     <nav aria-label="Product navigation">
                         <ul class="pagination pagination-sm m-0" id="paginationContainer"></ul>
@@ -269,7 +236,6 @@ foreach ($dbProducts as $product) {
     </div>
 </div>
 
-<!-- MOBILE FILTER OFFCANVAS -->
 <div class="offcanvas offcanvas-bottom h-75 rounded-0" tabindex="-1" id="filterOffcanvas">
     <div class="offcanvas-header border-bottom py-3 px-3">
         <h6 class="offcanvas-title fw-bold text-dark" style="font-size: 15px;"><i class="ri-filter-3-line me-1"></i> Sort & Filter</h6>
@@ -278,7 +244,6 @@ foreach ($dbProducts as $product) {
     <div class="offcanvas-body p-3" id="mobileFilterContainer"></div>
 </div>
 
-<!-- FILTER FORM TEMPLATE -->
 <div id="masterFormTemplate" class="d-none">
     <form id="filterForm" onsubmit="event.preventDefault();">
         <?php if ($hasCategory && !empty($allCategories)): ?>
@@ -610,7 +575,6 @@ foreach ($dbProducts as $product) {
 </script>
 
 <?php 
-// ✅ Footer Include
 if (!$isIncluded) {
     include __DIR__ . '/../../includes/footer.php';
 } 
