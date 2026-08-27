@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || is
 }
 
 // ==========================================
-// 1. ORDER STATUS SYNC & REAL-TIME MAPPING
+// 1. ORDER STATUS SYNC & REAL-TIME MAPPING (STRICT DYNAMIC FIXED)
 // ==========================================
 $confirmed_orders_map = []; 
 
@@ -49,11 +49,11 @@ $raw_confirmed = $stmt_check->fetchAll(PDO::FETCH_ASSOC);
 
 foreach ($raw_confirmed as $row) {
     $track_key = $row['product_id'] . '_' . str_replace(' ', '_', trim($row['db_size']));
-    
+
     if (!isset($confirmed_orders_map[$track_key])) {
         $pay_method = strtoupper($row['payment_method']);
         $suffix = ($pay_method == 'COD') ? 'COD' : 'ONL';
-        
+
         $confirmed_orders_map[$track_key] = [
             'order_id' => $row['order_db_id'], 
             'custom_order_id' => "ELD-" . $suffix . "-" . $row['order_db_id'],
@@ -63,11 +63,11 @@ foreach ($raw_confirmed as $row) {
     } else {
         $existing_status = $confirmed_orders_map[$track_key]['status'];
         $new_status = strtolower($row['order_status']);
-        
+
         if (in_array($existing_status, ['completed', 'cancelled']) && in_array($new_status, ['pending', 'processing'])) {
             $pay_method = strtoupper($row['payment_method']);
             $suffix = ($pay_method == 'COD') ? 'COD' : 'ONL';
-            
+
             $confirmed_orders_map[$track_key] = [
                 'order_id' => $row['order_db_id'], 
                 'custom_order_id' => "ELD-" . $suffix . "-" . $row['order_db_id'],
@@ -93,10 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     if (isset($_SESSION['cart'][$cart_key]) && $new_qty > 0) {
         $_SESSION['cart'][$cart_key]['quantity'] = $new_qty;
-        
+
         $cart_items = $_SESSION['cart'];
         $product_ids = array_unique(array_column($cart_items, 'product_id'));
-        
+
         $grandTotal = 0;
         $db_prices = [];
 
@@ -108,11 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             foreach ($cart_items as $k => $item) {
                 $p_id = $item['product_id'];
-                
+
                 $current_size_key = $p_id . '_' . str_replace(' ', '_', trim($item['size']));
                 $isOrdered = isset($confirmed_orders_map[$current_size_key]);
                 $orderStatus = $isOrdered ? $confirmed_orders_map[$current_size_key]['status'] : '';
-                
+
                 if ($isOrdered && ($orderStatus === 'completed' || $orderStatus === 'cancelled')) {
                     continue; 
                 }
@@ -184,11 +184,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
         $item = $_SESSION['cart'][$cart_key];
         $p_id = $item['product_id'];
         $size_key = $p_id . '_' . str_replace(' ', '_', trim($item['size']));
-        
+
         if (isset($confirmed_orders_map[$size_key])) {
             $db_order_id = $confirmed_orders_map[$size_key]['order_id'];
             $current_status = $confirmed_orders_map[$size_key]['status'];
-            
+
             if ($current_status !== 'completed' && $current_status !== 'cancelled') {
                 try {
                     $upStmt = $pdo->prepare("UPDATE all_orders_list SET order_status = 'cancelled', tracking_status = 'Cancelled by Customer' WHERE id = ?");
@@ -241,7 +241,7 @@ foreach ($cart_items as $item) {
     $current_size_key = $p_id . '_' . str_replace(' ', '_', trim($item['size']));
     $isOrdered = isset($confirmed_orders_map[$current_size_key]);
     $orderStatus = $isOrdered ? $confirmed_orders_map[$current_size_key]['status'] : '';
-    
+
     if ($isOrdered && ($orderStatus === 'completed' || $orderStatus === 'cancelled')) {
         continue; 
     }
@@ -255,17 +255,6 @@ foreach ($cart_items as $item) {
 <style>
     body { background-color: #eef2f7 !important; }
     .table-card-wrapper { border: none !important; border-radius: 16px !important; background: #fff !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important; padding: 0px; overflow: hidden; }
-    
-    /* Title text overflow fix */
-    .cart-item-title {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-
     .badge-track { font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: none !important; }
     .track-pending { background: #fef3c7 !important; color: #d97706 !important; }
     .track-processing { background: #e0f2fe !important; color: #0284c7 !important; }
@@ -276,27 +265,106 @@ foreach ($cart_items as $item) {
     .hover-link-blue:hover { color: #4f46e5 !important; text-decoration: none; }
     .product-hover-effect { transition: transform 0.2s ease, border-color 0.2s ease; cursor: pointer; }
     .product-hover-effect:hover { transform: scale(1.04); border-color: #4f46e5 !important; }
-    .cart-actions-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .qty-counter-zone { display: flex; align-items: center; gap: 12px; }
-    .btn-action-group { display: flex; align-items: center; gap: 8px; }
-    .btn-action { font-size: 11px !important; font-weight: 700 !important; padding: 6px 12px !important; border-radius: 6px !important; border: none !important; display: inline-flex; align-items: center; justify-content: center; text-decoration: none !important; white-space: nowrap; }
-    .btn-check-details { background: #ffa011 !important; color: #fff !important; }
-    .btn-buy-now { background: #4f46e5 !important; color: #fff !important; }
+
+    .cart-actions-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .qty-counter-zone {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .btn-action-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-action {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        padding: 6px 12px !important;
+        border-radius: 6px !important;
+        border: none !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        white-space: nowrap;
+    }
+
+    .btn-check-details {
+        background: #ffa011 !important;
+        color: #fff !important;
+    }
+
+    .btn-buy-now {
+        background: #4f46e5 !important;
+        color: #fff !important;
+    }
+
     @media (max-width: 768px) {
-        .cart-item-row { flex-direction: column; align-items: stretch !important; padding: 16px !important; }
-        .cart-item-row > a img { width: 100% !important; height: 160px !important; object-fit: contain; }
-        .cart-details-area { width: 100% !important; }
-        .cart-actions-footer { flex-direction: column; align-items: stretch; gap: 12px; margin-top: 12px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
-        .qty-counter-zone { justify-content: space-between; background: #f8fafc; padding: 8px 12px; border-radius: 8px; width: 100%; }
-        .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-        .btn-action { padding: 10px !important; font-size: 12px !important; }
+        .cart-item-row {
+            flex-direction: column;
+            align-items: stretch !important;
+            padding: 16px !important;
+        }
+
+        .cart-item-row > a img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: contain;
+        }
+
+        .cart-details-area {
+            width: 100% !important;
+        }
+
+        .cart-actions-footer {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            margin-top: 12px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 12px;
+        }
+
+        .qty-counter-zone {
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .btn-action-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-action-group:not(:has(.btn-buy-now)) {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-action {
+            padding: 10px !important;
+            font-size: 12px !important;
+        }
     }
 </style>
 
 <div class="container py-4">
    <div class="row g-4 justify-content-center">
     <div class="col-12 col-md-10">
-    <h4 class="fw-bold text-primary mb-0" style="font-size: 26px; letter-spacing: -0.5px;">Shopping Cart</h4>
+    <h4 class="fw-bold text-dark mb-0" style="font-size: 26px; letter-spacing: -0.5px;">Shopping Cart</h4>
         <span class="text-secondary small fw-medium">Total Session Items (<?php echo count($cart_items); ?>)</span>
 
             <div class="table-card-wrapper mt-2" style="border: 1px solid #e2e8f0;">
@@ -314,48 +382,48 @@ foreach ($cart_items as $item) {
                             $itemImage = is_array($imagesArray[0]) ? ($imagesArray[0]['url'] ?? $itemImage) : $imagesArray[0];
                         }
                     }
-                    
+
                     $current_size_key = $p_id . '_' . str_replace(' ', '_', trim($item['size']));
                     $isOrdered = isset($confirmed_orders_map[$current_size_key]);
                     $orderStatus = $isOrdered ? $confirmed_orders_map[$current_size_key]['status'] : '';
                     $liveTrackingText = $isOrdered ? $confirmed_orders_map[$current_size_key]['tracking'] : '';
-                    
+
                     $isPipelineActive = ($isOrdered && ($orderStatus === 'pending' || $orderStatus === 'processing'));
                     $isCompletedOrCancelled = ($isOrdered && ($orderStatus === 'completed' || $orderStatus === 'cancelled'));
                 ?>
                     <div class="d-flex p-3 border-bottom align-items-center gap-3 position-relative cart-item-row" data-key="<?php echo $key; ?>">
-                        
-                            <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>">
+
+                        <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>">
                             <img src="<?php echo $itemImage; ?>" class="border rounded-3 p-1 bg-light product-hover-effect" style="width: 85px; height: 85px; object-fit: contain;" alt="Product">
                         </a>
-                        
-                       <div class="flex-grow-1 min-w-0 cart-details-area" style="width: 100%;">
-                               <div class="d-flex justify-content-between align-items-start gap-2">
-                <div class="min-w-0" style="width: 100%;">
-                 <span class="text-uppercase text-secondary fw-bold d-block" style="font-size: 10px; letter-spacing: 0.5px;">
+
+                       <div class="flex-grow-1 min-w-0 cart-details-area">
+    <div class="d-flex justify-content-between align-items-start gap-2">
+        <div class="min-w-0">
+            <span class="text-uppercase text-secondary fw-bold d-block" style="font-size: 10px; letter-spacing: 0.5px;">
                 <?php echo htmlspecialchars($product['brand']); ?>
             </span>
-            <h6 class="mb-1 fw-semibold" style="font-size: 16px; margin: 0;">
-                <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>" class="text-decoration-none hover-link-blue cart-item-title">
+            <h6 class="mb-1 text-truncate fw-semibold" style="font-size: 16px; margin: 0;">
+                <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>" class="text-decoration-none hover-link-blue">
                     <?php echo htmlspecialchars($product['name']); ?>
                 </a>
             </h6>
         </div>
-        
+
         <?php if (!$isCompletedOrCancelled): ?>
-            <form action="" method="POST" onsubmit="return confirm('Do you want to cancel this order from pipeline?');" class="ms-auto flex-shrink-0">
+            <form action="" method="POST" onsubmit="return confirm('Do you want to cancel this order from pipeline?');" class="ms-auto">
                 <input type="hidden" name="remove_item" value="1">
                 <input type="hidden" name="remove_item_key" value="<?php echo $key; ?>">
-                <button type="submit" class="btn text-danger border-0 shadow-none d-flex align-items-center justify-content-center" title="Cancel/Remove Order" style="width: 32px; height: 32px; background: #fee2e2; border-radius: 50%;">
-                 <i class="ri-delete-bin-line" style="font-size: 16px;"></i>
+                <button type="submit" class="btn p-1 text-danger border-0 bg-transparent shadow-none" title="Cancel/Remove Order">
+                 Cancel order
                 </button>
             </form>
         <?php endif; ?>
     </div>
-    
+
     <div class="d-flex align-items-center gap-2 my-2 flex-wrap">
         <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 11px; border-radius: 4px;">Size: <strong><?php echo htmlspecialchars($item['size']); ?></strong></span>
-        
+
         <?php if ($isOrdered): ?>
             <?php if ($orderStatus === 'pending'): ?>
                 <span class="badge-track track-pending"><i class="ri-time-line"></i> Order Pending (<?= $confirmed_orders_map[$current_size_key]['custom_order_id'] ?>)</span>
@@ -366,7 +434,7 @@ foreach ($cart_items as $item) {
             <?php elseif ($orderStatus === 'cancelled'): ?>
                 <span class="badge-track track-cancelled"><i class="ri-close-circle-line"></i> Cancelled (<?= $confirmed_orders_map[$current_size_key]['custom_order_id'] ?>)</span>
             <?php endif; ?>
-            
+
             <?php if(!empty($liveTrackingText)): ?>
                 <span class="live-tracking-badge">
                     <i class="ri-map-pin-user-line text-primary"></i> Live Status: <strong><?= htmlspecialchars($liveTrackingText) ?></strong>
@@ -386,7 +454,7 @@ foreach ($cart_items as $item) {
             <?php else: ?>
                 <span class="text-secondary small fw-bold"><i class="ri-survey-line me-1"></i> Ordered Qty: <strong class="text-dark fs-6"><?= $item['quantity'] ?></strong></span>
             <?php endif; ?>
-            
+
             <span class="fw-bold text-dark item-total-price" style="font-size: 16px;">₹<?php echo number_format($product['price'] * $item['quantity']); ?></span>
         </div>
 
@@ -441,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     function updateCartQuantity(cartKey, quantity, row) {
         row.querySelectorAll('button').forEach(btn => btn.disabled = true);
         let formData = new FormData();
