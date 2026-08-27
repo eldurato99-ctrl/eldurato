@@ -5,6 +5,24 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../../config/database.php';
 
 // ==========================================
+// 🔒 LOGIN GUARD: Check if user is logged in
+// ==========================================
+$loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || isset($_POST['buy_now']) || isset($_POST['action']))) {
+    if ($loggedInUserId <= 0) {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Please login first']);
+            exit;
+        } else {
+            header("Location: ../auth/login.php");
+            exit;
+        }
+    }
+}
+
+// ==========================================
 // 1. ORDER STATUS SYNC & REAL-TIME MAPPING (STRICT DYNAMIC FIXED)
 // ==========================================
 $confirmed_orders_map = []; 
@@ -20,7 +38,6 @@ $raw_confirmed = $stmt_check->fetchAll(PDO::FETCH_ASSOC);
 foreach ($raw_confirmed as $row) {
     $track_key = $row['product_id'] . '_' . str_replace(' ', '_', trim($row['db_size']));
     
-    // Agar key pehle se set nahi hai, toh add karein
     if (!isset($confirmed_orders_map[$track_key])) {
         $pay_method = strtoupper($row['payment_method']);
         $suffix = ($pay_method == 'COD') ? 'COD' : 'ONL';
@@ -32,8 +49,6 @@ foreach ($raw_confirmed as $row) {
             'tracking' => trim($row['tracking_status'] ?? '') 
         ];
     } else {
-        // Agar pehle se status check active hai aur purana record completed/cancelled hai, 
-        // toh pending/processing ko priority dein taaki dynamic active status handle ho sake
         $existing_status = $confirmed_orders_map[$track_key]['status'];
         $new_status = strtolower($row['order_status']);
         
@@ -50,10 +65,17 @@ foreach ($raw_confirmed as $row) {
         }
     }
 }
+
 // ==========================================
 // 2. AJAX - Update Quantity Engine
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_quantity') {
+    if ($loggedInUserId <= 0) {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'message' => 'Please login first']);
+        exit;
+    }
+
     $cart_key = $_POST['cart_key'];
     $new_qty = intval($_POST['quantity']);
 
@@ -110,6 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // 3. Cart Actions Framework Configuration
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || isset($_POST['buy_now']))) {
+    if ($loggedInUserId <= 0) {
+        header("Location: ../auth/login.php");
+        exit;
+    }
+
     $product_id = intval($_POST['product_id']);
     if ($product_id <= 0) { die("Invalid Product"); }
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
@@ -135,6 +162,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || is
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
+    if ($loggedInUserId <= 0) {
+        header("Location: ../auth/login.php");
+        exit;
+    }
+
     $cart_key = $_POST['remove_item_key']; 
     if (isset($_SESSION['cart'][$cart_key])) { 
         $item = $_SESSION['cart'][$cart_key];
@@ -226,7 +258,6 @@ foreach ($cart_items as $item) {
     .product-hover-effect { transition: transform 0.2s ease, border-color 0.2s ease; cursor: pointer; }
     .product-hover-effect:hover { transform: scale(1.04); border-color: #4f46e5 !important; }
 
-    /* Footer actions layout architecture */
     .cart-actions-footer {
         display: flex;
         align-items: center;
@@ -234,19 +265,16 @@ foreach ($cart_items as $item) {
         gap: 12px;
         flex-wrap: wrap;
     }
-
     .qty-counter-zone {
         display: flex;
         align-items: center;
         gap: 12px;
     }
-
     .btn-action-group {
         display: flex;
         align-items: center;
         gap: 8px;
     }
-
     .btn-action {
         font-size: 11px !important;
         font-weight: 700 !important;
@@ -259,35 +287,28 @@ foreach ($cart_items as $item) {
         text-decoration: none !important;
         white-space: nowrap;
     }
-
     .btn-check-details {
         background: #ffa011 !important;
         color: #fff !important;
     }
-
     .btn-buy-now {
         background: #4f46e5 !important;
         color: #fff !important;
     }
-
-    /* Responsive Mobile Fixes (<= 768px) */
     @media (max-width: 768px) {
         .cart-item-row {
             flex-direction: column;
             align-items: stretch !important;
             padding: 16px !important;
         }
-
         .cart-item-row > a img {
             width: 100% !important;
             height: 160px !important;
             object-fit: contain;
         }
-
         .cart-details-area {
             width: 100% !important;
         }
-
         .cart-actions-footer {
             flex-direction: column;
             align-items: stretch;
@@ -296,7 +317,6 @@ foreach ($cart_items as $item) {
             border-top: 1px solid #f1f5f9;
             padding-top: 12px;
         }
-
         .qty-counter-zone {
             justify-content: space-between;
             background: #f8fafc;
@@ -304,18 +324,15 @@ foreach ($cart_items as $item) {
             border-radius: 8px;
             width: 100%;
         }
-
         .btn-action-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             width: 100%;
         }
-        
         .btn-action-group:not(:has(.btn-buy-now)) {
             grid-template-columns: 1fr;
         }
-
         .btn-action {
             padding: 10px !important;
             font-size: 12px !important;
@@ -328,7 +345,6 @@ foreach ($cart_items as $item) {
     <div class="col-12 col-md-10">
  <h4 class="fw-bold text-dark mb-0" style="font-size: 26px; letter-spacing: -0.5px;">Shopping Cart</h4>
         <span class="text-secondary small fw-medium">Total Session Items (<?php echo count($cart_items); ?>)</span>
-
 
             <div class="table-card-wrapper mt-2" style="border: 1px solid #e2e8f0;">
                 <?php 
@@ -485,6 +501,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 row.querySelector('.item-total-price').innerText = data.item_total;
+            } else if (data.message && data.message.toLowerCase().includes('login')) {
+                window.location.href = '../auth/login.php';
             }
         })
         .catch(error => console.error('Error:', error))
