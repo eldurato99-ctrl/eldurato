@@ -28,11 +28,16 @@ if (!$isIncluded) {
     include __DIR__ . '/../../includes/navbar.php';
 }
 
+// ✅ FIXED URL HELPER (Subfolder & Double Slash Safe)
 if (!function_exists('url')) {
     function url($path) {
-        return '/' . ltrim($path, '/');
+        $baseUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '/eldurato';
+        return $baseUrl . '/' . ltrim($path, '/');
     }
 }
+
+$loginUrl = url('pages/auth/login.php');
+$wishlistUrl = url('pages/products/wishlist.php');
 
 $loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 $userWishlistItems = [];
@@ -338,6 +343,9 @@ foreach ($dbProducts as $product) {
 <script>
     const allProducts = <?php echo json_encode($jsProducts); ?>;
     const cartActionUrl = "<?php echo url('pages/products/cart.php'); ?>";
+    const loginUrl = "<?php echo $loginUrl; ?>";
+    const wishlistEndpoint = "<?php echo $wishlistUrl; ?>";
+    
     const urlParams = new URLSearchParams(window.location.search);
     const globalSalesFilter = urlParams.get('filter') ? urlParams.get('filter').trim() : '';
 
@@ -550,7 +558,7 @@ foreach ($dbProducts as $product) {
         formData.append('product_id', productId);
 
         try {
-            const response = await fetch('/pages/products/wishlist.php', { method: 'POST', body: formData });
+            const response = await fetch(wishlistEndpoint, { method: 'POST', body: formData });
             const data = await response.json();
             if(data.success) {
                 const icon = btn.querySelector('i');
@@ -565,7 +573,7 @@ foreach ($dbProducts as $product) {
                 wishlistBadges.forEach(badge => { if(badge) badge.innerText = data.count; });
             } else if(data.message.toLowerCase().includes('login') || data.message === 'Please login first') {
                 if(confirm('Please login to add items to wishlist')) {
-                    window.location.href = '/pages/auth/login.php';
+                    window.location.href = loginUrl;
                 }
             } else {
                 alert(data.message);
