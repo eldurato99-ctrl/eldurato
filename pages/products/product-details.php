@@ -3,12 +3,20 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once '../../config/database.php';
-
-// Dynamic URL helper for safe subfolder redirection
+ 
 if (!function_exists('url')) {
     function url($path) {
-        $baseUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '/eldurato';
-        return $baseUrl . '/' . ltrim($path, '/');
+        $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+        
+        // Agar SITE_URL define nahi hai toh relative path use karein
+        if (empty($siteUrl)) {
+            $baseFolder = '/eldurato';
+            return $baseFolder . '/' . ltrim($path, '/');
+        }
+        
+        // Agar SITE_URL me pehle se '/eldurato' hai aur path me bhi aa rha hai toh duplicate avoid karein
+        $cleanPath = ltrim($path, '/');
+        return $siteUrl . '/' . $cleanPath;
     }
 }
 
