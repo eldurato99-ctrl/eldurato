@@ -1,14 +1,20 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../../config/database.php';
-include '../../includes/header.php';
-include '../../includes/navbar.php';
 
+// Dynamic URL helper for safe subfolder redirection
 if (!function_exists('url')) {
     function url($path) {
         $baseUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '/eldurato';
         return $baseUrl . '/' . ltrim($path, '/');
     }
 }
+
+$loginUrl = url('pages/auth/login.php');
+$cartUrl = url('pages/products/cart.php');
+$productsUrl = url('pages/products/products.php');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -17,12 +23,14 @@ $stmt->execute([$id]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$product) {
-    echo "<div class='container my-5 alert alert-warning rounded-3 border-0 shadow-sm mx-3'>The product has been relocated or expired. <a href='".url('pages/products/products.php')."' class='alert-link'>Return to Grid</a></div>";
+    include '../../includes/header.php';
+    include '../../includes/navbar.php';
+    echo "<div class='container my-5 alert alert-warning rounded-3 border-0 shadow-sm mx-3'>The product has been relocated or expired. <a href='".$productsUrl."' class='alert-link'>Return to Grid</a></div>";
     include '../../includes/footer.php';
     exit;
 }
 
-// 🚫 CHECK STOCK STATUS (Numeric stock <= 0 OR stock_status string)
+// 🚫 CHECK STOCK STATUS
 $stock = isset($product['stock']) ? (int)$product['stock'] : null;
 $isOutOfStock = ($stock !== null && $stock <= 0) || (isset($product['stock_status']) && $product['stock_status'] === 'out_of_stock');
 
@@ -37,15 +45,17 @@ if (!empty($imagesData) && isset($imagesData[0]['url'])) {
 }
 
 $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $product['price']) / $product['old_price']) * 100) : 0;
+
+include '../../includes/header.php';
+include '../../includes/navbar.php';
 ?>
 
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-    body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; }
+    body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; background-color: #eef2f7 !important; }
     
-    /* Native Size Chips Layout */
     .size-chip {
         display: inline-flex;
         align-items: center;
@@ -66,7 +76,6 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
         background-color: #1a202c !important;
     }
     
-    /* Carousel Overrides */
     .carousel-item img { height: 340px; object-fit: contain; }
     @media (min-width: 768px) {
         body { padding-bottom: 20px !important; }
@@ -87,12 +96,12 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                                 $imgSizes = isset($imgItem['sizes']) ? $imgItem['sizes'] : '28,30,32,34,36,38,40';
                             ?>
                                 <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>" data-imgurl="<?= $imgUrl ?>" data-sizes="<?= htmlspecialchars($imgSizes) ?>">
-                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" ">
+                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" alt="Product Image">
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="carousel-item active" data-imgurl="<?= $firstImgUrl ?>" data-sizes="<?= $firstImgSizes ?>">
-                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2">
+                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2" alt="Product Image">
                             </div>
                         <?php endif; ?>
                     </div>
@@ -113,7 +122,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                             $imgUrl = isset($imgItem['url']) ? $imgItem['url'] : $imgItem;
                         ?>
                             <div class="border rounded p-1 bg-light cursor-pointer thumb-box" data-bs-target="#productImagesCarousel" data-bs-slide-to="<?= $index ?>" style="width: 48px; height: 48px; flex-shrink: 0;">
-                                <img src="<?= $imgUrl; ?>" class="w-100 h-100 object-fit-contain" style="<?= $isOutOfStock ? 'filter: grayscale(100%);' : '' ?>">
+                                <img src="<?= $imgUrl; ?>" class="w-100 h-100 object-fit-contain" alt="Thumb">
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -197,7 +206,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
             <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
         </button>
     <?php else: ?>
-        <form action="<?php echo url('pages/products/cart.php'); ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;">
+        <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;">
             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
             <input type="hidden" name="quantity" value="1">
             <input type="hidden" name="selected_image" id="cart_selected_image" value="<?php echo $firstImgUrl; ?>">
@@ -222,7 +231,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
                     <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
                 </button>
             <?php else: ?>
-                <form action="<?php echo url('pages/products/cart.php'); ?>" method="POST" class="d-flex gap-3">
+                <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-3">
                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                     <input type="hidden" name="quantity" value="1">
                     <input type="hidden" name="selected_image" id="desktop_selected_image" value="<?php echo $firstImgUrl; ?>">
@@ -235,6 +244,7 @@ $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $produ
         </div>
     </div>
 </div>
+
 <script>
 let currentSelectedSize = "";
 
@@ -242,37 +252,27 @@ document.addEventListener("DOMContentLoaded", function() {
     const carouselEl = document.getElementById('productImagesCarousel');
 
     if (carouselEl) {
-        // Bootstrap Carousel Instance banayein
         const bsCarousel = new bootstrap.Carousel(carouselEl, {
             interval: false,
             ride: false,
             wrap: true
         });
 
-        // 1. Left/Right arrow buttons par hover se slide
         const prevBtn = carouselEl.querySelector('.carousel-control-prev');
         const nextBtn = carouselEl.querySelector('.carousel-control-next');
 
         if (prevBtn) {
-            prevBtn.addEventListener('mouseenter', () => {
-                bsCarousel.prev();
-            });
+            prevBtn.addEventListener('mouseenter', () => { bsCarousel.prev(); });
         }
         if (nextBtn) {
-            nextBtn.addEventListener('mouseenter', () => {
-                bsCarousel.next();
-            });
+            nextBtn.addEventListener('mouseenter', () => { bsCarousel.next(); });
         }
 
-        // 2. Bottom Thumbnails par hover (mouseenter) se image switch
         const thumbBoxes = document.querySelectorAll('.thumb-box');
         thumbBoxes.forEach((thumb, idx) => {
-            thumb.addEventListener('mouseenter', () => {
-                bsCarousel.to(idx);
-            });
+            thumb.addEventListener('mouseenter', () => { bsCarousel.to(idx); });
         });
 
-        // 3. Carousel slide event listener (Image aur Sizes update karne ke liye)
         carouselEl.addEventListener('slide.bs.carousel', event => {
             const activeSlide = event.relatedTarget;
             if (!activeSlide) return;
@@ -292,7 +292,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Initial load par sizes render karein
     renderSizes('<?= htmlspecialchars($firstImgSizes) ?>');
 });
 
@@ -301,7 +300,6 @@ function renderSizes(sizesString) {
     if (!container) return;
     
     container.innerHTML = '';
-    
     const sizesArray = sizesString ? sizesString.split(',') : [];
     
     if (sizesArray.length > 0 && sizesArray[0].trim() !== "") {
@@ -348,16 +346,11 @@ function selectSize(element, size) {
 
 function updateFormSizeValues(sizeValue) {
     const mobileInput = document.getElementById('cart_selected_size');
-    if (mobileInput) {
-        mobileInput.value = sizeValue;
-    }
+    if (mobileInput) mobileInput.value = sizeValue;
     
     const desktopInput = document.querySelector('.desktop-size-mirror');
-    if (desktopInput) {
-        desktopInput.value = sizeValue;
-    }
+    if (desktopInput) desktopInput.value = sizeValue;
 }
 </script>
-
 
 <?php include '../../includes/footer.php'; ?>
