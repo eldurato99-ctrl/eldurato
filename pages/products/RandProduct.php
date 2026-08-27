@@ -19,6 +19,7 @@ try {
 
 $cartActionUrl = url('pages/products/cart.php');
 $allProductsUrl = url('pages/products/products.php');
+$loginUrl = url('pages/auth/login.php');
 
 // ✅ Get Wishlist for logged-in user
 $loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
@@ -191,12 +192,12 @@ document.addEventListener('click', async function(e) {
             
         } else if (data.message && data.message.toLowerCase().includes('login')) {
             if (confirm('Please login to add items to wishlist')) {
-                window.location.href = '/pages/auth/login.php';
+                window.location.href = '<?php echo url("pages/auth/login.php"); ?>';
             }
         } else {
             // Silent fail for guest users - just redirect to login
             if (data.message && data.message.toLowerCase().includes('login')) {
-                window.location.href = '/pages/auth/login.php';
+                window.location.href = '<?php echo url("pages/auth/login.php"); ?>';
             }
         }
     } catch(error) { 
