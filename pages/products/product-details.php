@@ -3,18 +3,16 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once '../../config/database.php';
- 
+
 if (!function_exists('url')) {
     function url($path) {
         $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
         
-        // Agar SITE_URL define nahi hai toh relative path use karein
         if (empty($siteUrl)) {
             $baseFolder = '/eldurato';
             return $baseFolder . '/' . ltrim($path, '/');
         }
         
-        // Agar SITE_URL me pehle se '/eldurato' hai aur path me bhi aa rha hai toh duplicate avoid karein
         $cleanPath = ltrim($path, '/');
         return $siteUrl . '/' . $cleanPath;
     }
@@ -23,6 +21,8 @@ if (!function_exists('url')) {
 $loginUrl = url('pages/auth/login.php');
 $cartUrl = url('pages/products/cart.php');
 $productsUrl = url('pages/products/products.php');
+
+$loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -214,7 +214,7 @@ include '../../includes/navbar.php';
             <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
         </button>
     <?php else: ?>
-        <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;">
+        <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;" onsubmit="<?php echo ($loggedInUserId <= 0) ? "window.location.href='$loginUrl'; return false;" : ""; ?>">
             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
             <input type="hidden" name="quantity" value="1">
             <input type="hidden" name="selected_image" id="cart_selected_image" value="<?php echo $firstImgUrl; ?>">
@@ -239,7 +239,7 @@ include '../../includes/navbar.php';
                     <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
                 </button>
             <?php else: ?>
-                <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-3">
+                <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-3" onsubmit="<?php echo ($loggedInUserId <= 0) ? "window.location.href='$loginUrl'; return false;" : ""; ?>">
                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                     <input type="hidden" name="quantity" value="1">
                     <input type="hidden" name="selected_image" id="desktop_selected_image" value="<?php echo $firstImgUrl; ?>">
