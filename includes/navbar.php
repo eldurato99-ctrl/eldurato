@@ -83,7 +83,7 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
         z-index: 1040;
         background: var(--app-dark);
         box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .16);
-        padding: 12px 16px;
+        padding: 4px 12px;
     }
     .app-search-input-group {
         background-color: #ffffff;
@@ -227,7 +227,7 @@ $currentCat = isset($_GET['category']) ? htmlspecialchars(trim($_GET['category']
                 <div class="dropdown">
                     <a href="#" class="text-white fw-bold text-decoration-none d-flex align-items-center gap-1.5 small" data-bs-toggle="dropdown">
                         <img src="<?= $final_avatar ?>" alt="<?= $user_name ?>" class="rounded-circle border me-1" style="width: 26px; height: 26px; object-fit: cover;">
-                        <?= $user_name ?>  <i class="ri-arrow-down-s-line opacity-50"></i>
+                        <!-- <?= $user_name ?>  <i class="ri-arrow-down-s-line opacity-50"></i> -->
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3" style="font-size: 13.5px;">
                         <li><a class="dropdown-item py-2" href="<?php echo $dashboard_url; ?>"><i class="ri-dashboard-line me-2 text-primary"></i>Dashboard</a></li>
