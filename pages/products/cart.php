@@ -4,6 +4,18 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once '../../config/database.php';
 
+// Dynamic URL helper for safe subfolder redirection
+if (!function_exists('url')) {
+    function url($path) {
+        $baseUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '/eldurato';
+        return $baseUrl . '/' . ltrim($path, '/');
+    }
+}
+
+$loginUrl = url('pages/auth/login.php');
+$cartUrl = url('pages/products/cart.php');
+$productsUrl = url('pages/products/products.php');
+
 // ==========================================
 // 🔒 LOGIN GUARD: Check if user is logged in
 // ==========================================
@@ -16,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || is
             echo json_encode(['status' => 'error', 'message' => 'Please login first']);
             exit;
         } else {
-            header("Location: ../auth/login.php");
+            header("Location: " . $loginUrl);
             exit;
         }
     }
 }
 
 // ==========================================
-// 1. ORDER STATUS SYNC & REAL-TIME MAPPING (STRICT DYNAMIC FIXED)
+// 1. ORDER STATUS SYNC & REAL-TIME MAPPING
 // ==========================================
 $confirmed_orders_map = []; 
 
@@ -133,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || isset($_POST['buy_now']))) {
     if ($loggedInUserId <= 0) {
-        header("Location: ../auth/login.php");
+        header("Location: " . $loginUrl);
         exit;
     }
 
@@ -154,16 +166,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['add_to_cart']) || is
     }
 
     if (isset($_POST['buy_now'])) {
-        header("Location: /pages/products/checkout.php?target_key=" . $cart_key);
+        header("Location: " . url('pages/products/checkout.php?target_key=' . $cart_key));
     } else {
-        header("Location: /pages/products/cart.php");
+        header("Location: " . $cartUrl);
     }
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
     if ($loggedInUserId <= 0) {
-        header("Location: ../auth/login.php");
+        header("Location: " . $loginUrl);
         exit;
     }
 
@@ -181,15 +193,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
                 try {
                     $upStmt = $pdo->prepare("UPDATE all_orders_list SET order_status = 'cancelled', tracking_status = 'Cancelled by Customer' WHERE id = ?");
                     $upStmt->execute([$db_order_id]);
-                } catch (PDOException $e) {
-                    // Safety trace boundary fallback node
-                }
+                } catch (PDOException $e) {}
             }
         } else {
             unset($_SESSION['cart'][$cart_key]);
         }
     }
-    header("Location: /pages/products/cart.php");
+    header("Location: " . $cartUrl);
     exit;
 }
 
@@ -204,7 +214,7 @@ if (empty($cart_items)) {
         <div style="border: none !important; border-radius: 16px !important; background: #fff !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important; padding: 48px; max-width: 400px; margin: 0 auto;">
             <div class="mb-3 text-muted"><i class="ri-shopping-cart-2-line" style="font-size: 3rem;"></i></div>
             <h5 class="fw-bold text-dark mb-3">आपका CART खाली है!</h5>
-            <a href="/pages/products/products.php" class="btn text-white py-2" style="background: #4f46e5 !important; border-radius: 8px; width: 100%;">Shop Now</a>
+            <a href="<?php echo $productsUrl; ?>" class="btn text-white py-2" style="background: #4f46e5 !important; border-radius: 8px; width: 100%;">Shop Now</a>
         </div>
     </div>
     <?php
@@ -245,8 +255,17 @@ foreach ($cart_items as $item) {
 <style>
     body { background-color: #eef2f7 !important; }
     .table-card-wrapper { border: none !important; border-radius: 16px !important; background: #fff !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important; padding: 0px; overflow: hidden; }
-    .stat-card { border: none; border-radius: 14px; color: #fff !important; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.02); padding: 20px; }
-    .bg-stat-orders { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important; }
+    
+    /* Title text overflow fix */
+    .cart-item-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
     .badge-track { font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: none !important; }
     .track-pending { background: #fef3c7 !important; color: #d97706 !important; }
     .track-processing { background: #e0f2fe !important; color: #0284c7 !important; }
@@ -257,93 +276,27 @@ foreach ($cart_items as $item) {
     .hover-link-blue:hover { color: #4f46e5 !important; text-decoration: none; }
     .product-hover-effect { transition: transform 0.2s ease, border-color 0.2s ease; cursor: pointer; }
     .product-hover-effect:hover { transform: scale(1.04); border-color: #4f46e5 !important; }
-
-    .cart-actions-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-    .qty-counter-zone {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .btn-action-group {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .btn-action {
-        font-size: 11px !important;
-        font-weight: 700 !important;
-        padding: 6px 12px !important;
-        border-radius: 6px !important;
-        border: none !important;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none !important;
-        white-space: nowrap;
-    }
-    .btn-check-details {
-        background: #ffa011 !important;
-        color: #fff !important;
-    }
-    .btn-buy-now {
-        background: #4f46e5 !important;
-        color: #fff !important;
-    }
+    .cart-actions-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .qty-counter-zone { display: flex; align-items: center; gap: 12px; }
+    .btn-action-group { display: flex; align-items: center; gap: 8px; }
+    .btn-action { font-size: 11px !important; font-weight: 700 !important; padding: 6px 12px !important; border-radius: 6px !important; border: none !important; display: inline-flex; align-items: center; justify-content: center; text-decoration: none !important; white-space: nowrap; }
+    .btn-check-details { background: #ffa011 !important; color: #fff !important; }
+    .btn-buy-now { background: #4f46e5 !important; color: #fff !important; }
     @media (max-width: 768px) {
-        .cart-item-row {
-            flex-direction: column;
-            align-items: stretch !important;
-            padding: 16px !important;
-        }
-        .cart-item-row > a img {
-            width: 100% !important;
-            height: 160px !important;
-            object-fit: contain;
-        }
-        .cart-details-area {
-            width: 100% !important;
-        }
-        .cart-actions-footer {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 12px;
-            margin-top: 12px;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 12px;
-        }
-        .qty-counter-zone {
-            justify-content: space-between;
-            background: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 8px;
-            width: 100%;
-        }
-        .btn-action-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            width: 100%;
-        }
-        .btn-action-group:not(:has(.btn-buy-now)) {
-            grid-template-columns: 1fr;
-        }
-        .btn-action {
-            padding: 10px !important;
-            font-size: 12px !important;
-        }
+        .cart-item-row { flex-direction: column; align-items: stretch !important; padding: 16px !important; }
+        .cart-item-row > a img { width: 100% !important; height: 160px !important; object-fit: contain; }
+        .cart-details-area { width: 100% !important; }
+        .cart-actions-footer { flex-direction: column; align-items: stretch; gap: 12px; margin-top: 12px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
+        .qty-counter-zone { justify-content: space-between; background: #f8fafc; padding: 8px 12px; border-radius: 8px; width: 100%; }
+        .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+        .btn-action { padding: 10px !important; font-size: 12px !important; }
     }
 </style>
 
 <div class="container py-4">
    <div class="row g-4 justify-content-center">
     <div class="col-12 col-md-10">
- <h4 class="fw-bold text-dark mb-0" style="font-size: 26px; letter-spacing: -0.5px;">Shopping Cart</h4>
+    <h4 class="fw-bold text-primary mb-0" style="font-size: 26px; letter-spacing: -0.5px;">Shopping Cart</h4>
         <span class="text-secondary small fw-medium">Total Session Items (<?php echo count($cart_items); ?>)</span>
 
             <div class="table-card-wrapper mt-2" style="border: 1px solid #e2e8f0;">
@@ -372,29 +325,29 @@ foreach ($cart_items as $item) {
                 ?>
                     <div class="d-flex p-3 border-bottom align-items-center gap-3 position-relative cart-item-row" data-key="<?php echo $key; ?>">
                         
-                        <a href="/pages/products/product-details.php?id=<?php echo $p_id; ?>">
+                            <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>">
                             <img src="<?php echo $itemImage; ?>" class="border rounded-3 p-1 bg-light product-hover-effect" style="width: 85px; height: 85px; object-fit: contain;" alt="Product">
                         </a>
                         
-                       <div class="flex-grow-1 min-w-0 cart-details-area">
-    <div class="d-flex justify-content-between align-items-start gap-2">
-        <div class="min-w-0">
-            <span class="text-uppercase text-secondary fw-bold d-block" style="font-size: 10px; letter-spacing: 0.5px;">
+                       <div class="flex-grow-1 min-w-0 cart-details-area" style="width: 100%;">
+                               <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="min-w-0" style="width: 100%;">
+                 <span class="text-uppercase text-secondary fw-bold d-block" style="font-size: 10px; letter-spacing: 0.5px;">
                 <?php echo htmlspecialchars($product['brand']); ?>
             </span>
-            <h6 class="mb-1 text-truncate fw-semibold" style="font-size: 16px; margin: 0;">
-                <a href="/pages/products/product-details.php?id=<?php echo $p_id; ?>" class="text-decoration-none hover-link-blue">
+            <h6 class="mb-1 fw-semibold" style="font-size: 16px; margin: 0;">
+                <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>" class="text-decoration-none hover-link-blue cart-item-title">
                     <?php echo htmlspecialchars($product['name']); ?>
                 </a>
             </h6>
         </div>
         
         <?php if (!$isCompletedOrCancelled): ?>
-            <form action="" method="POST" onsubmit="return confirm('Do you want to cancel this order from pipeline?');" class="ms-auto">
+            <form action="" method="POST" onsubmit="return confirm('Do you want to cancel this order from pipeline?');" class="ms-auto flex-shrink-0">
                 <input type="hidden" name="remove_item" value="1">
                 <input type="hidden" name="remove_item_key" value="<?php echo $key; ?>">
-                <button type="submit" class="btn p-1 text-danger border-0 bg-transparent shadow-none" title="Cancel/Remove Order">
-                 Cancel order
+                <button type="submit" class="btn text-danger border-0 shadow-none d-flex align-items-center justify-content-center" title="Cancel/Remove Order" style="width: 32px; height: 32px; background: #fee2e2; border-radius: 50%;">
+                 <i class="ri-delete-bin-line" style="font-size: 16px;"></i>
                 </button>
             </form>
         <?php endif; ?>
@@ -438,12 +391,12 @@ foreach ($cart_items as $item) {
         </div>
 
         <div class="btn-action-group">
-            <a href="/pages/products/product-details.php?id=<?php echo $p_id; ?>" class="btn btn-action btn-check-details">
+            <a href="<?php echo url('pages/products/product-details.php?id=' . $p_id); ?>" class="btn btn-action btn-check-details">
                 Check Details <i class="ri-arrow-right-s-line"></i>
             </a>
 
             <?php if (!$isPipelineActive): ?>
-                <a href="/pages/products/checkout.php?target_key=<?php echo $key; ?>" class="btn btn-action btn-buy-now">
+                <a href="<?php echo url('pages/products/checkout.php?target_key=' . $key); ?>" class="btn btn-action btn-buy-now">
                     Buy This Item <i class="ri-arrow-right-s-line"></i>
                 </a>
             <?php endif; ?>
@@ -502,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 row.querySelector('.item-total-price').innerText = data.item_total;
             } else if (data.message && data.message.toLowerCase().includes('login')) {
-                window.location.href = '../auth/login.php';
+                window.location.href = '<?php echo $loginUrl; ?>';
             }
         })
         .catch(error => console.error('Error:', error))
