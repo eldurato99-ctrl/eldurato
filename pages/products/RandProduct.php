@@ -44,7 +44,7 @@ if ($loggedInUserId > 0) {
 </style>
 
 <!-- ✅ H2 TAG for Section Heading -->
-<section class="container-fluid my-3 bg-white p-3 rounded-3 shadow-sm" aria-label="Suggested Products For You">
+<section class="container-fluid my-3 bg-white p-1 rounded-3 shadow-sm" aria-label="Suggested Products For You">
     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
         <div class="d-flex align-items-center gap-2">
             <h2 class="fw-bold text-dark m-0" style="font-size: 1.1rem;">Suggested For You</h2>
