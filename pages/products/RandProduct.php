@@ -2,11 +2,15 @@
 // pages/products/RandProduct.php - SEO FIXED VERSION
 require_once __DIR__ . '/../../config/database.php';
 
-// Dynamic URL helper
 if (!function_exists('url')) {
     function url($path) {
-        $baseUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '/eldurato';
-        return $baseUrl . '/' . ltrim($path, '/');
+        $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+        
+        if (empty($siteUrl)) {
+            return '/' . ltrim($path, '/');
+        }
+        
+        return $siteUrl . '/' . ltrim($path, '/');
     }
 }
 
@@ -169,7 +173,7 @@ document.addEventListener('click', async function(e) {
     formData.append('product_id', productId);
 
     try {
-        const response = await fetch('/pages/products/wishlist.php', { 
+        const response = await fetch('<?php echo url("pages/products/wishlist.php"); ?>', { 
             method: 'POST', 
             body: formData 
         });
@@ -192,12 +196,11 @@ document.addEventListener('click', async function(e) {
             
         } else if (data.message && data.message.toLowerCase().includes('login')) {
             if (confirm('Please login to add items to wishlist')) {
-                window.location.href = '<?php echo url("pages/auth/login.php"); ?>';
+                window.location.href = '<?php echo $loginUrl; ?>';
             }
         } else {
-            // Silent fail for guest users - just redirect to login
             if (data.message && data.message.toLowerCase().includes('login')) {
-                window.location.href = '<?php echo url("pages/auth/login.php"); ?>';
+                window.location.href = '<?php echo $loginUrl; ?>';
             }
         }
     } catch(error) { 
