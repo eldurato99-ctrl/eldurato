@@ -1,28 +1,13 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 require_once '../../config/database.php';
+include '../../includes/header.php';
+include '../../includes/navbar.php';
 
 if (!function_exists('url')) {
     function url($path) {
-        $siteUrl = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
-        
-        if (empty($siteUrl)) {
-            $baseFolder = '/eldurato';
-            return $baseFolder . '/' . ltrim($path, '/');
-        }
-        
-        $cleanPath = ltrim($path, '/');
-        return $siteUrl . '/' . $cleanPath;
+        return '/belt/' . ltrim($path, '/');
     }
 }
-
-$loginUrl = url('pages/auth/login.php');
-$cartUrl = url('pages/products/cart.php');
-$productsUrl = url('pages/products/products.php');
-
-$loggedInUserId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -31,16 +16,13 @@ $stmt->execute([$id]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$product) {
-    include '../../includes/header.php';
-    include '../../includes/navbar.php';
-    echo "<div class='container my-5 alert alert-warning rounded-3 border-0 shadow-sm mx-3'>The product has been relocated or expired. <a href='".$productsUrl."' class='alert-link'>Return to Grid</a></div>";
+    echo "<div class='container my-5 alert alert-warning rounded-3 border-0 shadow-sm mx-3'>The product has been relocated or expired. <a href='".url('pages/products/products.php')."' class='alert-link'>Return to Grid</a></div>";
     include '../../includes/footer.php';
     exit;
 }
 
 // 🚫 CHECK STOCK STATUS
-$stock = isset($product['stock']) ? (int)$product['stock'] : null;
-$isOutOfStock = ($stock !== null && $stock <= 0) || (isset($product['stock_status']) && $product['stock_status'] === 'out_of_stock');
+$isOutOfStock = (isset($product['stock_status']) && $product['stock_status'] === 'out_of_stock');
 
 $imagesData = !empty($product['images']) ? json_decode($product['images'], true) : [];
 
@@ -53,37 +35,36 @@ if (!empty($imagesData) && isset($imagesData[0]['url'])) {
 }
 
 $discount = ($product['old_price'] > 0) ? round((($product['old_price'] - $product['price']) / $product['old_price']) * 100) : 0;
-
-include '../../includes/header.php';
-include '../../includes/navbar.php';
 ?>
 
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-    body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; background-color: #eef2f7 !important; }
+    body { padding-bottom: <?= $isOutOfStock ? '20px' : '70px' ?> !important; }
     
-    .size-chip {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 45px;
-        height: 45px;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 50%;
-        font-size: 13px;
-        font-weight: 600;
-        color: #334155;
+    /* Native Size Chips Layout */
+    .size-chip { 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        width: 45px; 
+        height: 45px; 
+        background: #fff; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 50%; /* Pure circular android style design */
+        font-size: 13px; 
+        font-weight: 600; 
+        color: #334155; 
         transition: all 0.15s ease;
     }
-    .size-chip.active-size {
-        border-color: #1a202c !important;
-        color: #fff !important;
-        background-color: #1a202c !important;
+    .size-chip.active-size { 
+        border-color: #1a202c !important; 
+        color: #fff !important; 
+        background-color: #1a202c !important; 
     }
     
+    /* Carousel Overrides */
     .carousel-item img { height: 340px; object-fit: contain; }
     @media (min-width: 768px) {
         body { padding-bottom: 20px !important; }
@@ -99,17 +80,17 @@ include '../../includes/navbar.php';
                 <div id="productImagesCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
                     <div class="carousel-inner">
                         <?php if(!empty($imagesData) && is_array($imagesData)): ?>
-                            <?php foreach($imagesData as $index => $imgItem):
+                            <?php foreach($imagesData as $index => $imgItem): 
                                 $imgUrl = isset($imgItem['url']) ? $imgItem['url'] : $imgItem;
                                 $imgSizes = isset($imgItem['sizes']) ? $imgItem['sizes'] : '28,30,32,34,36,38,40';
                             ?>
                                 <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>" data-imgurl="<?= $imgUrl ?>" data-sizes="<?= htmlspecialchars($imgSizes) ?>">
-                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" alt="Product Image">
+                                    <img src="<?= $imgUrl; ?>" class="d-block w-100 p-2" style="<?= $isOutOfStock ? 'filter: grayscale(100%); opacity: 0.8;' : '' ?>">
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="carousel-item active" data-imgurl="<?= $firstImgUrl ?>" data-sizes="<?= $firstImgSizes ?>">
-                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2" alt="Product Image">
+                                <img src="<?= $firstImgUrl; ?>" class="d-block w-100 p-2" style="<?= $isOutOfStock ? 'filter: grayscale(100%); opacity: 0.8;' : '' ?>">
                             </div>
                         <?php endif; ?>
                     </div>
@@ -126,11 +107,11 @@ include '../../includes/navbar.php';
                 
                 <?php if(!empty($imagesData) && is_array($imagesData) && count($imagesData) > 1): ?>
                     <div class="d-flex justify-content-center gap-2 overflow-auto border-top pt-2 mt-1">
-                        <?php foreach($imagesData as $index => $imgItem):
+                        <?php foreach($imagesData as $index => $imgItem): 
                             $imgUrl = isset($imgItem['url']) ? $imgItem['url'] : $imgItem;
                         ?>
                             <div class="border rounded p-1 bg-light cursor-pointer thumb-box" data-bs-target="#productImagesCarousel" data-bs-slide-to="<?= $index ?>" style="width: 48px; height: 48px; flex-shrink: 0;">
-                                <img src="<?= $imgUrl; ?>" class="w-100 h-100 object-fit-contain" alt="Thumb">
+                                <img src="<?= $imgUrl; ?>" class="w-100 h-100 object-fit-contain" style="<?= $isOutOfStock ? 'filter: grayscale(100%);' : '' ?>">
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -207,14 +188,9 @@ include '../../includes/navbar.php';
     </div>
 </div>
 
-<!-- Mobile Action Section -->
-<div class="fixed-bottom bg-white border-top py-2 px-3 shadow-lg d-md-none" style="z-index: 1040;">
-    <?php if ($isOutOfStock): ?>
-        <button class="btn btn-secondary w-100 py-2 text-uppercase fw-bold disabled" style="font-size: 12px; border-radius: 8px; height: 42px;">
-            <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
-        </button>
-    <?php else: ?>
-        <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;" onsubmit="<?php echo ($loggedInUserId <= 0) ? "window.location.href='$loginUrl'; return false;" : ""; ?>">
+<?php if (!$isOutOfStock): ?>
+    <div class="fixed-bottom bg-white border-top py-2 px-3 shadow-lg d-md-none" style="z-index: 1040;">
+        <form action="<?php echo url('pages/products/cart.php'); ?>" method="POST" class="d-flex gap-2 mx-auto" style="max-width: 500px;">
             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
             <input type="hidden" name="quantity" value="1">
             <input type="hidden" name="selected_image" id="cart_selected_image" value="<?php echo $firstImgUrl; ?>">
@@ -227,19 +203,14 @@ include '../../includes/navbar.php';
                 <i class="ri-flash-line"></i> BUY NOW
             </button>
         </form>
-    <?php endif; ?>
-</div>
+    </div>
+<?php endif; ?>
 
-<!-- Desktop Action Section -->
-<div class="container d-none d-md-block mb-5">
-    <div class="row">
-        <div class="col-md-6 offset-md-6 px-1">
-            <?php if ($isOutOfStock): ?>
-                <button class="btn btn-secondary w-100 py-2.5 text-uppercase fw-bold disabled" style="border-radius: 8px; font-size: 14px;">
-                    <i class="ri-close-circle-line me-1"></i> Sold Out / Out Of Stock
-                </button>
-            <?php else: ?>
-                <form action="<?php echo $cartUrl; ?>" method="POST" class="d-flex gap-3" onsubmit="<?php echo ($loggedInUserId <= 0) ? "window.location.href='$loginUrl'; return false;" : ""; ?>">
+<?php if (!$isOutOfStock): ?>
+    <div class="container d-none d-md-block mb-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-6 px-1">
+                <form action="<?php echo url('pages/products/cart.php'); ?>" method="POST" class="d-flex gap-3">
                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                     <input type="hidden" name="quantity" value="1">
                     <input type="hidden" name="selected_image" id="desktop_selected_image" value="<?php echo $firstImgUrl; ?>">
@@ -248,73 +219,55 @@ include '../../includes/navbar.php';
                     <button type="submit" name="add_to_cart" class="btn btn-outline-dark px-4 py-2.5 fw-bold" style="border-radius: 8px; font-size: 14px;"><i class="ri-shopping-cart-2-line me-1"></i> ADD TO CART</button>
                     <button type="submit" name="buy_now" class="btn btn-dark px-5 py-2.5 fw-bold text-white" style="background-color: #1a202c; border:none; border-radius: 8px; font-size: 14px;"><i class="ri-flash-line me-1"></i> BUY NOW</button>
                 </form>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
-</div>
+<?php endif; ?>
 
 <script>
-let currentSelectedSize = "";
+    let currentSelectedSize = "";
 
-document.addEventListener("DOMContentLoaded", function() {
-    const carouselEl = document.getElementById('productImagesCarousel');
+const carouselEl = document.getElementById('productImagesCarousel');
 
-    if (carouselEl) {
-        const bsCarousel = new bootstrap.Carousel(carouselEl, {
-            interval: false,
-            ride: false,
-            wrap: true
-        });
+if (carouselEl) {
+    // Bootstrap Carousel instance initialize karein
+    const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
 
-        const prevBtn = carouselEl.querySelector('.carousel-control-prev');
-        const nextBtn = carouselEl.querySelector('.carousel-control-next');
+    // Hover (mouseenter) par slide trigger karein
+    const prevBtn = carouselEl.querySelector('.carousel-control-prev');
+    const nextBtn = carouselEl.querySelector('.carousel-control-next');
 
-        if (prevBtn) {
-            prevBtn.addEventListener('mouseenter', () => { bsCarousel.prev(); });
-        }
-        if (nextBtn) {
-            nextBtn.addEventListener('mouseenter', () => { bsCarousel.next(); });
-        }
-
-        const thumbBoxes = document.querySelectorAll('.thumb-box');
-        thumbBoxes.forEach((thumb, idx) => {
-            thumb.addEventListener('mouseenter', () => { bsCarousel.to(idx); });
-        });
-
-        carouselEl.addEventListener('slide.bs.carousel', event => {
-            const activeSlide = event.relatedTarget;
-            if (!activeSlide) return;
-            
-            const imgUrl = activeSlide.getAttribute('data-imgurl');
-            const sizesString = activeSlide.getAttribute('data-sizes');
-            
-            const cartImgInput = document.getElementById('cart_selected_image');
-            const deskImgInput = document.getElementById('desktop_selected_image');
-            
-            if (cartImgInput) cartImgInput.value = imgUrl;
-            if (deskImgInput) deskImgInput.value = imgUrl;
-            
-            if (sizesString) {
-                renderSizes(sizesString);
-            }
-        });
+    if (prevBtn) {
+        prevBtn.addEventListener('mouseenter', () => bsCarousel.prev());
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('mouseenter', () => bsCarousel.next());
     }
 
-    renderSizes('<?= htmlspecialchars($firstImgSizes) ?>');
-});
+    // Existing slide listener
+    carouselEl.addEventListener('slide.bs.carousel', event => {
+        const activeSlide = event.relatedTarget;
+        const imgUrl = activeSlide.getAttribute('data-imgurl');
+        const sizesString = activeSlide.getAttribute('data-sizes');
+        
+        if(document.getElementById('cart_selected_image')) document.getElementById('cart_selected_image').value = imgUrl;
+        if(document.getElementById('desktop_selected_image')) document.getElementById('desktop_selected_image').value = imgUrl;
+        
+        renderSizes(sizesString);
+    });
+}
 
 function renderSizes(sizesString) {
     const container = document.getElementById('dynamicSizesRow');
-    if (!container) return;
+    container.innerHTML = ''; 
     
-    container.innerHTML = '';
     const sizesArray = sizesString ? sizesString.split(',') : [];
     
-    if (sizesArray.length > 0 && sizesArray[0].trim() !== "") {
+    if(sizesArray.length > 0 && sizesArray[0].trim() !== "") {
         let matchedIndex = -1;
         
         sizesArray.forEach((size, idx) => {
-            if (size.trim() === currentSelectedSize) {
+            if(size.trim() === currentSelectedSize) {
                 matchedIndex = idx;
             }
         });
@@ -323,12 +276,12 @@ function renderSizes(sizesString) {
             currentSelectedSize = sizesArray[0].trim();
         }
 
-        sizesArray.forEach((size) => {
+        sizesArray.forEach((size, index) => {
             const cleanSize = size.trim();
-            if (cleanSize) {
+            if(cleanSize) {
                 const isSelected = (cleanSize === currentSelectedSize);
                 
-                if (isSelected) {
+                if(isSelected) {
                     updateFormSizeValues(cleanSize);
                 }
 
@@ -354,11 +307,18 @@ function selectSize(element, size) {
 
 function updateFormSizeValues(sizeValue) {
     const mobileInput = document.getElementById('cart_selected_size');
-    if (mobileInput) mobileInput.value = sizeValue;
+    if (mobileInput) {
+        mobileInput.value = sizeValue;
+    }
     
     const desktopInput = document.querySelector('.desktop-size-mirror');
-    if (desktopInput) desktopInput.value = sizeValue;
+    if (desktopInput) {
+        desktopInput.value = sizeValue;
+    }
 }
-</script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    renderSizes('<?= htmlspecialchars($firstImgSizes) ?>');
+});
 
 <?php include '../../includes/footer.php'; ?>
