@@ -43,7 +43,7 @@ $hero_title = "Premium Genuine Leather Belts for Men & Women - Eldurato India";
     </div>
 </section>
 
-<main class="container-fluid homeBar px-md-1">
+<main class="container-fluid homeBar px-1 mx-0">
 
     <style>
         /* Smooth Custom Scrollbar */
@@ -54,7 +54,7 @@ $hero_title = "Premium Genuine Leather Belts for Men & Women - Eldurato India";
         .quick-cat-section {
             background: #ffffff;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-            padding: 20px 10px;
+            padding: 20px 2px;
         }
 
         /* DRY Base class for items */
@@ -212,7 +212,7 @@ $hero_title = "Premium Genuine Leather Belts for Men & Women - Eldurato India";
         </div>
     </div>
 
-    <section class="p-2 my-3" data-aos="fade-up" data-aos-duration="800">
+    <section class="p-0 my-3" data-aos="fade-up" data-aos-duration="800">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <!-- ✅ H5 se H2 kiya - SEO ke liye, Design same -->
